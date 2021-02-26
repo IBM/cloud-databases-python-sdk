@@ -20,8 +20,8 @@ import sys
 import pkg_resources
 
 __version__ = '0.0.1'
-PACKAGE_NAME = 'mysdk'
-PACKAGE_DESC = 'Python client library for IBM Cloud MYSDK Services'
+PACKAGE_NAME = 'ibm_cloud_databases'
+PACKAGE_DESC = 'IBM Cloud Databases Python SDK'
 
 with open('requirements.txt') as f:
     install_requires = [
@@ -51,10 +51,10 @@ setup(
     install_requires=install_requires,
     tests_require=tests_require,
     author='IBM',
-    author_email='devexdev@us.ibm.com',
+    author_email='norbert.biczo@ibm.com',
     long_description=readme,
     long_description_content_type='text/markdown',
-    url='https://github.com/mysdk/python-sdk',
+    url='https://github.ibm.com/ibmcloud/icd-python-sdk',
     packages=[PACKAGE_NAME],
     include_package_data=True,
     keywords=PACKAGE_NAME,

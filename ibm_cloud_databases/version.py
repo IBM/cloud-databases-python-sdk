@@ -1,5 +1,6 @@
 # coding: utf-8
-# Copyright 2019, 2020 IBM All Rights Reserved.
+
+# (C) Copyright IBM Corp. 2019, 2020.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Python client library for the IBM Cloud MySDK Services"""
-
-from ibm_cloud_sdk_core import IAMTokenManager, DetailedResponse, BaseService, ApiException
-
-from .common import get_sdk_headers
-from .version import __version__
-from .example_service_v1 import ExampleServiceV1
+"""
+Version of ibm_cloud_databases
+"""
+__version__ = '0.0.1'

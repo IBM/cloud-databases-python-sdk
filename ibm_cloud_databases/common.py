@@ -19,10 +19,10 @@ This module provides common methods for use across all service modules.
 """
 
 import platform
-from mysdk.version import __version__
+from ibm_cloud_databases.version import __version__
 
 HEADER_NAME_USER_AGENT = 'User-Agent'
-SDK_NAME = 'my-python-sdk'
+SDK_NAME = 'icd-python-sdk'
 
 def get_system_info():
     """
@@ -51,11 +51,11 @@ def get_sdk_headers(service_name, service_version, operation_id):
     
     If you plan to gather metrics for your SDK, the User-Agent header value must
     be a string similar to the following:
-    my-python-sdk/0.0.1 (lang=python; arch=x86_64; os=Linux; python.version=3.7.4)
+    icd-python-sdk/0.0.1 (lang=python; arch=x86_64; os=Linux; python.version=3.7.4)
 
     In the example above, the analytics tool will parse the user-agent header and
     use the following properties:
-    "my-python-sdk" - the name of your sdk
+    "icd-python-sdk" - the name of your sdk
     "0.0.1"- the version of your sdk
     "lang=python" - the language of the current sdk
     "arch=x86_64; os=Linux; python.version=3.7.4" - system information

@@ -7,13 +7,11 @@ cache: pip
 notifications:
   email: true
 
-# After creating your SDK project from this template repository,
-# uncomment this section to enable builds on the appropriate python versions.
-# matrix:
-#   include:
-#     - python: 3.6
-#     - python: 3.7
-#     - python: 3.8
+ matrix:
+   include:
+     - python: 3.6
+     - python: 3.7
+     - python: 3.8
 #     - python: 3.9
 
 before_install:
@@ -29,22 +27,6 @@ install:
 
 script: tox
 
-# After creating your SDK project from this template repository,
-# remove this entire "jobs" section as this is only applicable
-# to the template repo's travis build.
-jobs:
-  include:
-    - stage: Run tox tests
-      python: "3.6"
-    - python: "3.7"
-    - python: "3.8"
-    - python: "3.9"
-    - stage: Run system test with template
-      script: 
-        - git clone https://github.ibm.com/CloudEngineering/sdkgen-systest.git
-        - cd sdkgen-systest
-        - ./install_scripts/install_deps_ubuntu.sh
-        - ./setup_and_generate.sh -l ibm-python -t $TRAVIS_BRANCH -s
 
 # To enable semantic-release, uncomment these sections.
 # before_deploy:

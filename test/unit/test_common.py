@@ -19,7 +19,7 @@ Test methods in the common module
 """
 
 import unittest
-from mysdk import common
+from ibm_cloud_databases import common
 
 class TestCommon(unittest.TestCase):
     """
@@ -33,7 +33,7 @@ class TestCommon(unittest.TestCase):
         headers = common.get_sdk_headers(service_name='example_service', service_version='V1', operation_id='operation1')
         self.assertIsNotNone(headers)
         self.assertIsNotNone(headers.get('User-Agent'))
-        self.assertIn('my-python-sdk', headers.get('User-Agent'))
+        self.assertIn('icd-python-sdk', headers.get('User-Agent'))
 
     def test_get_system_info(self):
         """

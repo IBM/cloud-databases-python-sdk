@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m pylint mysdk test --exit-zero
+python -m pylint ibm_cloud_databases test --exit-zero
