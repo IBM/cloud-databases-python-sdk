@@ -19,6 +19,7 @@ Unit Tests for CloudDatabasesV5
 
 from datetime import datetime, timezone
 from ibm_cloud_sdk_core.authenticators.no_auth_authenticator import NoAuthAuthenticator
+from ibm_cloud_sdk_core.utils import datetime_to_string, string_to_datetime
 import inspect
 import json
 import pytest
@@ -215,7 +216,7 @@ class TestCreateDatabaseUser():
         create_database_user()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.POST,
                       url,
@@ -231,7 +232,7 @@ class TestCreateDatabaseUser():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user = create_database_user_request_user_model
 
         # Invoke method
@@ -256,7 +257,7 @@ class TestCreateDatabaseUser():
         test_create_database_user_value_error()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.POST,
                       url,
@@ -272,7 +273,7 @@ class TestCreateDatabaseUser():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user = create_database_user_request_user_model
 
         # Pass in all but one required param and check for a ValueError
@@ -307,22 +308,22 @@ class TestChangeUserPassword():
         change_user_password()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/james')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.PATCH,
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
         # Construct a dict representation of a APasswordSettingUser model
         a_password_setting_user_model = {}
-        a_password_setting_user_model['password'] = 'xyzzy'
+        a_password_setting_user_model['password'] = 'xyzzyyzzyx'
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
-        username = 'testString'
+        user_type = 'database'
+        username = 'james'
         user = a_password_setting_user_model
 
         # Invoke method
@@ -336,7 +337,7 @@ class TestChangeUserPassword():
 
         # Check for correct operation
         assert len(responses.calls) == 1
-        assert response.status_code == 200
+        assert response.status_code == 202
         # Validate body params
         req_body = json.loads(str(responses.calls[0].request.body, 'utf-8'))
         assert req_body['user'] == a_password_setting_user_model
@@ -348,22 +349,22 @@ class TestChangeUserPassword():
         test_change_user_password_value_error()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/james')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.PATCH,
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
         # Construct a dict representation of a APasswordSettingUser model
         a_password_setting_user_model = {}
-        a_password_setting_user_model['password'] = 'xyzzy'
+        a_password_setting_user_model['password'] = 'xyzzyyzzyx'
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
-        username = 'testString'
+        user_type = 'database'
+        username = 'james'
         user = a_password_setting_user_model
 
         # Pass in all but one required param and check for a ValueError
@@ -399,7 +400,7 @@ class TestDeleteDatabaseUser():
         delete_database_user()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/james')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.DELETE,
                       url,
@@ -409,8 +410,8 @@ class TestDeleteDatabaseUser():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
-        username = 'testString'
+        user_type = 'database'
+        username = 'james'
 
         # Invoke method
         response = service.delete_database_user(
@@ -431,7 +432,7 @@ class TestDeleteDatabaseUser():
         test_delete_database_user_value_error()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/james')
         mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
         responses.add(responses.DELETE,
                       url,
@@ -441,8 +442,8 @@ class TestDeleteDatabaseUser():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
-        username = 'testString'
+        user_type = 'database'
+        username = 'james'
 
         # Pass in all but one required param and check for a ValueError
         req_param_dict = {
@@ -457,80 +458,6 @@ class TestDeleteDatabaseUser():
 
 
 
-class TestGetUser():
-    """
-    Test Class for get_user
-    """
-
-    def preprocess_url(self, request_url: str):
-        """
-        Preprocess the request URL to ensure the mock response will be found.
-        """
-        if re.fullmatch('.*/+', request_url) is None:
-            return request_url
-        else:
-            return re.compile(request_url.rstrip('/') + '/+')
-
-    @responses.activate
-    def test_get_user_all_params(self):
-        """
-        get_user()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/')
-        mock_response = '{"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}'
-        responses.add(responses.GET,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-        user_id = 'testString'
-
-        # Invoke method
-        response = service.get_user(
-            id,
-            user_id,
-            headers={}
-        )
-
-        # Check for correct operation
-        assert len(responses.calls) == 1
-        assert response.status_code == 200
-
-
-    @responses.activate
-    def test_get_user_value_error(self):
-        """
-        test_get_user_value_error()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/')
-        mock_response = '{"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}'
-        responses.add(responses.GET,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-        user_id = 'testString'
-
-        # Pass in all but one required param and check for a ValueError
-        req_param_dict = {
-            "id": id,
-            "user_id": user_id,
-        }
-        for param in req_param_dict.keys():
-            req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
-            with pytest.raises(ValueError):
-                service.get_user(**req_copy)
-
-
-
 # endregion
 ##############################################################################
 # End of Service: DatabaseUsers
@@ -541,9 +468,9 @@ class TestGetUser():
 ##############################################################################
 # region
 
-class TestSetDatabaseConfiguration():
+class TestUpdateDatabaseConfiguration():
     """
-    Test Class for set_database_configuration
+    Test Class for update_database_configuration
     """
 
     def preprocess_url(self, request_url: str):
@@ -556,9 +483,9 @@ class TestSetDatabaseConfiguration():
             return re.compile(request_url.rstrip('/') + '/+')
 
     @responses.activate
-    def test_set_database_configuration_all_params(self):
+    def test_update_database_configuration_all_params(self):
         """
-        set_database_configuration()
+        update_database_configuration()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/configuration')
@@ -571,7 +498,7 @@ class TestSetDatabaseConfiguration():
 
         # Construct a dict representation of a SetConfigurationConfigurationPGConfiguration model
         set_configuration_configuration_model = {}
-        set_configuration_configuration_model['max_connections'] = 115
+        set_configuration_configuration_model['max_connections'] = 200
         set_configuration_configuration_model['max_prepared_transactions'] = 0
         set_configuration_configuration_model['deadlock_timeout'] = 100
         set_configuration_configuration_model['effective_io_concurrency'] = 1
@@ -588,7 +515,7 @@ class TestSetDatabaseConfiguration():
         configuration = set_configuration_configuration_model
 
         # Invoke method
-        response = service.set_database_configuration(
+        response = service.update_database_configuration(
             id,
             configuration,
             headers={}
@@ -603,9 +530,9 @@ class TestSetDatabaseConfiguration():
 
 
     @responses.activate
-    def test_set_database_configuration_value_error(self):
+    def test_update_database_configuration_value_error(self):
         """
-        test_set_database_configuration_value_error()
+        test_update_database_configuration_value_error()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/configuration')
@@ -618,7 +545,7 @@ class TestSetDatabaseConfiguration():
 
         # Construct a dict representation of a SetConfigurationConfigurationPGConfiguration model
         set_configuration_configuration_model = {}
-        set_configuration_configuration_model['max_connections'] = 115
+        set_configuration_configuration_model['max_connections'] = 200
         set_configuration_configuration_model['max_prepared_transactions'] = 0
         set_configuration_configuration_model['deadlock_timeout'] = 100
         set_configuration_configuration_model['effective_io_concurrency'] = 1
@@ -642,77 +569,7 @@ class TestSetDatabaseConfiguration():
         for param in req_param_dict.keys():
             req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
             with pytest.raises(ValueError):
-                service.set_database_configuration(**req_copy)
-
-
-
-class TestGetDatabaseConfigurationSchema():
-    """
-    Test Class for get_database_configuration_schema
-    """
-
-    def preprocess_url(self, request_url: str):
-        """
-        Preprocess the request URL to ensure the mock response will be found.
-        """
-        if re.fullmatch('.*/+', request_url) is None:
-            return request_url
-        else:
-            return re.compile(request_url.rstrip('/') + '/+')
-
-    @responses.activate
-    def test_get_database_configuration_schema_all_params(self):
-        """
-        get_database_configuration_schema()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/configuration/schema')
-        mock_response = '{"schema": {"max_connections": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_prepared_connections": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "backup_retention_period": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "deadlock_timeout": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "effective_io_concurrency": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_replication_slots": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_wal_senders": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "shared_buffers": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "synchronous_commit": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "choices": ["choices"]}, "wal_level": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "choices": ["choices"]}, "archive_timeout": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "log_min_duration_statement": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}}}'
-        responses.add(responses.GET,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-
-        # Invoke method
-        response = service.get_database_configuration_schema(
-            id,
-            headers={}
-        )
-
-        # Check for correct operation
-        assert len(responses.calls) == 1
-        assert response.status_code == 200
-
-
-    @responses.activate
-    def test_get_database_configuration_schema_value_error(self):
-        """
-        test_get_database_configuration_schema_value_error()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/configuration/schema')
-        mock_response = '{"schema": {"max_connections": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_prepared_connections": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "backup_retention_period": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "deadlock_timeout": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "effective_io_concurrency": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_replication_slots": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "max_wal_senders": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "shared_buffers": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "synchronous_commit": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "choices": ["choices"]}, "wal_level": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "choices": ["choices"]}, "archive_timeout": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}, "log_min_duration_statement": {"customer_configurable": false, "default": 7, "default_description": "default_description", "description": "description", "kind": "kind", "requires_restart": true, "min": 3, "max": 3, "step": 4}}}'
-        responses.add(responses.GET,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-
-        # Pass in all but one required param and check for a ValueError
-        req_param_dict = {
-            "id": id,
-        }
-        for param in req_param_dict.keys():
-            req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
-            with pytest.raises(ValueError):
-                service.get_database_configuration_schema(**req_copy)
+                service.update_database_configuration(**req_copy)
 
 
 
@@ -796,9 +653,9 @@ class TestListRemotes():
 
 
 
-class TestGetRemotesSchema():
+class TestResyncReplica():
     """
-    Test Class for get_remotes_schema
+    Test Class for resync_replica
     """
 
     def preprocess_url(self, request_url: str):
@@ -811,9 +668,9 @@ class TestGetRemotesSchema():
             return re.compile(request_url.rstrip('/') + '/+')
 
     @responses.activate
-    def test_get_remotes_schema_all_params(self):
+    def test_resync_replica_all_params(self):
         """
-        get_remotes_schema()
+        resync_replica()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/remotes/resync')
@@ -828,7 +685,7 @@ class TestGetRemotesSchema():
         id = 'testString'
 
         # Invoke method
-        response = service.get_remotes_schema(
+        response = service.resync_replica(
             id,
             headers={}
         )
@@ -839,9 +696,9 @@ class TestGetRemotesSchema():
 
 
     @responses.activate
-    def test_get_remotes_schema_value_error(self):
+    def test_resync_replica_value_error(self):
         """
-        test_get_remotes_schema_value_error()
+        test_resync_replica_value_error()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/remotes/resync')
@@ -862,7 +719,7 @@ class TestGetRemotesSchema():
         for param in req_param_dict.keys():
             req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
             with pytest.raises(ValueError):
-                service.get_remotes_schema(**req_copy)
+                service.resync_replica(**req_copy)
 
 
 
@@ -1421,7 +1278,7 @@ class TestGetConnection():
         get_connection()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.GET,
                       url,
@@ -1431,7 +1288,7 @@ class TestGetConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
         certificate_root = 'testString'
@@ -1461,7 +1318,7 @@ class TestGetConnection():
         test_get_connection_required_params()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.GET,
                       url,
@@ -1471,7 +1328,7 @@ class TestGetConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
 
@@ -1495,7 +1352,7 @@ class TestGetConnection():
         test_get_connection_value_error()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.GET,
                       url,
@@ -1505,7 +1362,7 @@ class TestGetConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
 
@@ -1543,7 +1400,7 @@ class TestCompleteConnection():
         complete_connection()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.POST,
                       url,
@@ -1553,10 +1410,10 @@ class TestCompleteConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
-        password = 'testString'
+        password = 'providedpassword'
         certificate_root = 'testString'
 
         # Invoke method
@@ -1575,7 +1432,7 @@ class TestCompleteConnection():
         assert response.status_code == 200
         # Validate body params
         req_body = json.loads(str(responses.calls[0].request.body, 'utf-8'))
-        assert req_body['password'] == 'testString'
+        assert req_body['password'] == 'providedpassword'
         assert req_body['certificate_root'] == 'testString'
 
 
@@ -1585,7 +1442,7 @@ class TestCompleteConnection():
         test_complete_connection_required_params()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.POST,
                       url,
@@ -1595,7 +1452,7 @@ class TestCompleteConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
 
@@ -1619,7 +1476,7 @@ class TestCompleteConnection():
         test_complete_connection_value_error()
         """
         # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/users/testString/testString/connections/public')
+        url = self.preprocess_url(base_url + '/deployments/testString/users/database/testString/connections/public')
         mock_response = '{"connection": {"postgres": {"type": "uri", "composed": ["composed"], "scheme": "scheme", "hosts": [{"hostname": "hostname", "port": 4}], "path": "/ibmclouddb", "query_options": {"anyKey": "anyValue"}, "authentication": {"method": "method", "username": "username", "password": "password"}, "certificate": {"name": "name", "certificate_base64": "certificate_base64"}, "database": "database"}, "cli": {"type": "cli", "composed": ["composed"], "environment": {"mapKey": "inner"}, "bin": "bin", "arguments": [["arguments"]], "certificate": {"name": "name", "certificate_base64": "certificate_base64"}}}}'
         responses.add(responses.POST,
                       url,
@@ -1629,7 +1486,7 @@ class TestCompleteConnection():
 
         # Set up parameter values
         id = 'testString'
-        user_type = 'testString'
+        user_type = 'database'
         user_id = 'testString'
         endpoint_type = 'public'
 
@@ -1825,13 +1682,13 @@ class TestSetDeploymentScalingGroup():
                       content_type='application/json',
                       status=202)
 
-        # Construct a dict representation of a SetMembersGroupMembers model
-        set_members_group_members_model = {}
-        set_members_group_members_model['allocation_count'] = 4
+        # Construct a dict representation of a SetMemoryGroupMemory model
+        set_memory_group_memory_model = {}
+        set_memory_group_memory_model['allocation_mb'] = 4096
 
-        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMembersGroup model
+        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMemoryGroup model
         set_deployment_scaling_group_request_model = {}
-        set_deployment_scaling_group_request_model['members'] = set_members_group_members_model
+        set_deployment_scaling_group_request_model['memory'] = set_memory_group_memory_model
 
         # Set up parameter values
         id = 'testString'
@@ -1868,13 +1725,13 @@ class TestSetDeploymentScalingGroup():
                       content_type='application/json',
                       status=202)
 
-        # Construct a dict representation of a SetMembersGroupMembers model
-        set_members_group_members_model = {}
-        set_members_group_members_model['allocation_count'] = 4
+        # Construct a dict representation of a SetMemoryGroupMemory model
+        set_memory_group_memory_model = {}
+        set_memory_group_memory_model['allocation_mb'] = 4096
 
-        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMembersGroup model
+        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMemoryGroup model
         set_deployment_scaling_group_request_model = {}
-        set_deployment_scaling_group_request_model['members'] = set_members_group_members_model
+        set_deployment_scaling_group_request_model['memory'] = set_memory_group_memory_model
 
         # Set up parameter values
         id = 'testString'
@@ -2004,39 +1861,33 @@ class TestSetAutoscalingConditions():
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalersCapacity model
-        autoscaling_disk_group_disk_scalers_capacity_model = {}
-        autoscaling_disk_group_disk_scalers_capacity_model['enabled'] = True
-        autoscaling_disk_group_disk_scalers_capacity_model['free_space_less_than_percent'] = 10
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryScalersIoUtilization model
+        autoscaling_memory_group_memory_scalers_io_utilization_model = {}
+        autoscaling_memory_group_memory_scalers_io_utilization_model['enabled'] = True
+        autoscaling_memory_group_memory_scalers_io_utilization_model['over_period'] = '5m'
+        autoscaling_memory_group_memory_scalers_io_utilization_model['above_percent'] = 90
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalersIoUtilization model
-        autoscaling_disk_group_disk_scalers_io_utilization_model = {}
-        autoscaling_disk_group_disk_scalers_io_utilization_model['enabled'] = True
-        autoscaling_disk_group_disk_scalers_io_utilization_model['over_period'] = '30m'
-        autoscaling_disk_group_disk_scalers_io_utilization_model['above_percent'] = 45
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryScalers model
+        autoscaling_memory_group_memory_scalers_model = {}
+        autoscaling_memory_group_memory_scalers_model['io_utilization'] = autoscaling_memory_group_memory_scalers_io_utilization_model
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalers model
-        autoscaling_disk_group_disk_scalers_model = {}
-        autoscaling_disk_group_disk_scalers_model['capacity'] = autoscaling_disk_group_disk_scalers_capacity_model
-        autoscaling_disk_group_disk_scalers_model['io_utilization'] = autoscaling_disk_group_disk_scalers_io_utilization_model
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryRate model
+        autoscaling_memory_group_memory_rate_model = {}
+        autoscaling_memory_group_memory_rate_model['increase_percent'] = 10.0
+        autoscaling_memory_group_memory_rate_model['period_seconds'] = 300
+        autoscaling_memory_group_memory_rate_model['limit_mb_per_member'] = 125952
+        autoscaling_memory_group_memory_rate_model['units'] = 'mb'
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskRate model
-        autoscaling_disk_group_disk_rate_model = {}
-        autoscaling_disk_group_disk_rate_model['increase_percent'] = 20
-        autoscaling_disk_group_disk_rate_model['period_seconds'] = 900
-        autoscaling_disk_group_disk_rate_model['limit_mb_per_member'] = 3670016
-        autoscaling_disk_group_disk_rate_model['units'] = 'mb'
+        # Construct a dict representation of a AutoscalingMemoryGroupMemory model
+        autoscaling_memory_group_memory_model = {}
+        autoscaling_memory_group_memory_model['scalers'] = autoscaling_memory_group_memory_scalers_model
+        autoscaling_memory_group_memory_model['rate'] = autoscaling_memory_group_memory_rate_model
 
-        # Construct a dict representation of a AutoscalingDiskGroupDisk model
-        autoscaling_disk_group_disk_model = {}
-        autoscaling_disk_group_disk_model['scalers'] = autoscaling_disk_group_disk_scalers_model
-        autoscaling_disk_group_disk_model['rate'] = autoscaling_disk_group_disk_rate_model
-
-        # Construct a dict representation of a AutoscalingSetGroupAutoscalingAutoscalingDiskGroup model
+        # Construct a dict representation of a AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup model
         autoscaling_set_group_autoscaling_model = {}
-        autoscaling_set_group_autoscaling_model['disk'] = autoscaling_disk_group_disk_model
+        autoscaling_set_group_autoscaling_model['memory'] = autoscaling_memory_group_memory_model
 
         # Set up parameter values
         id = 'testString'
@@ -2053,7 +1904,7 @@ class TestSetAutoscalingConditions():
 
         # Check for correct operation
         assert len(responses.calls) == 1
-        assert response.status_code == 200
+        assert response.status_code == 202
         # Validate body params
         req_body = json.loads(str(responses.calls[0].request.body, 'utf-8'))
         assert req_body['autoscaling'] == autoscaling_set_group_autoscaling_model
@@ -2071,39 +1922,33 @@ class TestSetAutoscalingConditions():
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalersCapacity model
-        autoscaling_disk_group_disk_scalers_capacity_model = {}
-        autoscaling_disk_group_disk_scalers_capacity_model['enabled'] = True
-        autoscaling_disk_group_disk_scalers_capacity_model['free_space_less_than_percent'] = 10
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryScalersIoUtilization model
+        autoscaling_memory_group_memory_scalers_io_utilization_model = {}
+        autoscaling_memory_group_memory_scalers_io_utilization_model['enabled'] = True
+        autoscaling_memory_group_memory_scalers_io_utilization_model['over_period'] = '5m'
+        autoscaling_memory_group_memory_scalers_io_utilization_model['above_percent'] = 90
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalersIoUtilization model
-        autoscaling_disk_group_disk_scalers_io_utilization_model = {}
-        autoscaling_disk_group_disk_scalers_io_utilization_model['enabled'] = True
-        autoscaling_disk_group_disk_scalers_io_utilization_model['over_period'] = '30m'
-        autoscaling_disk_group_disk_scalers_io_utilization_model['above_percent'] = 45
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryScalers model
+        autoscaling_memory_group_memory_scalers_model = {}
+        autoscaling_memory_group_memory_scalers_model['io_utilization'] = autoscaling_memory_group_memory_scalers_io_utilization_model
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskScalers model
-        autoscaling_disk_group_disk_scalers_model = {}
-        autoscaling_disk_group_disk_scalers_model['capacity'] = autoscaling_disk_group_disk_scalers_capacity_model
-        autoscaling_disk_group_disk_scalers_model['io_utilization'] = autoscaling_disk_group_disk_scalers_io_utilization_model
+        # Construct a dict representation of a AutoscalingMemoryGroupMemoryRate model
+        autoscaling_memory_group_memory_rate_model = {}
+        autoscaling_memory_group_memory_rate_model['increase_percent'] = 10.0
+        autoscaling_memory_group_memory_rate_model['period_seconds'] = 300
+        autoscaling_memory_group_memory_rate_model['limit_mb_per_member'] = 125952
+        autoscaling_memory_group_memory_rate_model['units'] = 'mb'
 
-        # Construct a dict representation of a AutoscalingDiskGroupDiskRate model
-        autoscaling_disk_group_disk_rate_model = {}
-        autoscaling_disk_group_disk_rate_model['increase_percent'] = 20
-        autoscaling_disk_group_disk_rate_model['period_seconds'] = 900
-        autoscaling_disk_group_disk_rate_model['limit_mb_per_member'] = 3670016
-        autoscaling_disk_group_disk_rate_model['units'] = 'mb'
+        # Construct a dict representation of a AutoscalingMemoryGroupMemory model
+        autoscaling_memory_group_memory_model = {}
+        autoscaling_memory_group_memory_model['scalers'] = autoscaling_memory_group_memory_scalers_model
+        autoscaling_memory_group_memory_model['rate'] = autoscaling_memory_group_memory_rate_model
 
-        # Construct a dict representation of a AutoscalingDiskGroupDisk model
-        autoscaling_disk_group_disk_model = {}
-        autoscaling_disk_group_disk_model['scalers'] = autoscaling_disk_group_disk_scalers_model
-        autoscaling_disk_group_disk_model['rate'] = autoscaling_disk_group_disk_rate_model
-
-        # Construct a dict representation of a AutoscalingSetGroupAutoscalingAutoscalingDiskGroup model
+        # Construct a dict representation of a AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup model
         autoscaling_set_group_autoscaling_model = {}
-        autoscaling_set_group_autoscaling_model['disk'] = autoscaling_disk_group_disk_model
+        autoscaling_set_group_autoscaling_model['memory'] = autoscaling_memory_group_memory_model
 
         # Set up parameter values
         id = 'testString'
@@ -2159,7 +2004,7 @@ class TestKillConnections():
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
         # Set up parameter values
         id = 'testString'
@@ -2172,7 +2017,7 @@ class TestKillConnections():
 
         # Check for correct operation
         assert len(responses.calls) == 1
-        assert response.status_code == 200
+        assert response.status_code == 202
 
 
     @responses.activate
@@ -2187,7 +2032,7 @@ class TestKillConnections():
                       url,
                       body=mock_response,
                       content_type='application/json',
-                      status=200)
+                      status=202)
 
         # Set up parameter values
         id = 'testString'
@@ -2200,238 +2045,6 @@ class TestKillConnections():
             req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
             with pytest.raises(ValueError):
                 service.kill_connections(**req_copy)
-
-
-
-class TestFileSync():
-    """
-    Test Class for file_sync
-    """
-
-    def preprocess_url(self, request_url: str):
-        """
-        Preprocess the request URL to ensure the mock response will be found.
-        """
-        if re.fullmatch('.*/+', request_url) is None:
-            return request_url
-        else:
-            return re.compile(request_url.rstrip('/') + '/+')
-
-    @responses.activate
-    def test_file_sync_all_params(self):
-        """
-        file_sync()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/elasticsearch/file_syncs')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.POST,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-
-        # Invoke method
-        response = service.file_sync(
-            id,
-            headers={}
-        )
-
-        # Check for correct operation
-        assert len(responses.calls) == 1
-        assert response.status_code == 200
-
-
-    @responses.activate
-    def test_file_sync_value_error(self):
-        """
-        test_file_sync_value_error()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/elasticsearch/file_syncs')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.POST,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-
-        # Pass in all but one required param and check for a ValueError
-        req_param_dict = {
-            "id": id,
-        }
-        for param in req_param_dict.keys():
-            req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
-            with pytest.raises(ValueError):
-                service.file_sync(**req_copy)
-
-
-
-class TestCreateLogicalReplicationSlot():
-    """
-    Test Class for create_logical_replication_slot
-    """
-
-    def preprocess_url(self, request_url: str):
-        """
-        Preprocess the request URL to ensure the mock response will be found.
-        """
-        if re.fullmatch('.*/+', request_url) is None:
-            return request_url
-        else:
-            return re.compile(request_url.rstrip('/') + '/+')
-
-    @responses.activate
-    def test_create_logical_replication_slot_all_params(self):
-        """
-        create_logical_replication_slot()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/postgresql/logical_replication_slots')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.POST,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Construct a dict representation of a LogicalReplicationSlotLogicalReplicationSlot model
-        logical_replication_slot_logical_replication_slot_model = {}
-        logical_replication_slot_logical_replication_slot_model['name'] = 'customer_replication'
-        logical_replication_slot_logical_replication_slot_model['database_name'] = 'customers'
-        logical_replication_slot_logical_replication_slot_model['plugin_type'] = 'wal2json'
-
-        # Set up parameter values
-        id = 'testString'
-        logical_replication_slot = logical_replication_slot_logical_replication_slot_model
-
-        # Invoke method
-        response = service.create_logical_replication_slot(
-            id,
-            logical_replication_slot=logical_replication_slot,
-            headers={}
-        )
-
-        # Check for correct operation
-        assert len(responses.calls) == 1
-        assert response.status_code == 200
-        # Validate body params
-        req_body = json.loads(str(responses.calls[0].request.body, 'utf-8'))
-        assert req_body['logical_replication_slot'] == logical_replication_slot_logical_replication_slot_model
-
-
-    @responses.activate
-    def test_create_logical_replication_slot_value_error(self):
-        """
-        test_create_logical_replication_slot_value_error()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/postgresql/logical_replication_slots')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.POST,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Construct a dict representation of a LogicalReplicationSlotLogicalReplicationSlot model
-        logical_replication_slot_logical_replication_slot_model = {}
-        logical_replication_slot_logical_replication_slot_model['name'] = 'customer_replication'
-        logical_replication_slot_logical_replication_slot_model['database_name'] = 'customers'
-        logical_replication_slot_logical_replication_slot_model['plugin_type'] = 'wal2json'
-
-        # Set up parameter values
-        id = 'testString'
-        logical_replication_slot = logical_replication_slot_logical_replication_slot_model
-
-        # Pass in all but one required param and check for a ValueError
-        req_param_dict = {
-            "id": id,
-        }
-        for param in req_param_dict.keys():
-            req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
-            with pytest.raises(ValueError):
-                service.create_logical_replication_slot(**req_copy)
-
-
-
-class TestDeleteLogicalReplicationSlot():
-    """
-    Test Class for delete_logical_replication_slot
-    """
-
-    def preprocess_url(self, request_url: str):
-        """
-        Preprocess the request URL to ensure the mock response will be found.
-        """
-        if re.fullmatch('.*/+', request_url) is None:
-            return request_url
-        else:
-            return re.compile(request_url.rstrip('/') + '/+')
-
-    @responses.activate
-    def test_delete_logical_replication_slot_all_params(self):
-        """
-        delete_logical_replication_slot()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/postgresql/logical_replication_slots/testString')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.DELETE,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-        name = 'testString'
-
-        # Invoke method
-        response = service.delete_logical_replication_slot(
-            id,
-            name,
-            headers={}
-        )
-
-        # Check for correct operation
-        assert len(responses.calls) == 1
-        assert response.status_code == 200
-
-
-    @responses.activate
-    def test_delete_logical_replication_slot_value_error(self):
-        """
-        test_delete_logical_replication_slot_value_error()
-        """
-        # Set up mock
-        url = self.preprocess_url(base_url + '/deployments/testString/postgresql/logical_replication_slots/testString')
-        mock_response = '{"task": {"id": "id", "description": "description", "status": "running", "deployment_id": "deployment_id", "progress_percent": 16, "created_at": "2019-01-01T12:00:00.000Z"}}'
-        responses.add(responses.DELETE,
-                      url,
-                      body=mock_response,
-                      content_type='application/json',
-                      status=200)
-
-        # Set up parameter values
-        id = 'testString'
-        name = 'testString'
-
-        # Pass in all but one required param and check for a ValueError
-        req_param_dict = {
-            "id": id,
-            "name": name,
-        }
-        for param in req_param_dict.keys():
-            req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
-            with pytest.raises(ValueError):
-                service.delete_logical_replication_slot(**req_copy)
 
 
 
@@ -2515,9 +2128,9 @@ class TestGetAllowlist():
 
 
 
-class TestReplaceAllowlist():
+class TestSetAllowlist():
     """
-    Test Class for replace_allowlist
+    Test Class for set_allowlist
     """
 
     def preprocess_url(self, request_url: str):
@@ -2530,9 +2143,9 @@ class TestReplaceAllowlist():
             return re.compile(request_url.rstrip('/') + '/+')
 
     @responses.activate
-    def test_replace_allowlist_all_params(self):
+    def test_set_allowlist_all_params(self):
         """
-        replace_allowlist()
+        set_allowlist()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/whitelists/ip_addresses')
@@ -2545,8 +2158,8 @@ class TestReplaceAllowlist():
 
         # Construct a dict representation of a AllowlistEntry model
         allowlist_entry_model = {}
-        allowlist_entry_model['address'] = 'testString'
-        allowlist_entry_model['description'] = 'testString'
+        allowlist_entry_model['address'] = '195.212.0.0/16'
+        allowlist_entry_model['description'] = 'Dev IP space 1'
 
         # Set up parameter values
         id = 'testString'
@@ -2554,7 +2167,7 @@ class TestReplaceAllowlist():
         if_match = 'testString'
 
         # Invoke method
-        response = service.replace_allowlist(
+        response = service.set_allowlist(
             id,
             ip_addresses=ip_addresses,
             if_match=if_match,
@@ -2570,9 +2183,9 @@ class TestReplaceAllowlist():
 
 
     @responses.activate
-    def test_replace_allowlist_required_params(self):
+    def test_set_allowlist_required_params(self):
         """
-        test_replace_allowlist_required_params()
+        test_set_allowlist_required_params()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/whitelists/ip_addresses')
@@ -2585,15 +2198,15 @@ class TestReplaceAllowlist():
 
         # Construct a dict representation of a AllowlistEntry model
         allowlist_entry_model = {}
-        allowlist_entry_model['address'] = 'testString'
-        allowlist_entry_model['description'] = 'testString'
+        allowlist_entry_model['address'] = '195.212.0.0/16'
+        allowlist_entry_model['description'] = 'Dev IP space 1'
 
         # Set up parameter values
         id = 'testString'
         ip_addresses = [allowlist_entry_model]
 
         # Invoke method
-        response = service.replace_allowlist(
+        response = service.set_allowlist(
             id,
             ip_addresses=ip_addresses,
             headers={}
@@ -2608,9 +2221,9 @@ class TestReplaceAllowlist():
 
 
     @responses.activate
-    def test_replace_allowlist_value_error(self):
+    def test_set_allowlist_value_error(self):
         """
-        test_replace_allowlist_value_error()
+        test_set_allowlist_value_error()
         """
         # Set up mock
         url = self.preprocess_url(base_url + '/deployments/testString/whitelists/ip_addresses')
@@ -2623,8 +2236,8 @@ class TestReplaceAllowlist():
 
         # Construct a dict representation of a AllowlistEntry model
         allowlist_entry_model = {}
-        allowlist_entry_model['address'] = 'testString'
-        allowlist_entry_model['description'] = 'testString'
+        allowlist_entry_model['address'] = '195.212.0.0/16'
+        allowlist_entry_model['description'] = 'Dev IP space 1'
 
         # Set up parameter values
         id = 'testString'
@@ -2637,7 +2250,7 @@ class TestReplaceAllowlist():
         for param in req_param_dict.keys():
             req_copy = {key:val if key is not param else None for (key,val) in req_param_dict.items()}
             with pytest.raises(ValueError):
-                service.replace_allowlist(**req_copy)
+                service.set_allowlist(**req_copy)
 
 
 
@@ -2671,8 +2284,8 @@ class TestAddAllowlistEntry():
 
         # Construct a dict representation of a AllowlistEntry model
         allowlist_entry_model = {}
-        allowlist_entry_model['address'] = 'testString'
-        allowlist_entry_model['description'] = 'testString'
+        allowlist_entry_model['address'] = '172.16.0.0/16'
+        allowlist_entry_model['description'] = 'Dev IP space 3'
 
         # Set up parameter values
         id = 'testString'
@@ -2709,8 +2322,8 @@ class TestAddAllowlistEntry():
 
         # Construct a dict representation of a AllowlistEntry model
         allowlist_entry_model = {}
-        allowlist_entry_model['address'] = 'testString'
-        allowlist_entry_model['description'] = 'testString'
+        allowlist_entry_model['address'] = '172.16.0.0/16'
+        allowlist_entry_model['description'] = 'Dev IP space 3'
 
         # Set up parameter values
         id = 'testString'
@@ -2858,7 +2471,7 @@ class TestAddAllowlistEntryResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 10
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:21:30Z"))
 
         # Construct a json representation of a AddAllowlistEntryResponse model
         add_allowlist_entry_response_model_json = {}
@@ -3533,7 +3146,7 @@ class TestBackup():
         backup_model_json['status'] = 'running'
         backup_model_json['is_downloadable'] = True
         backup_model_json['is_restorable'] = True
-        backup_model_json['created_at'] = '2020-01-28T18:40:40.123456Z'
+        backup_model_json['created_at'] = datetime_to_string(string_to_datetime("2018-02-28T19:25:12.000Z"))
 
         # Construct a model instance of Backup by calling from_dict on the json representation
         backup_model = Backup.from_dict(backup_model_json)
@@ -3569,7 +3182,7 @@ class TestBackups():
         backup_model['status'] = 'completed'
         backup_model['is_downloadable'] = False
         backup_model['is_restorable'] = True
-        backup_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        backup_model['created_at'] = datetime_to_string(string_to_datetime("2019-05-29T14:30:46.000Z"))
 
         # Construct a json representation of a Backups model
         backups_model_json = {}
@@ -3608,7 +3221,7 @@ class TestChangeUserPasswordResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:22:30Z"))
 
         # Construct a json representation of a ChangeUserPasswordResponse model
         change_user_password_response_model_json = {}
@@ -3628,106 +3241,6 @@ class TestChangeUserPasswordResponse():
         # Convert model instance back to dict and verify no loss of data
         change_user_password_response_model_json2 = change_user_password_response_model.to_dict()
         assert change_user_password_response_model_json2 == change_user_password_response_model_json
-
-class TestChoicePropertySchema():
-    """
-    Test Class for ChoicePropertySchema
-    """
-
-    def test_choice_property_schema_serialization(self):
-        """
-        Test serialization/deserialization for ChoicePropertySchema
-        """
-
-        # Construct a json representation of a ChoicePropertySchema model
-        choice_property_schema_model_json = {}
-        choice_property_schema_model_json['customer_configurable'] = True
-        choice_property_schema_model_json['default'] = 38
-        choice_property_schema_model_json['default_description'] = 'testString'
-        choice_property_schema_model_json['description'] = 'testString'
-        choice_property_schema_model_json['kind'] = 'testString'
-        choice_property_schema_model_json['requires_restart'] = True
-        choice_property_schema_model_json['choices'] = ['testString']
-
-        # Construct a model instance of ChoicePropertySchema by calling from_dict on the json representation
-        choice_property_schema_model = ChoicePropertySchema.from_dict(choice_property_schema_model_json)
-        assert choice_property_schema_model != False
-
-        # Construct a model instance of ChoicePropertySchema by calling from_dict on the json representation
-        choice_property_schema_model_dict = ChoicePropertySchema.from_dict(choice_property_schema_model_json).__dict__
-        choice_property_schema_model2 = ChoicePropertySchema(**choice_property_schema_model_dict)
-
-        # Verify the model instances are equivalent
-        assert choice_property_schema_model == choice_property_schema_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        choice_property_schema_model_json2 = choice_property_schema_model.to_dict()
-        assert choice_property_schema_model_json2 == choice_property_schema_model_json
-
-class TestConfigurationSchema():
-    """
-    Test Class for ConfigurationSchema
-    """
-
-    def test_configuration_schema_serialization(self):
-        """
-        Test serialization/deserialization for ConfigurationSchema
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        integer_property_schema_model = {} # IntegerPropertySchema
-        integer_property_schema_model['customer_configurable'] = True
-        integer_property_schema_model['default'] = 38
-        integer_property_schema_model['default_description'] = 'testString'
-        integer_property_schema_model['description'] = 'testString'
-        integer_property_schema_model['kind'] = 'testString'
-        integer_property_schema_model['requires_restart'] = True
-        integer_property_schema_model['min'] = 38
-        integer_property_schema_model['max'] = 38
-        integer_property_schema_model['step'] = 38
-
-        choice_property_schema_model = {} # ChoicePropertySchema
-        choice_property_schema_model['customer_configurable'] = True
-        choice_property_schema_model['default'] = 38
-        choice_property_schema_model['default_description'] = 'testString'
-        choice_property_schema_model['description'] = 'testString'
-        choice_property_schema_model['kind'] = 'testString'
-        choice_property_schema_model['requires_restart'] = True
-        choice_property_schema_model['choices'] = ['testString']
-
-        configuration_schema_schema_model = {} # ConfigurationSchemaSchemaPGConfigurationSchema
-        configuration_schema_schema_model['max_connections'] = integer_property_schema_model
-        configuration_schema_schema_model['max_prepared_connections'] = integer_property_schema_model
-        configuration_schema_schema_model['backup_retention_period'] = integer_property_schema_model
-        configuration_schema_schema_model['deadlock_timeout'] = integer_property_schema_model
-        configuration_schema_schema_model['effective_io_concurrency'] = integer_property_schema_model
-        configuration_schema_schema_model['max_replication_slots'] = integer_property_schema_model
-        configuration_schema_schema_model['max_wal_senders'] = integer_property_schema_model
-        configuration_schema_schema_model['shared_buffers'] = integer_property_schema_model
-        configuration_schema_schema_model['synchronous_commit'] = choice_property_schema_model
-        configuration_schema_schema_model['wal_level'] = choice_property_schema_model
-        configuration_schema_schema_model['archive_timeout'] = integer_property_schema_model
-        configuration_schema_schema_model['log_min_duration_statement'] = integer_property_schema_model
-
-        # Construct a json representation of a ConfigurationSchema model
-        configuration_schema_model_json = {}
-        configuration_schema_model_json['schema'] = configuration_schema_schema_model
-
-        # Construct a model instance of ConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_model = ConfigurationSchema.from_dict(configuration_schema_model_json)
-        assert configuration_schema_model != False
-
-        # Construct a model instance of ConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_model_dict = ConfigurationSchema.from_dict(configuration_schema_model_json).__dict__
-        configuration_schema_model2 = ConfigurationSchema(**configuration_schema_model_dict)
-
-        # Verify the model instances are equivalent
-        assert configuration_schema_model == configuration_schema_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        configuration_schema_model_json2 = configuration_schema_model.to_dict()
-        assert configuration_schema_model_json2 == configuration_schema_model_json
 
 class TestConnection():
     """
@@ -3919,7 +3432,7 @@ class TestCreateDatabaseUserResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:21:30Z"))
 
         # Construct a json representation of a CreateDatabaseUserResponse model
         create_database_user_response_model_json = {}
@@ -3940,45 +3453,6 @@ class TestCreateDatabaseUserResponse():
         create_database_user_response_model_json2 = create_database_user_response_model.to_dict()
         assert create_database_user_response_model_json2 == create_database_user_response_model_json
 
-class TestCreateLogicalReplicationSlotResponse():
-    """
-    Test Class for CreateLogicalReplicationSlotResponse
-    """
-
-    def test_create_logical_replication_slot_response_serialization(self):
-        """
-        Test serialization/deserialization for CreateLogicalReplicationSlotResponse
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        task_model = {} # Task
-        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:eu-de:a/057f598ff0b94d9663c28b68843eaab3:b544602f-ad0a-405b-ba39-2e69d04ff3a2:task:d29ea458-5c11-486f-9182-1984ec5d5314'
-        task_model['description'] = 'Creating logical replication slot'
-        task_model['status'] = 'running'
-        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:eu-de:a/057f598ff0b94d9663c28b68843eaab3:b544602f-ad0a-405b-ba39-2e69d04ff3a2::'
-        task_model['progress_percent'] = 0
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
-
-        # Construct a json representation of a CreateLogicalReplicationSlotResponse model
-        create_logical_replication_slot_response_model_json = {}
-        create_logical_replication_slot_response_model_json['task'] = task_model
-
-        # Construct a model instance of CreateLogicalReplicationSlotResponse by calling from_dict on the json representation
-        create_logical_replication_slot_response_model = CreateLogicalReplicationSlotResponse.from_dict(create_logical_replication_slot_response_model_json)
-        assert create_logical_replication_slot_response_model != False
-
-        # Construct a model instance of CreateLogicalReplicationSlotResponse by calling from_dict on the json representation
-        create_logical_replication_slot_response_model_dict = CreateLogicalReplicationSlotResponse.from_dict(create_logical_replication_slot_response_model_json).__dict__
-        create_logical_replication_slot_response_model2 = CreateLogicalReplicationSlotResponse(**create_logical_replication_slot_response_model_dict)
-
-        # Verify the model instances are equivalent
-        assert create_logical_replication_slot_response_model == create_logical_replication_slot_response_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        create_logical_replication_slot_response_model_json2 = create_logical_replication_slot_response_model.to_dict()
-        assert create_logical_replication_slot_response_model_json2 == create_logical_replication_slot_response_model_json
-
 class TestDeleteAllowlistEntryResponse():
     """
     Test Class for DeleteAllowlistEntryResponse
@@ -3997,7 +3471,7 @@ class TestDeleteAllowlistEntryResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 15
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:25:30Z"))
 
         # Construct a json representation of a DeleteAllowlistEntryResponse model
         delete_allowlist_entry_response_model_json = {}
@@ -4036,7 +3510,7 @@ class TestDeleteDatabaseUserResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-99bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 10
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:23:30Z"))
 
         # Construct a json representation of a DeleteDatabaseUserResponse model
         delete_database_user_response_model_json = {}
@@ -4056,45 +3530,6 @@ class TestDeleteDatabaseUserResponse():
         # Convert model instance back to dict and verify no loss of data
         delete_database_user_response_model_json2 = delete_database_user_response_model.to_dict()
         assert delete_database_user_response_model_json2 == delete_database_user_response_model_json
-
-class TestDeleteLogicalReplicationSlotResponse():
-    """
-    Test Class for DeleteLogicalReplicationSlotResponse
-    """
-
-    def test_delete_logical_replication_slot_response_serialization(self):
-        """
-        Test serialization/deserialization for DeleteLogicalReplicationSlotResponse
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        task_model = {} # Task
-        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:eu-de:a/057f598ff0b94d9663c28b68843eaab3:b544602f-ad0a-405b-ba39-2e69d04ff3a2:task:d29ea458-5c11-486f-9182-1894ec5d5314'
-        task_model['description'] = 'Deleting logical replication slot'
-        task_model['status'] = 'running'
-        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:eu-de:a/057f598ff0b94d9663c28b68843eaab3:b544602f-ad0a-405b-ba39-2e69d04ff3a2::'
-        task_model['progress_percent'] = 0
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
-
-        # Construct a json representation of a DeleteLogicalReplicationSlotResponse model
-        delete_logical_replication_slot_response_model_json = {}
-        delete_logical_replication_slot_response_model_json['task'] = task_model
-
-        # Construct a model instance of DeleteLogicalReplicationSlotResponse by calling from_dict on the json representation
-        delete_logical_replication_slot_response_model = DeleteLogicalReplicationSlotResponse.from_dict(delete_logical_replication_slot_response_model_json)
-        assert delete_logical_replication_slot_response_model != False
-
-        # Construct a model instance of DeleteLogicalReplicationSlotResponse by calling from_dict on the json representation
-        delete_logical_replication_slot_response_model_dict = DeleteLogicalReplicationSlotResponse.from_dict(delete_logical_replication_slot_response_model_json).__dict__
-        delete_logical_replication_slot_response_model2 = DeleteLogicalReplicationSlotResponse(**delete_logical_replication_slot_response_model_dict)
-
-        # Verify the model instances are equivalent
-        assert delete_logical_replication_slot_response_model == delete_logical_replication_slot_response_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        delete_logical_replication_slot_response_model_json2 = delete_logical_replication_slot_response_model.to_dict()
-        assert delete_logical_replication_slot_response_model_json2 == delete_logical_replication_slot_response_model_json
 
 class TestDeployables():
     """
@@ -4390,45 +3825,6 @@ class TestElasticsearchConnectionHTTPSHostsItem():
         elasticsearch_connection_https_hosts_item_model_json2 = elasticsearch_connection_https_hosts_item_model.to_dict()
         assert elasticsearch_connection_https_hosts_item_model_json2 == elasticsearch_connection_https_hosts_item_model_json
 
-class TestFileSyncResponse():
-    """
-    Test Class for FileSyncResponse
-    """
-
-    def test_file_sync_response_serialization(self):
-        """
-        Test serialization/deserialization for FileSyncResponse
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        task_model = {} # Task
-        task_model['id'] = 'crn:v1:bluemix:public:databases-for-elasticsearch:us-south:a/274074dce64e9c423ffc238516c755e1:b125f76a-99bf-4f8b-b263-01d9e16b15bd:task:3dc480bd-0cd9-4db6-92f3-b5c96544393b'
-        task_model['description'] = 'Syncing files from standard index.'
-        task_model['status'] = 'running'
-        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-elasticsearch:us-south:a/274074dce64e9c423ffc238516c755e1:b125f76a-99bf-4f8b-b263-01d9e16b15bd::'
-        task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
-
-        # Construct a json representation of a FileSyncResponse model
-        file_sync_response_model_json = {}
-        file_sync_response_model_json['task'] = task_model
-
-        # Construct a model instance of FileSyncResponse by calling from_dict on the json representation
-        file_sync_response_model = FileSyncResponse.from_dict(file_sync_response_model_json)
-        assert file_sync_response_model != False
-
-        # Construct a model instance of FileSyncResponse by calling from_dict on the json representation
-        file_sync_response_model_dict = FileSyncResponse.from_dict(file_sync_response_model_json).__dict__
-        file_sync_response_model2 = FileSyncResponse(**file_sync_response_model_dict)
-
-        # Verify the model instances are equivalent
-        assert file_sync_response_model == file_sync_response_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        file_sync_response_model_json2 = file_sync_response_model.to_dict()
-        assert file_sync_response_model_json2 == file_sync_response_model_json
-
 class TestGRPCConnectionURI():
     """
     Test Class for GRPCConnectionURI
@@ -4590,7 +3986,7 @@ class TestGetBackupInfoResponse():
         backup_model['status'] = 'completed'
         backup_model['is_downloadable'] = False
         backup_model['is_restorable'] = True
-        backup_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        backup_model['created_at'] = datetime_to_string(string_to_datetime("2019-06-10T14:31:40.000Z"))
 
         # Construct a json representation of a GetBackupInfoResponse model
         get_backup_info_response_model_json = {}
@@ -4652,45 +4048,6 @@ class TestGetDeploymentInfoResponse():
         get_deployment_info_response_model_json2 = get_deployment_info_response_model.to_dict()
         assert get_deployment_info_response_model_json2 == get_deployment_info_response_model_json
 
-class TestGetRemotesSchemaResponse():
-    """
-    Test Class for GetRemotesSchemaResponse
-    """
-
-    def test_get_remotes_schema_response_serialization(self):
-        """
-        Test serialization/deserialization for GetRemotesSchemaResponse
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        task_model = {} # Task
-        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc257516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd:task:5abb6a7d11a1a5001479a0b0'
-        task_model['description'] = 'Reinitializing read-only replica.'
-        task_model['status'] = 'running'
-        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc257516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
-        task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
-
-        # Construct a json representation of a GetRemotesSchemaResponse model
-        get_remotes_schema_response_model_json = {}
-        get_remotes_schema_response_model_json['task'] = task_model
-
-        # Construct a model instance of GetRemotesSchemaResponse by calling from_dict on the json representation
-        get_remotes_schema_response_model = GetRemotesSchemaResponse.from_dict(get_remotes_schema_response_model_json)
-        assert get_remotes_schema_response_model != False
-
-        # Construct a model instance of GetRemotesSchemaResponse by calling from_dict on the json representation
-        get_remotes_schema_response_model_dict = GetRemotesSchemaResponse.from_dict(get_remotes_schema_response_model_json).__dict__
-        get_remotes_schema_response_model2 = GetRemotesSchemaResponse(**get_remotes_schema_response_model_dict)
-
-        # Verify the model instances are equivalent
-        assert get_remotes_schema_response_model == get_remotes_schema_response_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        get_remotes_schema_response_model_json2 = get_remotes_schema_response_model.to_dict()
-        assert get_remotes_schema_response_model_json2 == get_remotes_schema_response_model_json
-
 class TestGetTaskResponse():
     """
     Test Class for GetTaskResponse
@@ -4709,7 +4066,7 @@ class TestGetTaskResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
 
         # Construct a json representation of a GetTaskResponse model
         get_task_response_model_json = {}
@@ -5029,43 +4386,6 @@ class TestGroups():
         groups_model_json2 = groups_model.to_dict()
         assert groups_model_json2 == groups_model_json
 
-class TestIntegerPropertySchema():
-    """
-    Test Class for IntegerPropertySchema
-    """
-
-    def test_integer_property_schema_serialization(self):
-        """
-        Test serialization/deserialization for IntegerPropertySchema
-        """
-
-        # Construct a json representation of a IntegerPropertySchema model
-        integer_property_schema_model_json = {}
-        integer_property_schema_model_json['customer_configurable'] = True
-        integer_property_schema_model_json['default'] = 38
-        integer_property_schema_model_json['default_description'] = 'testString'
-        integer_property_schema_model_json['description'] = 'testString'
-        integer_property_schema_model_json['kind'] = 'testString'
-        integer_property_schema_model_json['requires_restart'] = True
-        integer_property_schema_model_json['min'] = 38
-        integer_property_schema_model_json['max'] = 38
-        integer_property_schema_model_json['step'] = 38
-
-        # Construct a model instance of IntegerPropertySchema by calling from_dict on the json representation
-        integer_property_schema_model = IntegerPropertySchema.from_dict(integer_property_schema_model_json)
-        assert integer_property_schema_model != False
-
-        # Construct a model instance of IntegerPropertySchema by calling from_dict on the json representation
-        integer_property_schema_model_dict = IntegerPropertySchema.from_dict(integer_property_schema_model_json).__dict__
-        integer_property_schema_model2 = IntegerPropertySchema(**integer_property_schema_model_dict)
-
-        # Verify the model instances are equivalent
-        assert integer_property_schema_model == integer_property_schema_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        integer_property_schema_model_json2 = integer_property_schema_model.to_dict()
-        assert integer_property_schema_model_json2 == integer_property_schema_model_json
-
 class TestKillConnectionsResponse():
     """
     Test Class for KillConnectionsResponse
@@ -5084,7 +4404,7 @@ class TestKillConnectionsResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
 
         # Construct a json representation of a KillConnectionsResponse model
         kill_connections_response_model_json = {}
@@ -5215,37 +4535,6 @@ class TestListRemotesResponse():
         # Convert model instance back to dict and verify no loss of data
         list_remotes_response_model_json2 = list_remotes_response_model.to_dict()
         assert list_remotes_response_model_json2 == list_remotes_response_model_json
-
-class TestLogicalReplicationSlotLogicalReplicationSlot():
-    """
-    Test Class for LogicalReplicationSlotLogicalReplicationSlot
-    """
-
-    def test_logical_replication_slot_logical_replication_slot_serialization(self):
-        """
-        Test serialization/deserialization for LogicalReplicationSlotLogicalReplicationSlot
-        """
-
-        # Construct a json representation of a LogicalReplicationSlotLogicalReplicationSlot model
-        logical_replication_slot_logical_replication_slot_model_json = {}
-        logical_replication_slot_logical_replication_slot_model_json['name'] = 'customer_replication'
-        logical_replication_slot_logical_replication_slot_model_json['database_name'] = 'customers'
-        logical_replication_slot_logical_replication_slot_model_json['plugin_type'] = 'wal2json'
-
-        # Construct a model instance of LogicalReplicationSlotLogicalReplicationSlot by calling from_dict on the json representation
-        logical_replication_slot_logical_replication_slot_model = LogicalReplicationSlotLogicalReplicationSlot.from_dict(logical_replication_slot_logical_replication_slot_model_json)
-        assert logical_replication_slot_logical_replication_slot_model != False
-
-        # Construct a model instance of LogicalReplicationSlotLogicalReplicationSlot by calling from_dict on the json representation
-        logical_replication_slot_logical_replication_slot_model_dict = LogicalReplicationSlotLogicalReplicationSlot.from_dict(logical_replication_slot_logical_replication_slot_model_json).__dict__
-        logical_replication_slot_logical_replication_slot_model2 = LogicalReplicationSlotLogicalReplicationSlot(**logical_replication_slot_logical_replication_slot_model_dict)
-
-        # Verify the model instances are equivalent
-        assert logical_replication_slot_logical_replication_slot_model == logical_replication_slot_logical_replication_slot_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        logical_replication_slot_logical_replication_slot_model_json2 = logical_replication_slot_logical_replication_slot_model.to_dict()
-        assert logical_replication_slot_logical_replication_slot_model_json2 == logical_replication_slot_logical_replication_slot_model_json
 
 class TestMongoDBConnectionURI():
     """
@@ -6303,14 +5592,53 @@ class TestRemotes():
         remotes_model_json2 = remotes_model.to_dict()
         assert remotes_model_json2 == remotes_model_json
 
-class TestReplaceAllowlistResponse():
+class TestResyncReplicaResponse():
     """
-    Test Class for ReplaceAllowlistResponse
+    Test Class for ResyncReplicaResponse
     """
 
-    def test_replace_allowlist_response_serialization(self):
+    def test_resync_replica_response_serialization(self):
         """
-        Test serialization/deserialization for ReplaceAllowlistResponse
+        Test serialization/deserialization for ResyncReplicaResponse
+        """
+
+        # Construct dict forms of any model objects needed in order to build this model.
+
+        task_model = {} # Task
+        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc257516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd:task:5abb6a7d11a1a5001479a0b0'
+        task_model['description'] = 'Reinitializing read-only replica.'
+        task_model['status'] = 'running'
+        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc257516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
+        task_model['progress_percent'] = 5
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
+
+        # Construct a json representation of a ResyncReplicaResponse model
+        resync_replica_response_model_json = {}
+        resync_replica_response_model_json['task'] = task_model
+
+        # Construct a model instance of ResyncReplicaResponse by calling from_dict on the json representation
+        resync_replica_response_model = ResyncReplicaResponse.from_dict(resync_replica_response_model_json)
+        assert resync_replica_response_model != False
+
+        # Construct a model instance of ResyncReplicaResponse by calling from_dict on the json representation
+        resync_replica_response_model_dict = ResyncReplicaResponse.from_dict(resync_replica_response_model_json).__dict__
+        resync_replica_response_model2 = ResyncReplicaResponse(**resync_replica_response_model_dict)
+
+        # Verify the model instances are equivalent
+        assert resync_replica_response_model == resync_replica_response_model2
+
+        # Convert model instance back to dict and verify no loss of data
+        resync_replica_response_model_json2 = resync_replica_response_model.to_dict()
+        assert resync_replica_response_model_json2 == resync_replica_response_model_json
+
+class TestSetAllowlistResponse():
+    """
+    Test Class for SetAllowlistResponse
+    """
+
+    def test_set_allowlist_response_serialization(self):
+        """
+        Test serialization/deserialization for SetAllowlistResponse
         """
 
         # Construct dict forms of any model objects needed in order to build this model.
@@ -6321,26 +5649,26 @@ class TestReplaceAllowlistResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 10
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:21:30Z"))
 
-        # Construct a json representation of a ReplaceAllowlistResponse model
-        replace_allowlist_response_model_json = {}
-        replace_allowlist_response_model_json['task'] = task_model
+        # Construct a json representation of a SetAllowlistResponse model
+        set_allowlist_response_model_json = {}
+        set_allowlist_response_model_json['task'] = task_model
 
-        # Construct a model instance of ReplaceAllowlistResponse by calling from_dict on the json representation
-        replace_allowlist_response_model = ReplaceAllowlistResponse.from_dict(replace_allowlist_response_model_json)
-        assert replace_allowlist_response_model != False
+        # Construct a model instance of SetAllowlistResponse by calling from_dict on the json representation
+        set_allowlist_response_model = SetAllowlistResponse.from_dict(set_allowlist_response_model_json)
+        assert set_allowlist_response_model != False
 
-        # Construct a model instance of ReplaceAllowlistResponse by calling from_dict on the json representation
-        replace_allowlist_response_model_dict = ReplaceAllowlistResponse.from_dict(replace_allowlist_response_model_json).__dict__
-        replace_allowlist_response_model2 = ReplaceAllowlistResponse(**replace_allowlist_response_model_dict)
+        # Construct a model instance of SetAllowlistResponse by calling from_dict on the json representation
+        set_allowlist_response_model_dict = SetAllowlistResponse.from_dict(set_allowlist_response_model_json).__dict__
+        set_allowlist_response_model2 = SetAllowlistResponse(**set_allowlist_response_model_dict)
 
         # Verify the model instances are equivalent
-        assert replace_allowlist_response_model == replace_allowlist_response_model2
+        assert set_allowlist_response_model == set_allowlist_response_model2
 
         # Convert model instance back to dict and verify no loss of data
-        replace_allowlist_response_model_json2 = replace_allowlist_response_model.to_dict()
-        assert replace_allowlist_response_model_json2 == replace_allowlist_response_model_json
+        set_allowlist_response_model_json2 = set_allowlist_response_model.to_dict()
+        assert set_allowlist_response_model_json2 == set_allowlist_response_model_json
 
 class TestSetAutoscalingConditionsResponse():
     """
@@ -6360,7 +5688,7 @@ class TestSetAutoscalingConditionsResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 38
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2019-10-17T14:15:52.393Z"))
 
         # Construct a json representation of a SetAutoscalingConditionsResponse model
         set_autoscaling_conditions_response_model_json = {}
@@ -6410,45 +5738,6 @@ class TestSetCPUGroupCPU():
         set_cpu_group_cpu_model_json2 = set_cpu_group_cpu_model.to_dict()
         assert set_cpu_group_cpu_model_json2 == set_cpu_group_cpu_model_json
 
-class TestSetDatabaseConfigurationResponse():
-    """
-    Test Class for SetDatabaseConfigurationResponse
-    """
-
-    def test_set_database_configuration_response_serialization(self):
-        """
-        Test serialization/deserialization for SetDatabaseConfigurationResponse
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        task_model = {} # Task
-        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd:task:3dc480bd-0cd9-4db6-92f3-b5c96544393a'
-        task_model['description'] = 'Applying new configuration'
-        task_model['status'] = 'running'
-        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
-        task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
-
-        # Construct a json representation of a SetDatabaseConfigurationResponse model
-        set_database_configuration_response_model_json = {}
-        set_database_configuration_response_model_json['task'] = task_model
-
-        # Construct a model instance of SetDatabaseConfigurationResponse by calling from_dict on the json representation
-        set_database_configuration_response_model = SetDatabaseConfigurationResponse.from_dict(set_database_configuration_response_model_json)
-        assert set_database_configuration_response_model != False
-
-        # Construct a model instance of SetDatabaseConfigurationResponse by calling from_dict on the json representation
-        set_database_configuration_response_model_dict = SetDatabaseConfigurationResponse.from_dict(set_database_configuration_response_model_json).__dict__
-        set_database_configuration_response_model2 = SetDatabaseConfigurationResponse(**set_database_configuration_response_model_dict)
-
-        # Verify the model instances are equivalent
-        assert set_database_configuration_response_model == set_database_configuration_response_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        set_database_configuration_response_model_json2 = set_database_configuration_response_model.to_dict()
-        assert set_database_configuration_response_model_json2 == set_database_configuration_response_model_json
-
 class TestSetDeploymentScalingGroupResponse():
     """
     Test Class for SetDeploymentScalingGroupResponse
@@ -6467,7 +5756,7 @@ class TestSetDeploymentScalingGroupResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:20:30Z"))
 
         # Construct a json representation of a SetDeploymentScalingGroupResponse model
         set_deployment_scaling_group_response_model_json = {}
@@ -6593,7 +5882,7 @@ class TestSetPromotionResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc257516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
 
         # Construct a json representation of a SetPromotionResponse model
         set_promotion_response_model_json = {}
@@ -6632,7 +5921,7 @@ class TestStartOndemandBackupResponse():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:30:30Z"))
 
         # Construct a json representation of a StartOndemandBackupResponse model
         start_ondemand_backup_response_model_json = {}
@@ -6670,7 +5959,7 @@ class TestTask():
         task_model_json['status'] = 'running'
         task_model_json['deployment_id'] = 'testString'
         task_model_json['progress_percent'] = 38
-        task_model_json['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model_json['created_at'] = datetime_to_string(string_to_datetime("2019-01-01T12:00:00.000Z"))
 
         # Construct a model instance of Task by calling from_dict on the json representation
         task_model = Task.from_dict(task_model_json)
@@ -6705,7 +5994,7 @@ class TestTasks():
         task_model['status'] = 'running'
         task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
         task_model['progress_percent'] = 5
-        task_model['created_at'] = '2020-01-28T18:40:40.123456Z'
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
 
         # Construct a json representation of a Tasks model
         tasks_model_json = {}
@@ -6725,6 +6014,45 @@ class TestTasks():
         # Convert model instance back to dict and verify no loss of data
         tasks_model_json2 = tasks_model.to_dict()
         assert tasks_model_json2 == tasks_model_json
+
+class TestUpdateDatabaseConfigurationResponse():
+    """
+    Test Class for UpdateDatabaseConfigurationResponse
+    """
+
+    def test_update_database_configuration_response_serialization(self):
+        """
+        Test serialization/deserialization for UpdateDatabaseConfigurationResponse
+        """
+
+        # Construct dict forms of any model objects needed in order to build this model.
+
+        task_model = {} # Task
+        task_model['id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd:task:3dc480bd-0cd9-4db6-92f3-b5c96544393a'
+        task_model['description'] = 'Applying new configuration'
+        task_model['status'] = 'running'
+        task_model['deployment_id'] = 'crn:v1:bluemix:public:databases-for-postgresql:us-south:a/274074dce64e9c423ffc238516c755e1:a127f76a-98bf-4f8b-b263-01d9e16b15bd::'
+        task_model['progress_percent'] = 5
+        task_model['created_at'] = datetime_to_string(string_to_datetime("2018-03-28T10:31:30Z"))
+
+        # Construct a json representation of a UpdateDatabaseConfigurationResponse model
+        update_database_configuration_response_model_json = {}
+        update_database_configuration_response_model_json['task'] = task_model
+
+        # Construct a model instance of UpdateDatabaseConfigurationResponse by calling from_dict on the json representation
+        update_database_configuration_response_model = UpdateDatabaseConfigurationResponse.from_dict(update_database_configuration_response_model_json)
+        assert update_database_configuration_response_model != False
+
+        # Construct a model instance of UpdateDatabaseConfigurationResponse by calling from_dict on the json representation
+        update_database_configuration_response_model_dict = UpdateDatabaseConfigurationResponse.from_dict(update_database_configuration_response_model_json).__dict__
+        update_database_configuration_response_model2 = UpdateDatabaseConfigurationResponse(**update_database_configuration_response_model_dict)
+
+        # Verify the model instances are equivalent
+        assert update_database_configuration_response_model == update_database_configuration_response_model2
+
+        # Convert model instance back to dict and verify no loss of data
+        update_database_configuration_response_model_json2 = update_database_configuration_response_model.to_dict()
+        assert update_database_configuration_response_model_json2 == update_database_configuration_response_model_json
 
 class TestAutoscalingSetGroupAutoscalingAutoscalingCPUGroup():
     """
@@ -6869,123 +6197,6 @@ class TestAutoscalingSetGroupAutoscalingAutoscalingMemoryGroup():
         # Convert model instance back to dict and verify no loss of data
         autoscaling_set_group_autoscaling_autoscaling_memory_group_model_json2 = autoscaling_set_group_autoscaling_autoscaling_memory_group_model.to_dict()
         assert autoscaling_set_group_autoscaling_autoscaling_memory_group_model_json2 == autoscaling_set_group_autoscaling_autoscaling_memory_group_model_json
-
-class TestConfigurationSchemaSchemaPGConfigurationSchema():
-    """
-    Test Class for ConfigurationSchemaSchemaPGConfigurationSchema
-    """
-
-    def test_configuration_schema_schema_pg_configuration_schema_serialization(self):
-        """
-        Test serialization/deserialization for ConfigurationSchemaSchemaPGConfigurationSchema
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        integer_property_schema_model = {} # IntegerPropertySchema
-        integer_property_schema_model['customer_configurable'] = True
-        integer_property_schema_model['default'] = 38
-        integer_property_schema_model['default_description'] = 'testString'
-        integer_property_schema_model['description'] = 'testString'
-        integer_property_schema_model['kind'] = 'testString'
-        integer_property_schema_model['requires_restart'] = True
-        integer_property_schema_model['min'] = 38
-        integer_property_schema_model['max'] = 38
-        integer_property_schema_model['step'] = 38
-
-        choice_property_schema_model = {} # ChoicePropertySchema
-        choice_property_schema_model['customer_configurable'] = True
-        choice_property_schema_model['default'] = 38
-        choice_property_schema_model['default_description'] = 'testString'
-        choice_property_schema_model['description'] = 'testString'
-        choice_property_schema_model['kind'] = 'testString'
-        choice_property_schema_model['requires_restart'] = True
-        choice_property_schema_model['choices'] = ['testString']
-
-        # Construct a json representation of a ConfigurationSchemaSchemaPGConfigurationSchema model
-        configuration_schema_schema_pg_configuration_schema_model_json = {}
-        configuration_schema_schema_pg_configuration_schema_model_json['max_connections'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['max_prepared_connections'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['backup_retention_period'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['deadlock_timeout'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['effective_io_concurrency'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['max_replication_slots'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['max_wal_senders'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['shared_buffers'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['synchronous_commit'] = choice_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['wal_level'] = choice_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['archive_timeout'] = integer_property_schema_model
-        configuration_schema_schema_pg_configuration_schema_model_json['log_min_duration_statement'] = integer_property_schema_model
-
-        # Construct a model instance of ConfigurationSchemaSchemaPGConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_schema_pg_configuration_schema_model = ConfigurationSchemaSchemaPGConfigurationSchema.from_dict(configuration_schema_schema_pg_configuration_schema_model_json)
-        assert configuration_schema_schema_pg_configuration_schema_model != False
-
-        # Construct a model instance of ConfigurationSchemaSchemaPGConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_schema_pg_configuration_schema_model_dict = ConfigurationSchemaSchemaPGConfigurationSchema.from_dict(configuration_schema_schema_pg_configuration_schema_model_json).__dict__
-        configuration_schema_schema_pg_configuration_schema_model2 = ConfigurationSchemaSchemaPGConfigurationSchema(**configuration_schema_schema_pg_configuration_schema_model_dict)
-
-        # Verify the model instances are equivalent
-        assert configuration_schema_schema_pg_configuration_schema_model == configuration_schema_schema_pg_configuration_schema_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        configuration_schema_schema_pg_configuration_schema_model_json2 = configuration_schema_schema_pg_configuration_schema_model.to_dict()
-        assert configuration_schema_schema_pg_configuration_schema_model_json2 == configuration_schema_schema_pg_configuration_schema_model_json
-
-class TestConfigurationSchemaSchemaRedisConfigurationSchema():
-    """
-    Test Class for ConfigurationSchemaSchemaRedisConfigurationSchema
-    """
-
-    def test_configuration_schema_schema_redis_configuration_schema_serialization(self):
-        """
-        Test serialization/deserialization for ConfigurationSchemaSchemaRedisConfigurationSchema
-        """
-
-        # Construct dict forms of any model objects needed in order to build this model.
-
-        integer_property_schema_model = {} # IntegerPropertySchema
-        integer_property_schema_model['customer_configurable'] = True
-        integer_property_schema_model['default'] = 38
-        integer_property_schema_model['default_description'] = 'testString'
-        integer_property_schema_model['description'] = 'testString'
-        integer_property_schema_model['kind'] = 'testString'
-        integer_property_schema_model['requires_restart'] = True
-        integer_property_schema_model['min'] = 38
-        integer_property_schema_model['max'] = 38
-        integer_property_schema_model['step'] = 38
-
-        choice_property_schema_model = {} # ChoicePropertySchema
-        choice_property_schema_model['customer_configurable'] = True
-        choice_property_schema_model['default'] = 38
-        choice_property_schema_model['default_description'] = 'testString'
-        choice_property_schema_model['description'] = 'testString'
-        choice_property_schema_model['kind'] = 'testString'
-        choice_property_schema_model['requires_restart'] = True
-        choice_property_schema_model['choices'] = ['testString']
-
-        # Construct a json representation of a ConfigurationSchemaSchemaRedisConfigurationSchema model
-        configuration_schema_schema_redis_configuration_schema_model_json = {}
-        configuration_schema_schema_redis_configuration_schema_model_json['maxmemory-redis'] = integer_property_schema_model
-        configuration_schema_schema_redis_configuration_schema_model_json['maxmemory-policy'] = choice_property_schema_model
-        configuration_schema_schema_redis_configuration_schema_model_json['appendonly'] = choice_property_schema_model
-        configuration_schema_schema_redis_configuration_schema_model_json['maxmemory-samples'] = integer_property_schema_model
-        configuration_schema_schema_redis_configuration_schema_model_json['stop-writes-on-bgsave-error'] = choice_property_schema_model
-
-        # Construct a model instance of ConfigurationSchemaSchemaRedisConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_schema_redis_configuration_schema_model = ConfigurationSchemaSchemaRedisConfigurationSchema.from_dict(configuration_schema_schema_redis_configuration_schema_model_json)
-        assert configuration_schema_schema_redis_configuration_schema_model != False
-
-        # Construct a model instance of ConfigurationSchemaSchemaRedisConfigurationSchema by calling from_dict on the json representation
-        configuration_schema_schema_redis_configuration_schema_model_dict = ConfigurationSchemaSchemaRedisConfigurationSchema.from_dict(configuration_schema_schema_redis_configuration_schema_model_json).__dict__
-        configuration_schema_schema_redis_configuration_schema_model2 = ConfigurationSchemaSchemaRedisConfigurationSchema(**configuration_schema_schema_redis_configuration_schema_model_dict)
-
-        # Verify the model instances are equivalent
-        assert configuration_schema_schema_redis_configuration_schema_model == configuration_schema_schema_redis_configuration_schema_model2
-
-        # Convert model instance back to dict and verify no loss of data
-        configuration_schema_schema_redis_configuration_schema_model_json2 = configuration_schema_schema_redis_configuration_schema_model.to_dict()
-        assert configuration_schema_schema_redis_configuration_schema_model_json2 == configuration_schema_schema_redis_configuration_schema_model_json
 
 class TestConnectionConnectionElasticsearchConnection():
     """

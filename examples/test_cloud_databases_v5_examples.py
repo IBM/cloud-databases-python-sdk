@@ -35,7 +35,7 @@ from ibm_cloud_databases.cloud_databases_v5 import *
 # in a configuration file and then:
 # export IBM_CREDENTIALS_FILE=<name of configuration file>
 #
-config_file = 'cloud_databases.env'
+config_file = 'cloud_databases_v5.env'
 
 cloud_databases_service = None
 
@@ -43,6 +43,7 @@ config = None
 
 # Variables to hold link values
 task_id_link = None
+
 
 ##############################################################################
 # Start of Examples for Service: CloudDatabasesV5
@@ -85,8 +86,14 @@ class TestCloudDatabasesV5Examples():
         try:
             # begin-addAllowlistEntry
 
+            allowlist_entry_model = {
+                'address': '172.16.0.0/16',
+                'description': 'Dev IP space 3'
+            }
+
             add_allowlist_entry_response = cloud_databases_service.add_allowlist_entry(
                 id='testString',
+                ip_address={'address':'172.16.0.0/16','description':'Dev IP space 3'}
             ).get_result()
 
             print(json.dumps(add_allowlist_entry_response, indent=2))
@@ -99,6 +106,34 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
+    def test_change_user_password_example(self):
+        """
+        change_user_password request example
+        """
+        try:
+            # begin-changeUserPassword
+
+            a_password_setting_user_model = {
+                'password': 'xyzzyyzzyx'
+            }
+
+            change_user_password_response = cloud_databases_service.change_user_password(
+                id='testString',
+                user_type='database',
+                username='james',
+                user={'password':'xyzzyyzzyx'}
+            ).get_result()
+
+            print(json.dumps(change_user_password_response, indent=2))
+
+            # end-changeUserPassword
+
+            global task_id_link
+            task_id_link = change_user_password_response['task']['id']
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
     def test_create_database_user_example(self):
         """
         create_database_user request example
@@ -106,9 +141,15 @@ class TestCloudDatabasesV5Examples():
         try:
             # begin-createDatabaseUser
 
+            create_database_user_request_user_model = {
+                'username': 'james',
+                'password': 'kickoutthe'
+            }
+
             create_database_user_response = cloud_databases_service.create_database_user(
                 id='testString',
-                user_type='testString',
+                user_type='database',
+                user={'username':'james','password':'kickoutthe'}
             ).get_result()
 
             print(json.dumps(create_database_user_response, indent=2))
@@ -152,8 +193,8 @@ class TestCloudDatabasesV5Examples():
 
             delete_database_user_response = cloud_databases_service.delete_database_user(
                 id='testString',
-                user_type='testString',
-                username='testString'
+                user_type='database',
+                username='james'
             ).get_result()
 
             print(json.dumps(delete_database_user_response, indent=2))
@@ -166,23 +207,99 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
-    def test_replace_allowlist_example(self):
+    def test_kill_connections_example(self):
         """
-        replace_allowlist request example
+        kill_connections request example
         """
         try:
-            # begin-replaceAllowlist
+            # begin-killConnections
 
-            replace_allowlist_response = cloud_databases_service.replace_allowlist(
-                id='testString',
+            kill_connections_response = cloud_databases_service.kill_connections(
+                id='testString'
             ).get_result()
 
-            print(json.dumps(replace_allowlist_response, indent=2))
+            print(json.dumps(kill_connections_response, indent=2))
 
-            # end-replaceAllowlist
+            # end-killConnections
 
             global task_id_link
-            task_id_link = replace_allowlist_response['task']['id']
+            task_id_link = kill_connections_response['task']['id']
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_set_allowlist_example(self):
+        """
+        set_allowlist request example
+        """
+        try:
+            # begin-setAllowlist
+
+            allowlist_entry_model = {
+                'address': '195.212.0.0/16',
+                'description': 'Dev IP space 1'
+            }
+
+            set_allowlist_response = cloud_databases_service.set_allowlist(
+                id='testString',
+                ip_addresses=[allowlist_entry_model]
+            ).get_result()
+
+            print(json.dumps(set_allowlist_response, indent=2))
+
+            # end-setAllowlist
+
+            global task_id_link
+            task_id_link = set_allowlist_response['task']['id']
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_set_autoscaling_conditions_example(self):
+        """
+        set_autoscaling_conditions request example
+        """
+        try:
+            # begin-setAutoscalingConditions
+
+            autoscaling_memory_group_memory_scalers_io_utilization_model = {
+                'enabled': True,
+                'over_period': '5m',
+                'above_percent': 90
+            }
+
+            autoscaling_memory_group_memory_scalers_model = {
+                'io_utilization': {'enabled':true,'over_period':'5m','above_percent':90}
+            }
+
+            autoscaling_memory_group_memory_rate_model = {
+                'increase_percent': 10.0,
+                'period_seconds': 300,
+                'limit_mb_per_member': 125952,
+                'units': 'mb'
+            }
+
+            autoscaling_memory_group_memory_model = {
+                'scalers': {'io_utilization':{'enabled':true,'over_period':'5m','above_percent':90}},
+                'rate': {'increase_percent':10.0,'period_seconds':300,'limit_mb_per_member':125952,'units':'mb'}
+            }
+
+            autoscaling_set_group_autoscaling_model = {
+                'memory': {'scalers':{'io_utilization':{'enabled':true,'over_period':'5m','above_percent':90}},'rate':{'increase_percent':10.0,'period_seconds':300,'limit_mb_per_member':125952,'units':'mb'}}
+            }
+
+            set_autoscaling_conditions_response = cloud_databases_service.set_autoscaling_conditions(
+                id='testString',
+                group_id='testString',
+                autoscaling={'memory':{'scalers':{'io_utilization':{'enabled':true,'over_period':'5m','above_percent':90}},'rate':{'increase_percent':10.0,'period_seconds':300,'limit_mb_per_member':125952,'units':'mb'}}}
+            ).get_result()
+
+            print(json.dumps(set_autoscaling_conditions_response, indent=2))
+
+            # end-setAutoscalingConditions
+
+            global task_id_link
+            task_id_link = set_autoscaling_conditions_response['task']['id']
         except ApiException as e:
             pytest.fail(str(e))
 
@@ -194,7 +311,12 @@ class TestCloudDatabasesV5Examples():
         try:
             # begin-setDeploymentScalingGroup
 
+            set_memory_group_memory_model = {
+                'allocation_mb': 4096
+            }
+
             set_deployment_scaling_group_request_model = {
+                'memory': {'allocation_mb':4096}
             }
 
             set_deployment_scaling_group_response = cloud_databases_service.set_deployment_scaling_group(
@@ -209,6 +331,32 @@ class TestCloudDatabasesV5Examples():
 
             global task_id_link
             task_id_link = set_deployment_scaling_group_response['task']['id']
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_update_database_configuration_example(self):
+        """
+        update_database_configuration request example
+        """
+        try:
+            # begin-updateDatabaseConfiguration
+
+            set_configuration_configuration_model = {
+                'max_connections': 200
+            }
+
+            update_database_configuration_response = cloud_databases_service.update_database_configuration(
+                id='testString',
+                configuration={'max_connections':200}
+            ).get_result()
+
+            print(json.dumps(update_database_configuration_response, indent=2))
+
+            # end-updateDatabaseConfiguration
+
+            global task_id_link
+            task_id_link = update_database_configuration_response['task']['id']
         except ApiException as e:
             pytest.fail(str(e))
 
@@ -266,89 +414,6 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
-    def test_change_user_password_example(self):
-        """
-        change_user_password request example
-        """
-        try:
-            # begin-changeUserPassword
-
-            change_user_password_response = cloud_databases_service.change_user_password(
-                id='testString',
-                user_type='testString',
-                username='testString',
-            ).get_result()
-
-            print(json.dumps(change_user_password_response, indent=2))
-
-            # end-changeUserPassword
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_get_user_example(self):
-        """
-        get_user request example
-        """
-        try:
-            # begin-getUser
-
-            task = cloud_databases_service.get_user(
-                id='testString',
-                user_id='testString'
-            ).get_result()
-
-            print(json.dumps(task, indent=2))
-
-            # end-getUser
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_set_database_configuration_example(self):
-        """
-        set_database_configuration request example
-        """
-        try:
-            # begin-setDatabaseConfiguration
-
-            set_configuration_configuration_model = {
-            }
-
-            set_database_configuration_response = cloud_databases_service.set_database_configuration(
-                id='testString',
-                configuration=set_configuration_configuration_model
-            ).get_result()
-
-            print(json.dumps(set_database_configuration_response, indent=2))
-
-            # end-setDatabaseConfiguration
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_get_database_configuration_schema_example(self):
-        """
-        get_database_configuration_schema request example
-        """
-        try:
-            # begin-getDatabaseConfigurationSchema
-
-            configuration_schema = cloud_databases_service.get_database_configuration_schema(
-                id='testString'
-            ).get_result()
-
-            print(json.dumps(configuration_schema, indent=2))
-
-            # end-getDatabaseConfigurationSchema
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_list_remotes_example(self):
         """
         list_remotes request example
@@ -368,20 +433,20 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
-    def test_get_remotes_schema_example(self):
+    def test_resync_replica_example(self):
         """
-        get_remotes_schema request example
+        resync_replica request example
         """
         try:
-            # begin-getRemotesSchema
+            # begin-resyncReplica
 
-            get_remotes_schema_response = cloud_databases_service.get_remotes_schema(
+            resync_replica_response = cloud_databases_service.resync_replica(
                 id='testString'
             ).get_result()
 
-            print(json.dumps(get_remotes_schema_response, indent=2))
+            print(json.dumps(resync_replica_response, indent=2))
 
-            # end-getRemotesSchema
+            # end-resyncReplica
 
         except ApiException as e:
             pytest.fail(str(e))
@@ -394,12 +459,8 @@ class TestCloudDatabasesV5Examples():
         try:
             # begin-setPromotion
 
-            set_promotion_promotion_model = {
-            }
-
             set_promotion_response = cloud_databases_service.set_promotion(
                 id='testString',
-                promotion=set_promotion_promotion_model
             ).get_result()
 
             print(json.dumps(set_promotion_response, indent=2))
@@ -533,7 +594,7 @@ class TestCloudDatabasesV5Examples():
 
             connection = cloud_databases_service.get_connection(
                 id='testString',
-                user_type='testString',
+                user_type='database',
                 user_id='testString',
                 endpoint_type='public'
             ).get_result()
@@ -555,9 +616,10 @@ class TestCloudDatabasesV5Examples():
 
             connection = cloud_databases_service.complete_connection(
                 id='testString',
-                user_type='testString',
+                user_type='database',
                 user_id='testString',
-                endpoint_type='public'
+                endpoint_type='public',
+                password='providedpassword'
             ).get_result()
 
             print(json.dumps(connection, indent=2))
@@ -626,68 +688,6 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
-    def test_set_autoscaling_conditions_example(self):
-        """
-        set_autoscaling_conditions request example
-        """
-        try:
-            # begin-setAutoscalingConditions
-
-            autoscaling_set_group_autoscaling_model = {
-            }
-
-            set_autoscaling_conditions_response = cloud_databases_service.set_autoscaling_conditions(
-                id='testString',
-                group_id='testString',
-                autoscaling=autoscaling_set_group_autoscaling_model
-            ).get_result()
-
-            print(json.dumps(set_autoscaling_conditions_response, indent=2))
-
-            # end-setAutoscalingConditions
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_file_sync_example(self):
-        """
-        file_sync request example
-        """
-        try:
-            # begin-fileSync
-
-            file_sync_response = cloud_databases_service.file_sync(
-                id='testString'
-            ).get_result()
-
-            print(json.dumps(file_sync_response, indent=2))
-
-            # end-fileSync
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_create_logical_replication_slot_example(self):
-        """
-        create_logical_replication_slot request example
-        """
-        try:
-            # begin-createLogicalReplicationSlot
-
-            create_logical_replication_slot_response = cloud_databases_service.create_logical_replication_slot(
-                id='testString',
-            ).get_result()
-
-            print(json.dumps(create_logical_replication_slot_response, indent=2))
-
-            # end-createLogicalReplicationSlot
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_get_allowlist_example(self):
         """
         get_allowlist request example
@@ -703,90 +703,6 @@ class TestCloudDatabasesV5Examples():
 
             # end-getAllowlist
 
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_kill_connections_example(self):
-        """
-        kill_connections request example
-        """
-        try:
-            # begin-killConnections
-
-            kill_connections_response = cloud_databases_service.kill_connections(
-                id='testString'
-            ).get_result()
-
-            print(json.dumps(kill_connections_response, indent=2))
-
-            # end-killConnections
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_delete_logical_replication_slot_example(self):
-        """
-        delete_logical_replication_slot request example
-        """
-        try:
-            # begin-deleteLogicalReplicationSlot
-
-            delete_logical_replication_slot_response = cloud_databases_service.delete_logical_replication_slot(
-                id='testString',
-                name='testString'
-            ).get_result()
-
-            print(json.dumps(delete_logical_replication_slot_response, indent=2))
-
-            # end-deleteLogicalReplicationSlot
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_delete_database_user_example(self):
-        """
-        delete_database_user request example
-        """
-        try:
-            # begin-deleteDatabaseUser
-
-            delete_database_user_response = cloud_databases_service.delete_database_user(
-                id='testString',
-                user_type='testString',
-                username='testString'
-            ).get_result()
-
-            print(json.dumps(delete_database_user_response, indent=2))
-
-            # end-deleteDatabaseUser
-
-            global task_id_link
-            task_id_link = delete_database_user_response['task']['id']
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_delete_allowlist_entry_example(self):
-        """
-        delete_allowlist_entry request example
-        """
-        try:
-            # begin-deleteAllowlistEntry
-
-            delete_allowlist_entry_response = cloud_databases_service.delete_allowlist_entry(
-                id='testString',
-                ipaddress='testString'
-            ).get_result()
-
-            print(json.dumps(delete_allowlist_entry_response, indent=2))
-
-            # end-deleteAllowlistEntry
-
-            global task_id_link
-            task_id_link = delete_allowlist_entry_response['task']['id']
         except ApiException as e:
             pytest.fail(str(e))
 

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IBM OpenAPI SDK Code Generator Version: 99-SNAPSHOT-5bc4c538-20210303-194647
+# IBM OpenAPI SDK Code Generator Version: 99-SNAPSHOT-f9bb1b47-20210329-151039
  
 """
 The IBM Cloud Databases API enables interaction between applications and Cloud Databases
@@ -357,56 +357,12 @@ class CloudDatabasesV5(BaseService):
         response = self.send(request)
         return response
 
-
-    def get_user(self,
-        id: str,
-        user_id: str,
-        **kwargs
-    ) -> DetailedResponse:
-        """
-        Discover user name and password information for a deployment for a user with an endpoint type.
-
-        Only for Redis v5 and prior: Discover connection information for a deployment for
-        a user with an endpoint type.
-
-        :param str id: Deployment ID.
-        :param str user_id: User ID.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Task` object
-        """
-
-        if id is None:
-            raise ValueError('id must be provided')
-        if user_id is None:
-            raise ValueError('user_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
-                                      service_version='V5',
-                                      operation_id='get_user')
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['id', 'user_id']
-        path_param_values = self.encode_path_vars(id, user_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/users/{user_id}/'.format(**path_param_dict)
-        request = self.prepare_request(method='GET',
-                                       url=url,
-                                       headers=headers)
-
-        response = self.send(request)
-        return response
-
     #########################
     # Database Configuration
     #########################
 
 
-    def set_database_configuration(self,
+    def update_database_configuration(self,
         id: str,
         configuration: 'SetConfigurationConfiguration',
         **kwargs
@@ -421,7 +377,7 @@ class CloudDatabasesV5(BaseService):
         :param SetConfigurationConfiguration configuration:
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `SetDatabaseConfigurationResponse` object
+        :rtype: DetailedResponse with `dict` result representing a `UpdateDatabaseConfigurationResponse` object
         """
 
         if id is None:
@@ -432,7 +388,7 @@ class CloudDatabasesV5(BaseService):
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='set_database_configuration')
+                                      operation_id='update_database_configuration')
         headers.update(sdk_headers)
 
         data = {
@@ -454,46 +410,6 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers,
                                        data=data)
-
-        response = self.send(request)
-        return response
-
-
-    def get_database_configuration_schema(self,
-        id: str,
-        **kwargs
-    ) -> DetailedResponse:
-        """
-        Get the schema of the database configuration.
-
-        Get the schema of the database configuration. Available for PostgreSQL and Redis
-        ONLY.
-
-        :param str id: Deployment ID.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ConfigurationSchema` object
-        """
-
-        if id is None:
-            raise ValueError('id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
-                                      service_version='V5',
-                                      operation_id='get_database_configuration_schema')
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['id']
-        path_param_values = self.encode_path_vars(id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/configuration/schema'.format(**path_param_dict)
-        request = self.prepare_request(method='GET',
-                                       url=url,
-                                       headers=headers)
 
         response = self.send(request)
         return response
@@ -543,7 +459,7 @@ class CloudDatabasesV5(BaseService):
         return response
 
 
-    def get_remotes_schema(self,
+    def resync_replica(self,
         id: str,
         **kwargs
     ) -> DetailedResponse:
@@ -552,10 +468,10 @@ class CloudDatabasesV5(BaseService):
 
         Reinitialize a read-only replica. Available for PostgreSQL and EnterpriseDB ONLY.
 
-        :param str id: Deployment ID.
+        :param str id: Deployment ID of the read-only replica.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `GetRemotesSchemaResponse` object
+        :rtype: DetailedResponse with `dict` result representing a `ResyncReplicaResponse` object
         """
 
         if id is None:
@@ -563,7 +479,7 @@ class CloudDatabasesV5(BaseService):
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='get_remotes_schema')
+                                      operation_id='resync_replica')
         headers.update(sdk_headers)
 
         if 'headers' in kwargs:
@@ -593,7 +509,7 @@ class CloudDatabasesV5(BaseService):
         Promote a read-only replica or upgrade and promote a read-only replica. Available
         for PostgreSQL and EnterpriseDB ONLY.
 
-        :param str id: Deployment ID.
+        :param str id: Deployment ID of the read-only replica to promote.
         :param SetPromotionPromotion promotion:
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
@@ -1310,143 +1226,6 @@ class CloudDatabasesV5(BaseService):
         response = self.send(request)
         return response
 
-
-    def file_sync(self,
-        id: str,
-        **kwargs
-    ) -> DetailedResponse:
-        """
-        Sync files uploaded to Elasticsearch deployment.
-
-        Starts a task that writes files to disk. Available for Elasticsearch ONLY.
-
-        :param str id: Deployment ID.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `FileSyncResponse` object
-        """
-
-        if id is None:
-            raise ValueError('id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
-                                      service_version='V5',
-                                      operation_id='file_sync')
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['id']
-        path_param_values = self.encode_path_vars(id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/elasticsearch/file_syncs'.format(**path_param_dict)
-        request = self.prepare_request(method='POST',
-                                       url=url,
-                                       headers=headers)
-
-        response = self.send(request)
-        return response
-
-
-    def create_logical_replication_slot(self,
-        id: str,
-        *,
-        logical_replication_slot: 'LogicalReplicationSlotLogicalReplicationSlot' = None,
-        **kwargs
-    ) -> DetailedResponse:
-        """
-        Create a new logical replication slot.
-
-        Creates a new logical replication slot on the specified database. For use with
-        PostgreSQL, EnterpriseDB, and wal2json only.
-
-        :param str id: Deployment ID.
-        :param LogicalReplicationSlotLogicalReplicationSlot
-               logical_replication_slot: (optional)
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `CreateLogicalReplicationSlotResponse` object
-        """
-
-        if id is None:
-            raise ValueError('id must be provided')
-        if logical_replication_slot is not None:
-            logical_replication_slot = convert_model(logical_replication_slot)
-        headers = {}
-        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
-                                      service_version='V5',
-                                      operation_id='create_logical_replication_slot')
-        headers.update(sdk_headers)
-
-        data = {
-            'logical_replication_slot': logical_replication_slot
-        }
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data = json.dumps(data)
-        headers['content-type'] = 'application/json'
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['id']
-        path_param_values = self.encode_path_vars(id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/postgresql/logical_replication_slots'.format(**path_param_dict)
-        request = self.prepare_request(method='POST',
-                                       url=url,
-                                       headers=headers,
-                                       data=data)
-
-        response = self.send(request)
-        return response
-
-
-    def delete_logical_replication_slot(self,
-        id: str,
-        name: str,
-        **kwargs
-    ) -> DetailedResponse:
-        """
-        Delete a logical replication slot.
-
-        Deletes a logical replication slot from a database. For use with PostgreSQL,
-        EnterpriseDB, and wal2json only.
-
-        :param str id: Deployment ID.
-        :param str name: Name of the logical replication slot.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `DeleteLogicalReplicationSlotResponse` object
-        """
-
-        if id is None:
-            raise ValueError('id must be provided')
-        if name is None:
-            raise ValueError('name must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
-                                      service_version='V5',
-                                      operation_id='delete_logical_replication_slot')
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['id', 'name']
-        path_param_values = self.encode_path_vars(id, name)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/postgresql/logical_replication_slots/{name}'.format(**path_param_dict)
-        request = self.prepare_request(method='DELETE',
-                                       url=url,
-                                       headers=headers)
-
-        response = self.send(request)
-        return response
-
     #########################
     # Security
     #########################
@@ -1491,7 +1270,7 @@ class CloudDatabasesV5(BaseService):
         return response
 
 
-    def replace_allowlist(self,
+    def set_allowlist(self,
         id: str,
         *,
         ip_addresses: List['AllowlistEntry'] = None,
@@ -1499,12 +1278,12 @@ class CloudDatabasesV5(BaseService):
         **kwargs
     ) -> DetailedResponse:
         """
-        Replace the allowlist for a deployment.
+        Set the allowlist for a deployment.
 
-        Replace the allowlist for a deployment. This action overwrites all existing
-        entries, so when you modify the allowlist via a GET/update/PUT, provide the GET
-        response's ETag header value in this endpoint's If-Match header to ensure that
-        changes that are made by other clients are not accidentally overwritten.
+        Set the allowlist for a deployment. This action overwrites all existing entries,
+        so when you modify the allowlist via a GET/update/PUT, provide the GET response's
+        ETag header value in this endpoint's If-Match header to ensure that changes that
+        are made by other clients are not accidentally overwritten.
 
         :param str id: Deployment ID.
         :param List[AllowlistEntry] ip_addresses: (optional) An array of allowlist
@@ -1514,7 +1293,7 @@ class CloudDatabasesV5(BaseService):
                header to ensure synchronicity between clients.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ReplaceAllowlistResponse` object
+        :rtype: DetailedResponse with `dict` result representing a `SetAllowlistResponse` object
         """
 
         if id is None:
@@ -1526,7 +1305,7 @@ class CloudDatabasesV5(BaseService):
         }
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='replace_allowlist')
+                                      operation_id='set_allowlist')
         headers.update(sdk_headers)
 
         data = {
@@ -3059,189 +2838,6 @@ class ChangeUserPasswordResponse():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ChoicePropertySchema():
-    """
-    Choice Property Schema.
-
-    :attr bool customer_configurable: (optional) Whether the setting is
-          customer-configurable.
-    :attr int default: (optional) The default value of the setting.
-    :attr str default_description: (optional) The description of the default value.
-    :attr str description: (optional) The description of the setting.
-    :attr str kind: (optional) The type of this setting (e.g., string, integer).
-    :attr bool requires_restart: (optional) Whether or not changing this setting
-          will restart the database.
-    :attr List[str] choices: (optional) The valid choices for this setting.
-    """
-
-    def __init__(self,
-                 *,
-                 customer_configurable: bool = None,
-                 default: int = None,
-                 default_description: str = None,
-                 description: str = None,
-                 kind: str = None,
-                 requires_restart: bool = None,
-                 choices: List[str] = None) -> None:
-        """
-        Initialize a ChoicePropertySchema object.
-
-        :param bool customer_configurable: (optional) Whether the setting is
-               customer-configurable.
-        :param int default: (optional) The default value of the setting.
-        :param str default_description: (optional) The description of the default
-               value.
-        :param str description: (optional) The description of the setting.
-        :param str kind: (optional) The type of this setting (e.g., string,
-               integer).
-        :param bool requires_restart: (optional) Whether or not changing this
-               setting will restart the database.
-        :param List[str] choices: (optional) The valid choices for this setting.
-        """
-        self.customer_configurable = customer_configurable
-        self.default = default
-        self.default_description = default_description
-        self.description = description
-        self.kind = kind
-        self.requires_restart = requires_restart
-        self.choices = choices
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ChoicePropertySchema':
-        """Initialize a ChoicePropertySchema object from a json dictionary."""
-        args = {}
-        if 'customer_configurable' in _dict:
-            args['customer_configurable'] = _dict.get('customer_configurable')
-        if 'default' in _dict:
-            args['default'] = _dict.get('default')
-        if 'default_description' in _dict:
-            args['default_description'] = _dict.get('default_description')
-        if 'description' in _dict:
-            args['description'] = _dict.get('description')
-        if 'kind' in _dict:
-            args['kind'] = _dict.get('kind')
-        if 'requires_restart' in _dict:
-            args['requires_restart'] = _dict.get('requires_restart')
-        if 'choices' in _dict:
-            args['choices'] = _dict.get('choices')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ChoicePropertySchema object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'customer_configurable') and self.customer_configurable is not None:
-            _dict['customer_configurable'] = self.customer_configurable
-        if hasattr(self, 'default') and self.default is not None:
-            _dict['default'] = self.default
-        if hasattr(self, 'default_description') and self.default_description is not None:
-            _dict['default_description'] = self.default_description
-        if hasattr(self, 'description') and self.description is not None:
-            _dict['description'] = self.description
-        if hasattr(self, 'kind') and self.kind is not None:
-            _dict['kind'] = self.kind
-        if hasattr(self, 'requires_restart') and self.requires_restart is not None:
-            _dict['requires_restart'] = self.requires_restart
-        if hasattr(self, 'choices') and self.choices is not None:
-            _dict['choices'] = self.choices
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ChoicePropertySchema object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ChoicePropertySchema') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ChoicePropertySchema') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConfigurationSchema():
-    """
-    Database Configuration Schema.
-
-    :attr ConfigurationSchemaSchema schema:
-    """
-
-    def __init__(self,
-                 schema: 'ConfigurationSchemaSchema') -> None:
-        """
-        Initialize a ConfigurationSchema object.
-
-        :param ConfigurationSchemaSchema schema:
-        """
-        self.schema = schema
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConfigurationSchema':
-        """Initialize a ConfigurationSchema object from a json dictionary."""
-        args = {}
-        if 'schema' in _dict:
-            args['schema'] = _dict.get('schema')
-        else:
-            raise ValueError('Required property \'schema\' not present in ConfigurationSchema JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConfigurationSchema object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'schema') and self.schema is not None:
-            if isinstance(self.schema, dict):
-                _dict['schema'] = self.schema
-            else:
-                _dict['schema'] = self.schema.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConfigurationSchema object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConfigurationSchema') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConfigurationSchema') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConfigurationSchemaSchema():
-    """
-    ConfigurationSchemaSchema.
-
-    """
-
-    def __init__(self) -> None:
-        """
-        Initialize a ConfigurationSchemaSchema object.
-
-        """
-        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
-                  ", ".join(['ConfigurationSchemaSchemaPGConfigurationSchema', 'ConfigurationSchemaSchemaRedisConfigurationSchema']))
-        raise Exception(msg)
-
 class Connection():
     """
     Connection.
@@ -3608,61 +3204,6 @@ class CreateDatabaseUserResponse():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class CreateLogicalReplicationSlotResponse():
-    """
-    CreateLogicalReplicationSlotResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a CreateLogicalReplicationSlotResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'CreateLogicalReplicationSlotResponse':
-        """Initialize a CreateLogicalReplicationSlotResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a CreateLogicalReplicationSlotResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this CreateLogicalReplicationSlotResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'CreateLogicalReplicationSlotResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'CreateLogicalReplicationSlotResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
 class DeleteAllowlistEntryResponse():
     """
     DeleteAllowlistEntryResponse.
@@ -3770,61 +3311,6 @@ class DeleteDatabaseUserResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'DeleteDatabaseUserResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class DeleteLogicalReplicationSlotResponse():
-    """
-    DeleteLogicalReplicationSlotResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a DeleteLogicalReplicationSlotResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'DeleteLogicalReplicationSlotResponse':
-        """Initialize a DeleteLogicalReplicationSlotResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a DeleteLogicalReplicationSlotResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this DeleteLogicalReplicationSlotResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'DeleteLogicalReplicationSlotResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'DeleteLogicalReplicationSlotResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -4504,61 +3990,6 @@ class ElasticsearchConnectionHTTPSHostsItem():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class FileSyncResponse():
-    """
-    FileSyncResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a FileSyncResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'FileSyncResponse':
-        """Initialize a FileSyncResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a FileSyncResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this FileSyncResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'FileSyncResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'FileSyncResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
 class GRPCConnectionURI():
     """
     GRPCConnectionURI.
@@ -4978,61 +4409,6 @@ class GetDeploymentInfoResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'GetDeploymentInfoResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class GetRemotesSchemaResponse():
-    """
-    GetRemotesSchemaResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a GetRemotesSchemaResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'GetRemotesSchemaResponse':
-        """Initialize a GetRemotesSchemaResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a GetRemotesSchemaResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this GetRemotesSchemaResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'GetRemotesSchemaResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'GetRemotesSchemaResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -5695,133 +5071,6 @@ class Groups():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class IntegerPropertySchema():
-    """
-    Integer Property Schema.
-
-    :attr bool customer_configurable: (optional) Whether the setting is
-          customer-configurable.
-    :attr int default: (optional) The default value of the setting.
-    :attr str default_description: (optional) The description of the default value.
-    :attr str description: (optional) The description of the setting.
-    :attr str kind: (optional) The type of this setting (e.g., string, integer).
-    :attr bool requires_restart: (optional) Whether or not changing this setting
-          will restart the database.
-    :attr int min: (optional) The minimum value that this setting accepts.
-    :attr int max: (optional) The maximum value that this setting accepts.
-    :attr int step: (optional) The number that should be skipped between each step
-          of a slider rendered for this setting.
-    """
-
-    def __init__(self,
-                 *,
-                 customer_configurable: bool = None,
-                 default: int = None,
-                 default_description: str = None,
-                 description: str = None,
-                 kind: str = None,
-                 requires_restart: bool = None,
-                 min: int = None,
-                 max: int = None,
-                 step: int = None) -> None:
-        """
-        Initialize a IntegerPropertySchema object.
-
-        :param bool customer_configurable: (optional) Whether the setting is
-               customer-configurable.
-        :param int default: (optional) The default value of the setting.
-        :param str default_description: (optional) The description of the default
-               value.
-        :param str description: (optional) The description of the setting.
-        :param str kind: (optional) The type of this setting (e.g., string,
-               integer).
-        :param bool requires_restart: (optional) Whether or not changing this
-               setting will restart the database.
-        :param int min: (optional) The minimum value that this setting accepts.
-        :param int max: (optional) The maximum value that this setting accepts.
-        :param int step: (optional) The number that should be skipped between each
-               step of a slider rendered for this setting.
-        """
-        self.customer_configurable = customer_configurable
-        self.default = default
-        self.default_description = default_description
-        self.description = description
-        self.kind = kind
-        self.requires_restart = requires_restart
-        self.min = min
-        self.max = max
-        self.step = step
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'IntegerPropertySchema':
-        """Initialize a IntegerPropertySchema object from a json dictionary."""
-        args = {}
-        if 'customer_configurable' in _dict:
-            args['customer_configurable'] = _dict.get('customer_configurable')
-        if 'default' in _dict:
-            args['default'] = _dict.get('default')
-        if 'default_description' in _dict:
-            args['default_description'] = _dict.get('default_description')
-        if 'description' in _dict:
-            args['description'] = _dict.get('description')
-        if 'kind' in _dict:
-            args['kind'] = _dict.get('kind')
-        if 'requires_restart' in _dict:
-            args['requires_restart'] = _dict.get('requires_restart')
-        if 'min' in _dict:
-            args['min'] = _dict.get('min')
-        if 'max' in _dict:
-            args['max'] = _dict.get('max')
-        if 'step' in _dict:
-            args['step'] = _dict.get('step')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a IntegerPropertySchema object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'customer_configurable') and self.customer_configurable is not None:
-            _dict['customer_configurable'] = self.customer_configurable
-        if hasattr(self, 'default') and self.default is not None:
-            _dict['default'] = self.default
-        if hasattr(self, 'default_description') and self.default_description is not None:
-            _dict['default_description'] = self.default_description
-        if hasattr(self, 'description') and self.description is not None:
-            _dict['description'] = self.description
-        if hasattr(self, 'kind') and self.kind is not None:
-            _dict['kind'] = self.kind
-        if hasattr(self, 'requires_restart') and self.requires_restart is not None:
-            _dict['requires_restart'] = self.requires_restart
-        if hasattr(self, 'min') and self.min is not None:
-            _dict['min'] = self.min
-        if hasattr(self, 'max') and self.max is not None:
-            _dict['max'] = self.max
-        if hasattr(self, 'step') and self.step is not None:
-            _dict['step'] = self.step
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this IntegerPropertySchema object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'IntegerPropertySchema') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'IntegerPropertySchema') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
 class KillConnectionsResponse():
     """
     KillConnectionsResponse.
@@ -6039,81 +5288,6 @@ class ListRemotesResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'ListRemotesResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class LogicalReplicationSlotLogicalReplicationSlot():
-    """
-    LogicalReplicationSlotLogicalReplicationSlot.
-
-    :attr str name: (optional) name of the replication slot.
-    :attr str database_name: (optional) name of the database the replication slot is
-          created on.
-    :attr str plugin_type: (optional) creating a replication slot is only supported
-          for use with wal2json.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 database_name: str = None,
-                 plugin_type: str = None) -> None:
-        """
-        Initialize a LogicalReplicationSlotLogicalReplicationSlot object.
-
-        :param str name: (optional) name of the replication slot.
-        :param str database_name: (optional) name of the database the replication
-               slot is created on.
-        :param str plugin_type: (optional) creating a replication slot is only
-               supported for use with wal2json.
-        """
-        self.name = name
-        self.database_name = database_name
-        self.plugin_type = plugin_type
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'LogicalReplicationSlotLogicalReplicationSlot':
-        """Initialize a LogicalReplicationSlotLogicalReplicationSlot object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'database_name' in _dict:
-            args['database_name'] = _dict.get('database_name')
-        if 'plugin_type' in _dict:
-            args['plugin_type'] = _dict.get('plugin_type')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a LogicalReplicationSlotLogicalReplicationSlot object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'database_name') and self.database_name is not None:
-            _dict['database_name'] = self.database_name
-        if hasattr(self, 'plugin_type') and self.plugin_type is not None:
-            _dict['plugin_type'] = self.plugin_type
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this LogicalReplicationSlotLogicalReplicationSlot object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'LogicalReplicationSlotLogicalReplicationSlot') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'LogicalReplicationSlotLogicalReplicationSlot') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -8451,9 +7625,9 @@ class Remotes():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ReplaceAllowlistResponse():
+class ResyncReplicaResponse():
     """
-    ReplaceAllowlistResponse.
+    ResyncReplicaResponse.
 
     :attr Task task: (optional)
     """
@@ -8462,15 +7636,15 @@ class ReplaceAllowlistResponse():
                  *,
                  task: 'Task' = None) -> None:
         """
-        Initialize a ReplaceAllowlistResponse object.
+        Initialize a ResyncReplicaResponse object.
 
         :param Task task: (optional)
         """
         self.task = task
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ReplaceAllowlistResponse':
-        """Initialize a ReplaceAllowlistResponse object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ResyncReplicaResponse':
+        """Initialize a ResyncReplicaResponse object from a json dictionary."""
         args = {}
         if 'task' in _dict:
             args['task'] = Task.from_dict(_dict.get('task'))
@@ -8478,7 +7652,7 @@ class ReplaceAllowlistResponse():
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a ReplaceAllowlistResponse object from a json dictionary."""
+        """Initialize a ResyncReplicaResponse object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -8493,16 +7667,71 @@ class ReplaceAllowlistResponse():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this ReplaceAllowlistResponse object."""
+        """Return a `str` version of this ResyncReplicaResponse object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'ReplaceAllowlistResponse') -> bool:
+    def __eq__(self, other: 'ResyncReplicaResponse') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'ReplaceAllowlistResponse') -> bool:
+    def __ne__(self, other: 'ResyncReplicaResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class SetAllowlistResponse():
+    """
+    SetAllowlistResponse.
+
+    :attr Task task: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 task: 'Task' = None) -> None:
+        """
+        Initialize a SetAllowlistResponse object.
+
+        :param Task task: (optional)
+        """
+        self.task = task
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'SetAllowlistResponse':
+        """Initialize a SetAllowlistResponse object from a json dictionary."""
+        args = {}
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a SetAllowlistResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'task') and self.task is not None:
+            _dict['task'] = self.task.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this SetAllowlistResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'SetAllowlistResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'SetAllowlistResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -8630,61 +7859,6 @@ class SetConfigurationConfiguration():
         msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
                   ", ".join(['SetConfigurationConfigurationPGConfiguration', 'SetConfigurationConfigurationRedisConfiguration']))
         raise Exception(msg)
-
-class SetDatabaseConfigurationResponse():
-    """
-    SetDatabaseConfigurationResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a SetDatabaseConfigurationResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDatabaseConfigurationResponse':
-        """Initialize a SetDatabaseConfigurationResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetDatabaseConfigurationResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetDatabaseConfigurationResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetDatabaseConfigurationResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetDatabaseConfigurationResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
 
 class SetDeploymentScalingGroupRequest():
     """
@@ -9210,6 +8384,61 @@ class Tasks():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
+class UpdateDatabaseConfigurationResponse():
+    """
+    UpdateDatabaseConfigurationResponse.
+
+    :attr Task task: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 task: 'Task' = None) -> None:
+        """
+        Initialize a UpdateDatabaseConfigurationResponse object.
+
+        :param Task task: (optional)
+        """
+        self.task = task
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UpdateDatabaseConfigurationResponse':
+        """Initialize a UpdateDatabaseConfigurationResponse object from a json dictionary."""
+        args = {}
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UpdateDatabaseConfigurationResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'task') and self.task is not None:
+            _dict['task'] = self.task.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UpdateDatabaseConfigurationResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UpdateDatabaseConfigurationResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UpdateDatabaseConfigurationResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
 class AutoscalingSetGroupAutoscalingAutoscalingCPUGroup(AutoscalingSetGroupAutoscaling):
     """
     AutoscalingSetGroupAutoscalingAutoscalingCPUGroup.
@@ -9375,276 +8604,6 @@ class AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup(AutoscalingSetGroupAu
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConfigurationSchemaSchemaPGConfigurationSchema(ConfigurationSchemaSchema):
-    """
-    PostgreSQL and EnterpriseDB Configuration Schema.
-
-    :attr IntegerPropertySchema max_connections: Integer Property Schema.
-    :attr IntegerPropertySchema max_prepared_connections: Integer Property Schema.
-    :attr IntegerPropertySchema backup_retention_period: Integer Property Schema.
-    :attr IntegerPropertySchema deadlock_timeout: Integer Property Schema.
-    :attr IntegerPropertySchema effective_io_concurrency: Integer Property Schema.
-    :attr IntegerPropertySchema max_replication_slots: Integer Property Schema.
-    :attr IntegerPropertySchema max_wal_senders: Integer Property Schema.
-    :attr IntegerPropertySchema shared_buffers: Integer Property Schema.
-    :attr ChoicePropertySchema synchronous_commit: Choice Property Schema.
-    :attr ChoicePropertySchema wal_level: Choice Property Schema.
-    :attr IntegerPropertySchema archive_timeout: Integer Property Schema.
-    :attr IntegerPropertySchema log_min_duration_statement: Integer Property Schema.
-    """
-
-    def __init__(self,
-                 max_connections: 'IntegerPropertySchema',
-                 max_prepared_connections: 'IntegerPropertySchema',
-                 backup_retention_period: 'IntegerPropertySchema',
-                 deadlock_timeout: 'IntegerPropertySchema',
-                 effective_io_concurrency: 'IntegerPropertySchema',
-                 max_replication_slots: 'IntegerPropertySchema',
-                 max_wal_senders: 'IntegerPropertySchema',
-                 shared_buffers: 'IntegerPropertySchema',
-                 synchronous_commit: 'ChoicePropertySchema',
-                 wal_level: 'ChoicePropertySchema',
-                 archive_timeout: 'IntegerPropertySchema',
-                 log_min_duration_statement: 'IntegerPropertySchema') -> None:
-        """
-        Initialize a ConfigurationSchemaSchemaPGConfigurationSchema object.
-
-        :param IntegerPropertySchema max_connections: Integer Property Schema.
-        :param IntegerPropertySchema max_prepared_connections: Integer Property
-               Schema.
-        :param IntegerPropertySchema backup_retention_period: Integer Property
-               Schema.
-        :param IntegerPropertySchema deadlock_timeout: Integer Property Schema.
-        :param IntegerPropertySchema effective_io_concurrency: Integer Property
-               Schema.
-        :param IntegerPropertySchema max_replication_slots: Integer Property
-               Schema.
-        :param IntegerPropertySchema max_wal_senders: Integer Property Schema.
-        :param IntegerPropertySchema shared_buffers: Integer Property Schema.
-        :param ChoicePropertySchema synchronous_commit: Choice Property Schema.
-        :param ChoicePropertySchema wal_level: Choice Property Schema.
-        :param IntegerPropertySchema archive_timeout: Integer Property Schema.
-        :param IntegerPropertySchema log_min_duration_statement: Integer Property
-               Schema.
-        """
-        # pylint: disable=super-init-not-called
-        self.max_connections = max_connections
-        self.max_prepared_connections = max_prepared_connections
-        self.backup_retention_period = backup_retention_period
-        self.deadlock_timeout = deadlock_timeout
-        self.effective_io_concurrency = effective_io_concurrency
-        self.max_replication_slots = max_replication_slots
-        self.max_wal_senders = max_wal_senders
-        self.shared_buffers = shared_buffers
-        self.synchronous_commit = synchronous_commit
-        self.wal_level = wal_level
-        self.archive_timeout = archive_timeout
-        self.log_min_duration_statement = log_min_duration_statement
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConfigurationSchemaSchemaPGConfigurationSchema':
-        """Initialize a ConfigurationSchemaSchemaPGConfigurationSchema object from a json dictionary."""
-        args = {}
-        if 'max_connections' in _dict:
-            args['max_connections'] = IntegerPropertySchema.from_dict(_dict.get('max_connections'))
-        else:
-            raise ValueError('Required property \'max_connections\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'max_prepared_connections' in _dict:
-            args['max_prepared_connections'] = IntegerPropertySchema.from_dict(_dict.get('max_prepared_connections'))
-        else:
-            raise ValueError('Required property \'max_prepared_connections\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'backup_retention_period' in _dict:
-            args['backup_retention_period'] = IntegerPropertySchema.from_dict(_dict.get('backup_retention_period'))
-        else:
-            raise ValueError('Required property \'backup_retention_period\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'deadlock_timeout' in _dict:
-            args['deadlock_timeout'] = IntegerPropertySchema.from_dict(_dict.get('deadlock_timeout'))
-        else:
-            raise ValueError('Required property \'deadlock_timeout\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'effective_io_concurrency' in _dict:
-            args['effective_io_concurrency'] = IntegerPropertySchema.from_dict(_dict.get('effective_io_concurrency'))
-        else:
-            raise ValueError('Required property \'effective_io_concurrency\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'max_replication_slots' in _dict:
-            args['max_replication_slots'] = IntegerPropertySchema.from_dict(_dict.get('max_replication_slots'))
-        else:
-            raise ValueError('Required property \'max_replication_slots\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'max_wal_senders' in _dict:
-            args['max_wal_senders'] = IntegerPropertySchema.from_dict(_dict.get('max_wal_senders'))
-        else:
-            raise ValueError('Required property \'max_wal_senders\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'shared_buffers' in _dict:
-            args['shared_buffers'] = IntegerPropertySchema.from_dict(_dict.get('shared_buffers'))
-        else:
-            raise ValueError('Required property \'shared_buffers\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'synchronous_commit' in _dict:
-            args['synchronous_commit'] = ChoicePropertySchema.from_dict(_dict.get('synchronous_commit'))
-        else:
-            raise ValueError('Required property \'synchronous_commit\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'wal_level' in _dict:
-            args['wal_level'] = ChoicePropertySchema.from_dict(_dict.get('wal_level'))
-        else:
-            raise ValueError('Required property \'wal_level\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'archive_timeout' in _dict:
-            args['archive_timeout'] = IntegerPropertySchema.from_dict(_dict.get('archive_timeout'))
-        else:
-            raise ValueError('Required property \'archive_timeout\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        if 'log_min_duration_statement' in _dict:
-            args['log_min_duration_statement'] = IntegerPropertySchema.from_dict(_dict.get('log_min_duration_statement'))
-        else:
-            raise ValueError('Required property \'log_min_duration_statement\' not present in ConfigurationSchemaSchemaPGConfigurationSchema JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConfigurationSchemaSchemaPGConfigurationSchema object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'max_connections') and self.max_connections is not None:
-            _dict['max_connections'] = self.max_connections.to_dict()
-        if hasattr(self, 'max_prepared_connections') and self.max_prepared_connections is not None:
-            _dict['max_prepared_connections'] = self.max_prepared_connections.to_dict()
-        if hasattr(self, 'backup_retention_period') and self.backup_retention_period is not None:
-            _dict['backup_retention_period'] = self.backup_retention_period.to_dict()
-        if hasattr(self, 'deadlock_timeout') and self.deadlock_timeout is not None:
-            _dict['deadlock_timeout'] = self.deadlock_timeout.to_dict()
-        if hasattr(self, 'effective_io_concurrency') and self.effective_io_concurrency is not None:
-            _dict['effective_io_concurrency'] = self.effective_io_concurrency.to_dict()
-        if hasattr(self, 'max_replication_slots') and self.max_replication_slots is not None:
-            _dict['max_replication_slots'] = self.max_replication_slots.to_dict()
-        if hasattr(self, 'max_wal_senders') and self.max_wal_senders is not None:
-            _dict['max_wal_senders'] = self.max_wal_senders.to_dict()
-        if hasattr(self, 'shared_buffers') and self.shared_buffers is not None:
-            _dict['shared_buffers'] = self.shared_buffers.to_dict()
-        if hasattr(self, 'synchronous_commit') and self.synchronous_commit is not None:
-            _dict['synchronous_commit'] = self.synchronous_commit.to_dict()
-        if hasattr(self, 'wal_level') and self.wal_level is not None:
-            _dict['wal_level'] = self.wal_level.to_dict()
-        if hasattr(self, 'archive_timeout') and self.archive_timeout is not None:
-            _dict['archive_timeout'] = self.archive_timeout.to_dict()
-        if hasattr(self, 'log_min_duration_statement') and self.log_min_duration_statement is not None:
-            _dict['log_min_duration_statement'] = self.log_min_duration_statement.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConfigurationSchemaSchemaPGConfigurationSchema object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConfigurationSchemaSchemaPGConfigurationSchema') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConfigurationSchemaSchemaPGConfigurationSchema') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConfigurationSchemaSchemaRedisConfigurationSchema(ConfigurationSchemaSchema):
-    """
-    Redis Configuration Schema.
-
-    :attr IntegerPropertySchema maxmemory_redis: Integer Property Schema.
-    :attr ChoicePropertySchema maxmemory_policy: Choice Property Schema.
-    :attr ChoicePropertySchema appendonly: Choice Property Schema.
-    :attr IntegerPropertySchema maxmemory_samples: Integer Property Schema.
-    :attr ChoicePropertySchema stop_writes_on_bgsave_error: Choice Property Schema.
-    """
-
-    def __init__(self,
-                 maxmemory_redis: 'IntegerPropertySchema',
-                 maxmemory_policy: 'ChoicePropertySchema',
-                 appendonly: 'ChoicePropertySchema',
-                 maxmemory_samples: 'IntegerPropertySchema',
-                 stop_writes_on_bgsave_error: 'ChoicePropertySchema') -> None:
-        """
-        Initialize a ConfigurationSchemaSchemaRedisConfigurationSchema object.
-
-        :param IntegerPropertySchema maxmemory_redis: Integer Property Schema.
-        :param ChoicePropertySchema maxmemory_policy: Choice Property Schema.
-        :param ChoicePropertySchema appendonly: Choice Property Schema.
-        :param IntegerPropertySchema maxmemory_samples: Integer Property Schema.
-        :param ChoicePropertySchema stop_writes_on_bgsave_error: Choice Property
-               Schema.
-        """
-        # pylint: disable=super-init-not-called
-        self.maxmemory_redis = maxmemory_redis
-        self.maxmemory_policy = maxmemory_policy
-        self.appendonly = appendonly
-        self.maxmemory_samples = maxmemory_samples
-        self.stop_writes_on_bgsave_error = stop_writes_on_bgsave_error
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConfigurationSchemaSchemaRedisConfigurationSchema':
-        """Initialize a ConfigurationSchemaSchemaRedisConfigurationSchema object from a json dictionary."""
-        args = {}
-        if 'maxmemory-redis' in _dict:
-            args['maxmemory_redis'] = IntegerPropertySchema.from_dict(_dict.get('maxmemory-redis'))
-        else:
-            raise ValueError('Required property \'maxmemory-redis\' not present in ConfigurationSchemaSchemaRedisConfigurationSchema JSON')
-        if 'maxmemory-policy' in _dict:
-            args['maxmemory_policy'] = ChoicePropertySchema.from_dict(_dict.get('maxmemory-policy'))
-        else:
-            raise ValueError('Required property \'maxmemory-policy\' not present in ConfigurationSchemaSchemaRedisConfigurationSchema JSON')
-        if 'appendonly' in _dict:
-            args['appendonly'] = ChoicePropertySchema.from_dict(_dict.get('appendonly'))
-        else:
-            raise ValueError('Required property \'appendonly\' not present in ConfigurationSchemaSchemaRedisConfigurationSchema JSON')
-        if 'maxmemory-samples' in _dict:
-            args['maxmemory_samples'] = IntegerPropertySchema.from_dict(_dict.get('maxmemory-samples'))
-        else:
-            raise ValueError('Required property \'maxmemory-samples\' not present in ConfigurationSchemaSchemaRedisConfigurationSchema JSON')
-        if 'stop-writes-on-bgsave-error' in _dict:
-            args['stop_writes_on_bgsave_error'] = ChoicePropertySchema.from_dict(_dict.get('stop-writes-on-bgsave-error'))
-        else:
-            raise ValueError('Required property \'stop-writes-on-bgsave-error\' not present in ConfigurationSchemaSchemaRedisConfigurationSchema JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConfigurationSchemaSchemaRedisConfigurationSchema object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'maxmemory_redis') and self.maxmemory_redis is not None:
-            _dict['maxmemory-redis'] = self.maxmemory_redis.to_dict()
-        if hasattr(self, 'maxmemory_policy') and self.maxmemory_policy is not None:
-            _dict['maxmemory-policy'] = self.maxmemory_policy.to_dict()
-        if hasattr(self, 'appendonly') and self.appendonly is not None:
-            _dict['appendonly'] = self.appendonly.to_dict()
-        if hasattr(self, 'maxmemory_samples') and self.maxmemory_samples is not None:
-            _dict['maxmemory-samples'] = self.maxmemory_samples.to_dict()
-        if hasattr(self, 'stop_writes_on_bgsave_error') and self.stop_writes_on_bgsave_error is not None:
-            _dict['stop-writes-on-bgsave-error'] = self.stop_writes_on_bgsave_error.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConfigurationSchemaSchemaRedisConfigurationSchema object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConfigurationSchemaSchemaRedisConfigurationSchema') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConfigurationSchemaSchemaRedisConfigurationSchema') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
