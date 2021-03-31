@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IBM OpenAPI SDK Code Generator Version: 99-SNAPSHOT-f9bb1b47-20210329-151039
+# IBM OpenAPI SDK Code Generator Version: 99-SNAPSHOT-1906c8c8-20210331-153014
  
 """
 The IBM Cloud Databases API enables interaction between applications and Cloud Databases
@@ -1051,6 +1051,8 @@ class CloudDatabasesV5(BaseService):
             raise ValueError('group_id must be provided')
         if set_deployment_scaling_group_request is None:
             raise ValueError('set_deployment_scaling_group_request must be provided')
+        if isinstance(set_deployment_scaling_group_request, SetDeploymentScalingGroupRequest):
+            set_deployment_scaling_group_request = convert_model(set_deployment_scaling_group_request)
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
