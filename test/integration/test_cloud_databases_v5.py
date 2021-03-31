@@ -19,14 +19,52 @@ Integration Tests for CloudDatabasesV5
 
 import os
 import pytest
+import time
 from ibm_cloud_sdk_core import *
 from ibm_cloud_databases.cloud_databases_v5 import *
 
 # Config file name
-config_file = 'cloud_databases_v5.env'
+config_file = 'cloud_databases.env'
+cloud_databases_service = None
+auto_scaling_group_id = 'member'
 
 # Variables to hold link values
 task_id_link = None
+backup_id_link = None
+scaling_group_id_link = None
+
+
+def wait_for_task(task_id):
+    """Waits for a task and checks the status.
+
+    If the task runs for more than a minute, then we'll consider it to have succeeded.
+
+    Args:
+        task_id (string): ID of the task we are waiting for
+    """
+
+    for i in range(30):
+        get_task_response = cloud_databases_service.get_task(id=task_id)
+
+        assert get_task_response.get_status_code() == 200
+        get_task_response = get_task_response.get_result()
+        assert get_task_response is not None
+
+        task = get_task_response.get('task', None)
+        if task is None:
+            break
+        else:
+            status = task['status']
+            if status == 'completed' or status == 'failed':
+                assert status == 'completed'
+                break
+            elif status == 'queued' or status == 'running':
+                pass
+            else:
+                print('status is', status)
+
+        time.sleep(2)
+
 
 class TestCloudDatabasesV5():
     """
@@ -36,15 +74,23 @@ class TestCloudDatabasesV5():
     @classmethod
     def setup_class(cls):
         if os.path.exists(config_file):
+            global cloud_databases_service
+
             os.environ['IBM_CREDENTIALS_FILE'] = config_file
 
-            cls.cloud_databases_service = CloudDatabasesV5.new_instance(
-                )
+            cls.cloud_databases_service = CloudDatabasesV5.new_instance()
+            cloud_databases_service = cls.cloud_databases_service
             assert cls.cloud_databases_service is not None
 
             cls.config = read_external_sources(
                 CloudDatabasesV5.DEFAULT_SERVICE_NAME)
             assert cls.config is not None
+
+            cls.deployment_id = cls.config['DEPLOYMENT_ID']
+            cls.replica_id = cls.config['REPLICA_ID']
+
+            assert cls.deployment_id is not None
+            assert cls.replica_id is not None
 
         print('Setup complete.')
 
@@ -62,8 +108,8 @@ class TestCloudDatabasesV5():
         }
 
         add_allowlist_entry_response = self.cloud_databases_service.add_allowlist_entry(
-            id='testString',
-            ip_address={'address':'172.16.0.0/16','description':'Dev IP space 3'}
+            id=self.deployment_id,
+            ip_address=allowlist_entry_model,
         )
 
         assert add_allowlist_entry_response.get_status_code() == 202
@@ -72,30 +118,27 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = add_allowlist_entry_response['id']
+        task_id_link = add_allowlist_entry_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
-    def test_change_user_password(self):
+    def test_delete_allowlist_entry(self):
 
-        # Construct a dict representation of a APasswordSettingUser model
-        a_password_setting_user_model = {
-            'password': 'xyzzyyzzyx'
-        }
-
-        change_user_password_response = self.cloud_databases_service.change_user_password(
-            id='testString',
-            user_type='database',
-            username='james',
-            user={'password':'xyzzyyzzyx'}
+        delete_allowlist_entry_response = self.cloud_databases_service.delete_allowlist_entry(
+            id=self.deployment_id,
+            ipaddress='172.16.0.0/16',
         )
 
-        assert change_user_password_response.get_status_code() == 202
-        change_user_password_response = change_user_password_response.get_result()
-        assert change_user_password_response is not None
+        assert delete_allowlist_entry_response.get_status_code() == 202
+        delete_allowlist_entry_response = delete_allowlist_entry_response.get_result()
+        assert delete_allowlist_entry_response is not None
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = change_user_password_response['id']
+        task_id_link = delete_allowlist_entry_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_create_database_user(self):
@@ -108,9 +151,9 @@ class TestCloudDatabasesV5():
         }
 
         create_database_user_response = self.cloud_databases_service.create_database_user(
-            id='testString',
+            id=self.deployment_id,
             user_type='database',
-            user={'username':'james','password':'kickoutthe'}
+            user=create_database_user_request_user_model,
         )
 
         assert create_database_user_response.get_status_code() == 202
@@ -119,29 +162,40 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = create_database_user_response['id']
+        task_id_link = create_database_user_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
-    def test_delete_allowlist_entry(self):
+    def test_change_user_password(self):
 
-        delete_allowlist_entry_response = self.cloud_databases_service.delete_allowlist_entry(
-            id='testString',
-            ipaddress='testString'
+        # Construct a dict representation of a APasswordSettingUser model
+        a_password_setting_user_model = {
+            'password': 'xyzzyyzzyx'
+        }
+
+        change_user_password_response = self.cloud_databases_service.change_user_password(
+            id=self.deployment_id,
+            user_type='database',
+            username='james',
+            user=a_password_setting_user_model
         )
 
-        assert delete_allowlist_entry_response.get_status_code() == 202
-        delete_allowlist_entry_response = delete_allowlist_entry_response.get_result()
-        assert delete_allowlist_entry_response is not None
+        assert change_user_password_response.get_status_code() == 202
+        change_user_password_response = change_user_password_response.get_result()
+        assert change_user_password_response is not None
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = delete_allowlist_entry_response['id']
+        task_id_link = change_user_password_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_delete_database_user(self):
 
         delete_database_user_response = self.cloud_databases_service.delete_database_user(
-            id='testString',
+            id=self.deployment_id,
             user_type='database',
             username='james'
         )
@@ -152,13 +206,15 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = delete_database_user_response['id']
+        task_id_link = delete_database_user_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_kill_connections(self):
 
         kill_connections_response = self.cloud_databases_service.kill_connections(
-            id='testString'
+            id=self.deployment_id
         )
 
         assert kill_connections_response.get_status_code() == 202
@@ -167,7 +223,9 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = kill_connections_response['id']
+        task_id_link = kill_connections_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_set_allowlist(self):
@@ -179,7 +237,7 @@ class TestCloudDatabasesV5():
         }
 
         set_allowlist_response = self.cloud_databases_service.set_allowlist(
-            id='testString',
+            id=self.deployment_id,
             ip_addresses=[allowlist_entry_model],
             if_match='testString'
         )
@@ -190,7 +248,9 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = set_allowlist_response['id']
+        task_id_link = set_allowlist_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_set_autoscaling_conditions(self):
@@ -211,7 +271,7 @@ class TestCloudDatabasesV5():
         autoscaling_memory_group_memory_rate_model = {
             'increase_percent': 10.0,
             'period_seconds': 300,
-            'limit_mb_per_member': 125952,
+            'limit_mb_per_member': 114432,
             'units': 'mb'
         }
 
@@ -227,9 +287,9 @@ class TestCloudDatabasesV5():
         }
 
         set_autoscaling_conditions_response = self.cloud_databases_service.set_autoscaling_conditions(
-            id='testString',
-            group_id='testString',
-            autoscaling={'memory':{'scalers':{'io_utilization':{'enabled':true,'over_period':'5m','above_percent':90}},'rate':{'increase_percent':10.0,'period_seconds':300,'limit_mb_per_member':125952,'units':'mb'}}}
+            id=self.deployment_id,
+            group_id=auto_scaling_group_id,
+            autoscaling=autoscaling_memory_group_memory_model,
         )
 
         assert set_autoscaling_conditions_response.get_status_code() == 202
@@ -238,34 +298,9 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = set_autoscaling_conditions_response['id']
+        task_id_link = set_autoscaling_conditions_response['task']['id']
 
-    @needscredentials
-    def test_set_deployment_scaling_group(self):
-
-        # Construct a dict representation of a SetMemoryGroupMemory model
-        set_memory_group_memory_model = {
-            'allocation_mb': 4096
-        }
-
-        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMemoryGroup model
-        set_deployment_scaling_group_request_model = {
-            'memory': set_memory_group_memory_model
-        }
-
-        set_deployment_scaling_group_response = self.cloud_databases_service.set_deployment_scaling_group(
-            id='testString',
-            group_id='testString',
-            set_deployment_scaling_group_request=set_deployment_scaling_group_request_model
-        )
-
-        assert set_deployment_scaling_group_response.get_status_code() == 202
-        set_deployment_scaling_group_response = set_deployment_scaling_group_response.get_result()
-        assert set_deployment_scaling_group_response is not None
-
-        # Store task_id_link value for later test cases
-        global task_id_link
-        task_id_link = set_deployment_scaling_group_response['id']
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_update_database_configuration(self):
@@ -286,8 +321,8 @@ class TestCloudDatabasesV5():
         }
 
         update_database_configuration_response = self.cloud_databases_service.update_database_configuration(
-            id='testString',
-            configuration={'max_connections':200}
+            id=self.deployment_id,
+            configuration=set_configuration_configuration_model
         )
 
         assert update_database_configuration_response.get_status_code() == 200
@@ -296,7 +331,9 @@ class TestCloudDatabasesV5():
 
         # Store task_id_link value for later test cases
         global task_id_link
-        task_id_link = update_database_configuration_response['id']
+        task_id_link = update_database_configuration_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_list_deployables(self):
@@ -320,7 +357,7 @@ class TestCloudDatabasesV5():
     def test_get_deployment_info(self):
 
         get_deployment_info_response = self.cloud_databases_service.get_deployment_info(
-            id='testString'
+            id=self.deployment_id
         )
 
         assert get_deployment_info_response.get_status_code() == 200
@@ -331,7 +368,7 @@ class TestCloudDatabasesV5():
     def test_list_remotes(self):
 
         list_remotes_response = self.cloud_databases_service.list_remotes(
-            id='testString'
+            id=self.deployment_id
         )
 
         assert list_remotes_response.get_status_code() == 200
@@ -342,23 +379,31 @@ class TestCloudDatabasesV5():
     def test_resync_replica(self):
 
         resync_replica_response = self.cloud_databases_service.resync_replica(
-            id='testString'
+            id=self.replica_id
         )
 
         assert resync_replica_response.get_status_code() == 200
         resync_replica_response = resync_replica_response.get_result()
         assert resync_replica_response is not None
 
+        # Store task_id_link value for later test cases
+        global task_id_link
+        task_id_link = resync_replica_response['task']['id']
+
+        wait_for_task(task_id_link)
+
     @needscredentials
     def test_set_promotion(self):
 
         # Construct a dict representation of a SetPromotionPromotionPromote model
         set_promotion_promotion_model = {
-            'promotion': {}
+            'promotion': {
+                'skip_initial_backup': True,
+            },
         }
 
         set_promotion_response = self.cloud_databases_service.set_promotion(
-            id='testString',
+            id=self.replica_id,
             promotion=set_promotion_promotion_model
         )
 
@@ -366,11 +411,17 @@ class TestCloudDatabasesV5():
         set_promotion_response = set_promotion_response.get_result()
         assert set_promotion_response is not None
 
+        # Store task_id_link value for later test cases
+        global task_id_link
+        task_id_link = set_promotion_response['task']['id']
+
+        wait_for_task(task_id_link)
+
     @needscredentials
     def test_list_deployment_tasks(self):
 
         list_deployment_tasks_response = self.cloud_databases_service.list_deployment_tasks(
-            id='testString'
+            id=self.deployment_id
         )
 
         assert list_deployment_tasks_response.get_status_code() == 200
@@ -389,10 +440,24 @@ class TestCloudDatabasesV5():
         assert get_task_response is not None
 
     @needscredentials
+    def test_list_deployment_backups(self):
+
+        list_deployment_backups_response = self.cloud_databases_service.list_deployment_backups(
+            id=self.deployment_id
+        )
+
+        assert list_deployment_backups_response.get_status_code() == 200
+        backups = list_deployment_backups_response.get_result()
+        assert backups is not None
+
+        global backup_id_link
+        backup_id_link = backups['backups'][0]['id']
+
+    @needscredentials
     def test_get_backup_info(self):
 
         get_backup_info_response = self.cloud_databases_service.get_backup_info(
-            backup_id='testString'
+            backup_id=backup_id_link,
         )
 
         assert get_backup_info_response.get_status_code() == 200
@@ -400,21 +465,10 @@ class TestCloudDatabasesV5():
         assert get_backup_info_response is not None
 
     @needscredentials
-    def test_list_deployment_backups(self):
-
-        list_deployment_backups_response = self.cloud_databases_service.list_deployment_backups(
-            id='testString'
-        )
-
-        assert list_deployment_backups_response.get_status_code() == 200
-        backups = list_deployment_backups_response.get_result()
-        assert backups is not None
-
-    @needscredentials
     def test_start_ondemand_backup(self):
 
         start_ondemand_backup_response = self.cloud_databases_service.start_ondemand_backup(
-            id='testString'
+            id=self.deployment_id,
         )
 
         assert start_ondemand_backup_response.get_status_code() == 200
@@ -425,7 +479,7 @@ class TestCloudDatabasesV5():
     def test_get_pit_rdata(self):
 
         get_pit_rdata_response = self.cloud_databases_service.get_pit_rdata(
-            id='testString'
+            id=self.deployment_id,
         )
 
         assert get_pit_rdata_response.get_status_code() == 200
@@ -436,11 +490,11 @@ class TestCloudDatabasesV5():
     def test_get_connection(self):
 
         get_connection_response = self.cloud_databases_service.get_connection(
-            id='testString',
+            id=self.deployment_id,
             user_type='database',
             user_id='testString',
             endpoint_type='public',
-            certificate_root='testString'
+            certificate_root='testString',
         )
 
         assert get_connection_response.get_status_code() == 200
@@ -451,12 +505,12 @@ class TestCloudDatabasesV5():
     def test_complete_connection(self):
 
         complete_connection_response = self.cloud_databases_service.complete_connection(
-            id='testString',
+            id=self.deployment_id,
             user_type='database',
             user_id='testString',
             endpoint_type='public',
             password='providedpassword',
-            certificate_root='testString'
+            certificate_root='testString',
         )
 
         assert complete_connection_response.get_status_code() == 200
@@ -467,12 +521,58 @@ class TestCloudDatabasesV5():
     def test_list_deployment_scaling_groups(self):
 
         list_deployment_scaling_groups_response = self.cloud_databases_service.list_deployment_scaling_groups(
-            id='testString'
+            id=self.deployment_id,
         )
 
         assert list_deployment_scaling_groups_response.get_status_code() == 200
         groups = list_deployment_scaling_groups_response.get_result()
         assert groups is not None
+
+        global scaling_group_id_link
+        scaling_group_id_link = groups['groups'][0]['id']
+
+    @needscredentials
+    def test_set_deployment_scaling_group(self):
+
+        # Construct a dict representation of a SetMemoryGroupMemory model
+        set_memory_group_memory_model = {
+            'allocation_mb': 114688
+        }
+
+        # Construct a dict representation of a SetDeploymentScalingGroupRequestSetMemoryGroup model
+        set_deployment_scaling_group_request_model = {
+            'memory': set_memory_group_memory_model
+        }
+
+        # set_deployment_scaling_group will fail if the value sent matches the current value.
+        # So first we make a request to set to one value -- and that might fail but we don't care
+        # Then we'll make a request to set to a different value, and that one we will check for success
+        try:
+            set_deployment_scaling_group_response = self.cloud_databases_service.set_deployment_scaling_group(
+                id=self.deployment_id,
+                group_id=scaling_group_id_link,
+                set_deployment_scaling_group_request=set_deployment_scaling_group_request_model,
+            )
+        except:
+            pass
+
+        set_memory_group_memory_model['allocation_mb'] = 114432
+
+        set_deployment_scaling_group_response = self.cloud_databases_service.set_deployment_scaling_group(
+            id=self.deployment_id,
+            group_id=scaling_group_id_link,
+            set_deployment_scaling_group_request=set_deployment_scaling_group_request_model,
+        )
+
+        assert set_deployment_scaling_group_response.get_status_code() == 202
+        set_deployment_scaling_group_response = set_deployment_scaling_group_response.get_result()
+        assert set_deployment_scaling_group_response is not None
+
+        # Store task_id_link value for later test cases
+        global task_id_link
+        task_id_link = set_deployment_scaling_group_response['task']['id']
+
+        wait_for_task(task_id_link)
 
     @needscredentials
     def test_get_default_scaling_groups(self):
@@ -489,8 +589,8 @@ class TestCloudDatabasesV5():
     def test_get_autoscaling_conditions(self):
 
         get_autoscaling_conditions_response = self.cloud_databases_service.get_autoscaling_conditions(
-            id='testString',
-            group_id='testString'
+            id=self.deployment_id,
+            group_id=auto_scaling_group_id
         )
 
         assert get_autoscaling_conditions_response.get_status_code() == 200
@@ -501,10 +601,9 @@ class TestCloudDatabasesV5():
     def test_get_allowlist(self):
 
         get_allowlist_response = self.cloud_databases_service.get_allowlist(
-            id='testString'
+            id=self.deployment_id
         )
 
         assert get_allowlist_response.get_status_code() == 200
         allowlist = get_allowlist_response.get_result()
         assert allowlist is not None
-
