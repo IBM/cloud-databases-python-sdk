@@ -18,10 +18,11 @@ Integration Tests for CloudDatabasesV5
 """
 
 import os
-import pytest
 import time
-from ibm_cloud_sdk_core import *
+
+import pytest
 from ibm_cloud_databases.cloud_databases_v5 import *
+from ibm_cloud_sdk_core import *
 
 # Config file name
 config_file = 'cloud_databases.env'
@@ -317,7 +318,7 @@ class TestCloudDatabasesV5():
             'synchronous_commit': 'local',
             'wal_level': 'hot_standby',
             'archive_timeout': 300,
-            'log_min_duration_statement': 100
+            'log_min_duration_statement': 100,
         }
 
         update_database_configuration_response = self.cloud_databases_service.update_database_configuration(
