@@ -394,6 +394,7 @@ class TestCloudDatabasesV5():
         wait_for_task(task_id_link)
 
     @needscredentials
+    @pytest.mark.skip(reason="Skip to avoid irreversible change to test environment")
     def test_set_promotion(self):
 
         # Construct a dict representation of a SetPromotionPromotionPromote model
@@ -535,6 +536,8 @@ class TestCloudDatabasesV5():
     @needscredentials
     def test_set_deployment_scaling_group(self):
 
+        global task_id_link
+
         # Construct a dict representation of a SetMemoryGroupMemory model
         set_memory_group_memory_model = {
             'allocation_mb': 114688
@@ -554,6 +557,9 @@ class TestCloudDatabasesV5():
                 group_id=scaling_group_id_link,
                 set_deployment_scaling_group_request=set_deployment_scaling_group_request_model,
             )
+
+            task_id_link = set_deployment_scaling_group_response['task']['id']
+            wait_for_task(task_id_link)
         except:
             pass
 
@@ -570,7 +576,6 @@ class TestCloudDatabasesV5():
         assert set_deployment_scaling_group_response is not None
 
         # Store task_id_link value for later test cases
-        global task_id_link
         task_id_link = set_deployment_scaling_group_response['task']['id']
 
         wait_for_task(task_id_link)

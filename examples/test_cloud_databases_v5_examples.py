@@ -519,6 +519,7 @@ class TestCloudDatabasesV5Examples():
             pytest.fail(str(e))
 
     @needscredentials
+    @pytest.mark.skip(reason="Skip to avoid irreversible change to test environment")
     def test_set_promotion_example(self):
         """
         set_promotion request example
@@ -753,6 +754,7 @@ class TestCloudDatabasesV5Examples():
         set_deployment_scaling_group request example
         """
         try:
+            global task_id_link
             print('\nset_deployment_scaling_group() result:')
             # begin-setDeploymentScalingGroup
 
@@ -774,29 +776,30 @@ class TestCloudDatabasesV5Examples():
 
             # end-setDeploymentScalingGroup
 
+            task_id_link = set_deployment_scaling_group_response['task']['id']
+            wait_for_task(task_id_link)
+
+        except:
+            pass
+
+        set_memory_group_memory_model.allocation_mb = 114432
+
+        try:
+            set_deployment_scaling_group_response = cloud_databases_service.set_deployment_scaling_group(
+                id=deployment_id,
+                group_id=scaling_group_id_link,
+                set_deployment_scaling_group_request=set_deployment_scaling_group_request_model
+            ).get_result()
+
+            print(json.dumps(set_deployment_scaling_group_response, indent=2))
+
+            task_id_link = set_deployment_scaling_group_response['task']['id']
+
+            wait_for_task(task_id_link)
+
         except ApiException as e:
-            try:
-                global task_id_link
-                task_id_link = set_deployment_scaling_group_response['task']['id']
+            pytest.fail(str(e))
 
-                wait_for_task(task_id_link)
-
-                set_memory_group_memory_model.allocation_mb = 114432
-
-                set_deployment_scaling_group_response = cloud_databases_service.set_deployment_scaling_group(
-                    id=deployment_id,
-                    group_id=scaling_group_id_link,
-                    set_deployment_scaling_group_request=set_deployment_scaling_group_request_model
-                ).get_result()
-
-                print(json.dumps(set_deployment_scaling_group_response, indent=2))
-
-                task_id_link = set_deployment_scaling_group_response['task']['id']
-
-                wait_for_task(task_id_link)
-
-            except ApiException as e:
-                pytest.fail(str(e))
 
     @needscredentials
     def test_get_default_scaling_groups_example(self):
