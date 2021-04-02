@@ -19,7 +19,7 @@ import os
 import sys
 import pkg_resources
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 PACKAGE_NAME = 'ibm_cloud_databases'
 PACKAGE_DESC = 'IBM Cloud Databases Python SDK'
 

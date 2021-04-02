@@ -55,13 +55,13 @@ Service Name | Imported Class Name
 To install, use `pip` or `easy_install`:
 
 ```bash
-pip install --upgrade "ibm-cloud-databases>=0.1.0"
+pip install --upgrade "ibm-cloud-databases>=0.2.0"
 ```
 
 or
 
 ```bash
-easy_install --upgrade "ibm-cloud-databases>=0.1.0"
+easy_install --upgrade "ibm-cloud-databases>=0.2.0"
 ```
 
 ## Using the SDK
