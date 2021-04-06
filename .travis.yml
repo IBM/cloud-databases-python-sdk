@@ -19,8 +19,6 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install pandoc
 - pip install pypandoc
-- echo -e "machine github.ibm.com\n  login $GITHUB_OAUTH_TOKEN" > ~/.netrc
-# - '[ "${TRAVIS_PULL_REQUEST}" == "false" ] && openssl aes-256-cbc -K $my_key -iv $my_iv -in myservice.env.enc -out myservice.env -d || true'
 
 install:
 - pip install tox-travis
@@ -35,13 +33,13 @@ before_deploy:
 - npm install @semantic-release/git
 - npm install @semantic-release/github
 
-deploy:
-- provider: script
-  script: npx semantic-release
-  skip_cleanup: true
-  on:
-    python: '3.6'
-    branch: main
+# deploy:
+# - provider: script
+#   script: npx semantic-release
+#   skip_cleanup: true
+#   on:
+#     python: '3.6'
+#     branch: main
 # - provider: pypi
 #   user: __token__
 #   password: $PYPI_TOKEN

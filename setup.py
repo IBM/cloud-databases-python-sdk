@@ -19,7 +19,7 @@ import os
 import sys
 import pkg_resources
 
-__version__ = '0.2.0'
+__version__ = '0.0.1'
 PACKAGE_NAME = 'ibm_cloud_databases'
 PACKAGE_DESC = 'IBM Cloud Databases Python SDK'
 
@@ -51,10 +51,10 @@ setup(
     install_requires=install_requires,
     tests_require=tests_require,
     author='IBM',
-    author_email='norbert.biczo@ibm.com',
+    author_email='devexdev@us.ibm.com',
     long_description=readme,
     long_description_content_type='text/markdown',
-    url='https://github.ibm.com/ibmcloud/icd-python-sdk',
+    url='https://github.com/IBM/cloud-databases-python-sdk',
     packages=[PACKAGE_NAME],
     include_package_data=True,
     keywords=PACKAGE_NAME,

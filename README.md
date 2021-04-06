@@ -1,5 +1,13 @@
-[![Build Status](https://travis-ci.com/ibmcloud/icd-python-sdk.svg?token=eW5FVD71iyte6tTby8gr&branch=main)](https://travis.ibm.com/ibmcloud/icd-python-sdk)
+[![Build Status](https://travis-ci.com/IBM/cloud-databases-python-sdk.svg?branch=main)](https://travis-ci.com/IBM/cloud-databases-python-sdk)
+[![Release](https://img.shields.io/github/v/release/IBM/cloud-databases-python-sdk)](https://github.com/IBM/cloud-databases-python-sdk/releases/latest)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ibm-cloud-databases)](https://pypi.org/project/ibm-cloud-databases/)
+[![PyPI](https://img.shields.io/pypi/v/ibm-cloud-databases)](https://pypi.org/project/ibm-cloud-databases/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ibm-cloud-databases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/IBM/cloud-databases-python-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/IBM/cloud-databases-python-sdk)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
+
 # IBM Cloud Databases Python SDK
 
 Python client library to interact with various [IBM Cloud Cloud Databases APIs](https://cloud.ibm.com/apidocs?category=cloud-databases).
@@ -55,13 +63,13 @@ Service Name | Imported Class Name
 To install, use `pip` or `easy_install`:
 
 ```bash
-pip install --upgrade "ibm-cloud-databases>=0.2.0"
+pip install --upgrade "ibm-cloud-databases>=0.0.1"
 ```
 
 or
 
 ```bash
-easy_install --upgrade "ibm-cloud-databases>=0.2.0"
+easy_install --upgrade "ibm-cloud-databases>=0.0.1"
 ```
 
 ## Using the SDK
@@ -75,16 +83,16 @@ please ask a question
 
 ## Issues
 If you encounter an issue with the project, you are welcome to submit a
-[bug report](https://github.ibm.com/ibmcloud/icd-python-sdk/issues).
+[bug report](https://github.ibm.com/IBM/cloud-databases-python-sdk/issues).
 Before that, please search for similar issues. It's possible that someone has already reported the problem.
 
 ## Open source @ IBM
 Find more open source projects on the [IBM Github Page](http://ibm.github.io/)
 
 ## Contributing
-See [CONTRIBUTING.md](https://github.ibm.com/ibmcloud/icd-python-sdk/blob/main/CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.ibm.com/IBM/cloud-databases-python-sdk/blob/main/CONTRIBUTING.md).
 
 ## License
 
 This SDK is released under the Apache 2.0 license.
-The license's full text can be found in [LICENSE](https://github.ibm.com/ibmcloud/icd-python-sdk/blob/main/LICENSE).
+The license's full text can be found in [LICENSE](https://github.ibm.com/IBM/cloud-databases-python-sdk/blob/main/LICENSE).
