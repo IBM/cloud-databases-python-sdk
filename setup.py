@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2019, 2020 IBM All Rights Reserved.
+# Copyright 2019, 2021 IBM All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import pkg_resources
 
 __version__ = '0.0.1'
 PACKAGE_NAME = 'ibm_cloud_databases'
-PACKAGE_DESC = 'IBM Cloud Databases Python SDK'
+PACKAGE_DESC = 'Python client library for IBM Cloud Databases service'
 
 with open('requirements.txt') as f:
     install_requires = [
