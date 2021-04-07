@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""IBM Cloud Databases Python SDK"""
+"""
+  This package provides a client library for accessing the IBM Cloud Databases service
+"""
 
 from ibm_cloud_sdk_core import IAMTokenManager, DetailedResponse, BaseService, ApiException
 
 from .common import get_sdk_headers
 from .version import __version__
-# from .example_service_v1 import ExampleServiceV1
+from .cloud_databases_v5 import CloudDatabasesV5
