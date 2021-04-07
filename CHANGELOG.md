@@ -1,3 +1,10 @@
+# [0.1.0](https://github.com/IBM/cloud-databases-python-sdk/compare/v0.0.1...v0.1.0) (2021-04-07)
+
+
+### Features
+
+* **Cloud Databases:** initial pre-release of the IBM Cloud Databases Python SDK ([#2](https://github.com/IBM/cloud-databases-python-sdk/issues/2)) ([9538fe0](https://github.com/IBM/cloud-databases-python-sdk/commit/9538fe0801dc0bc564dc4c999667a2d88d34c745))
+
 # [0.2.0](https://github.ibm.com/ibmcloud/icd-python-sdk/compare/v0.1.0...v0.2.0) (2021-04-02)
 
 
