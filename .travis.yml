@@ -1,11 +1,6 @@
+dist: bionic
+
 language: python
-
-dist: xenial
-
-cache: pip
-
-notifications:
-  email: false
 
 matrix:
   include:
@@ -14,38 +9,38 @@ matrix:
     - python: 3.8
     - python: 3.9
 
-before_install:
-  - npm install npm@latest -g
-  - sudo apt-get update
-  - sudo apt-get install pandoc
-  - pip install pypandoc
+cache: pip
 
 install:
-  - pip install tox-travis
+- sudo apt-get update
+- sudo apt-get install pandoc
+- pip install pypandoc
+- pip install tox-travis
 
 script: tox
 
 before_deploy:
-  - pip install bump2version
-  - nvm install 12
-  - npm install @semantic-release/changelog
-  - npm install @semantic-release/exec
-  - npm install @semantic-release/git
-  - npm install @semantic-release/github
+- nvm install 14
+- npm install npm@latest -g
+- npm install @semantic-release/changelog
+- npm install @semantic-release/exec
+- npm install @semantic-release/git
+- npm install @semantic-release/github
+- pip install bump2version
 
 deploy:
-  - provider: script
-    script: npx semantic-release
-    skip_cleanup: true
-    on:
-      python: '3.6'
-      branch: main
+- provider: script
+  script: npx semantic-release
+  skip_cleanup: true
+  on:
+    python: '3.6'
+    branch: main
 
-  - provider: pypi
-    user: __token__
-    password: $PYPI_TOKEN
-    repository: https://upload.pypi.org/legacy
-    skip_cleanup: true
-    on:
-      python: '3.6'
-      tags: true
+- provider: pypi
+  user: __token__
+  password: $PYPI_TOKEN
+  repository: https://upload.pypi.org/legacy
+  skip_cleanup: true
+  on:
+    python: '3.6'
+    tags: true
