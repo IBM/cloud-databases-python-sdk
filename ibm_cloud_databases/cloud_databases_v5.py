@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# (C) Copyright IBM Corp. 2021.
+# (C) Copyright IBM Corp. 2024.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IBM OpenAPI SDK Code Generator Version: 99-SNAPSHOT-1906c8c8-20210331-153014
- 
+# IBM OpenAPI SDK Code Generator Version: 3.61.0-1667892a-20221109-194550
+
 """
 The IBM Cloud Databases API enables interaction between applications and Cloud Databases
 database deployments.
@@ -26,6 +26,8 @@ translation the Compose style UUIDs is needed. The Deployment ID is a traditiona
 the Compose v5 API platform.
 When you use CRNs, remember to URL escape the CRN value as they can include the
 forward-slash (/) character.
+
+API Version: 5.0.0
 """
 
 from datetime import datetime
@@ -47,8 +49,10 @@ from .common import get_sdk_headers
 class CloudDatabasesV5(BaseService):
     """The Cloud Databases V5 service."""
 
-    DEFAULT_SERVICE_URL = None
+    DEFAULT_SERVICE_URL = 'https://api.us-south.databases.cloud.ibm.com/v5/ibm'
     DEFAULT_SERVICE_NAME = 'cloud_databases'
+
+    PARAMETERIZED_SERVICE_URL = 'https://api.{region}.databases.cloud.ibm.com/v5/{platform}'
 
     @classmethod
     def new_instance(cls,
@@ -65,6 +69,30 @@ class CloudDatabasesV5(BaseService):
         service.configure_service(service_name)
         return service
 
+    @classmethod
+    def construct_service_url(
+        cls,
+        platform: str = 'ibm',
+        region: str = 'us-south',
+    ) -> str:
+        """
+        Construct a service URL by formatting the parameterized service URL.
+
+        The parameterized service URL is:
+        'https://api.{region}.databases.cloud.ibm.com/v5/{platform}'
+
+        :param str platform: (optional) No description provided.
+            (default 'ibm')
+        :param str region: (optional) No description provided.
+            (default 'us-south')
+        :return: The formatted URL with all variable placeholders replaced by values.
+        :rtype: str
+        """
+        return cls.PARAMETERIZED_SERVICE_URL.format(
+            platform=platform,
+            region=region,
+        )
+
     def __init__(self,
                  authenticator: Authenticator = None,
                 ) -> None:
@@ -72,7 +100,7 @@ class CloudDatabasesV5(BaseService):
         Construct a new client for the Cloud Databases service.
 
         :param Authenticator authenticator: The authenticator specifies the authentication mechanism.
-               Get up to date information from https://github.com/IBM/python-sdk-core/blob/master/README.md
+               Get up to date information from https://github.com/IBM/python-sdk-core/blob/main/README.md
                about initializing the authenticator of your choice.
         """
         BaseService.__init__(self,
@@ -107,6 +135,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         url = '/deployables'
@@ -114,7 +143,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -140,6 +169,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         url = '/regions'
@@ -147,7 +177,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -167,7 +197,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `GetDeploymentInfoResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -177,6 +207,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -187,7 +218,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -199,7 +230,7 @@ class CloudDatabasesV5(BaseService):
         id: str,
         user_type: str,
         *,
-        user: 'CreateDatabaseUserRequestUser' = None,
+        user: 'User' = None,
         **kwargs
     ) -> DetailedResponse:
         """
@@ -209,15 +240,15 @@ class CloudDatabasesV5(BaseService):
 
         :param str id: Deployment ID.
         :param str user_type: User type.
-        :param CreateDatabaseUserRequestUser user: (optional)
+        :param User user: (optional)
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `CreateDatabaseUserResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if user_type is None:
+        if not user_type:
             raise ValueError('user_type must be provided')
         if user is not None:
             user = convert_model(user)
@@ -236,6 +267,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'user_type']
@@ -247,44 +279,45 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
-    def change_user_password(self,
+    def update_user(self,
         id: str,
         user_type: str,
         username: str,
         *,
-        user: 'APasswordSettingUser' = None,
+        user: 'UserUpdate' = None,
         **kwargs
     ) -> DetailedResponse:
         """
-        Set specified user's password.
+        Update a user's password or role.
 
-        Sets the password of a specified user.
+        Sets the password or role of a specified user. Updating roles is only supported
+        for Redis 6.0 or greater.
 
         :param str id: Deployment ID.
         :param str user_type: User type.
         :param str username: User ID.
-        :param APasswordSettingUser user: (optional)
+        :param UserUpdate user: (optional)
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ChangeUserPasswordResponse` object
+        :rtype: DetailedResponse with `dict` result representing a `UpdateUserResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if user_type is None:
+        if not user_type:
             raise ValueError('user_type must be provided')
-        if username is None:
+        if not username:
             raise ValueError('username must be provided')
         if user is not None:
             user = convert_model(user)
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='change_user_password')
+                                      operation_id='update_user')
         headers.update(sdk_headers)
 
         data = {
@@ -296,6 +329,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'user_type', 'username']
@@ -307,7 +341,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -330,11 +364,11 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `DeleteDatabaseUserResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if user_type is None:
+        if not user_type:
             raise ValueError('user_type must be provided')
-        if username is None:
+        if not username:
             raise ValueError('username must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -344,6 +378,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'user_type', 'username']
@@ -354,7 +389,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -364,27 +399,27 @@ class CloudDatabasesV5(BaseService):
 
     def update_database_configuration(self,
         id: str,
-        configuration: 'SetConfigurationConfiguration',
+        *,
+        configuration: 'Configuration' = None,
         **kwargs
     ) -> DetailedResponse:
         """
         Change your database configuration.
 
-        Change your database configuration. Available for PostgreSQL, EnterpriseDB, and
-        Redis ONLY.
+        Change your database configuration. Available for PostgreSQL, EnterpriseDB, MySQL,
+        RabbitMQ and Redis ONLY.
 
         :param str id: Deployment ID.
-        :param SetConfigurationConfiguration configuration:
+        :param Configuration configuration: (optional)
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `UpdateDatabaseConfigurationResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if configuration is None:
-            raise ValueError('configuration must be provided')
-        configuration = convert_model(configuration)
+        if configuration is not None:
+            configuration = convert_model(configuration)
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
@@ -400,6 +435,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -411,7 +447,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -435,7 +471,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `ListRemotesResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -445,6 +481,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -455,7 +492,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -474,7 +511,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `ResyncReplicaResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -484,6 +521,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -494,13 +532,14 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
-    def set_promotion(self,
+    def promote_read_only_replica(self,
         id: str,
-        promotion: 'SetPromotionPromotion',
+        *,
+        promotion: dict = None,
         **kwargs
     ) -> DetailedResponse:
         """
@@ -510,25 +549,22 @@ class CloudDatabasesV5(BaseService):
         for PostgreSQL and EnterpriseDB ONLY.
 
         :param str id: Deployment ID of the read-only replica to promote.
-        :param SetPromotionPromotion promotion:
+        :param dict promotion: (optional) Promotion and Upgrade options.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `SetPromotionResponse` object
+        :rtype: DetailedResponse with `dict` result representing a `PromoteReadOnlyReplicaResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if promotion is None:
-            raise ValueError('promotion must be provided')
-        promotion = convert_model(promotion)
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='set_promotion')
+                                      operation_id='promote_read_only_replica')
         headers.update(sdk_headers)
 
         data = {
-            'Promotion': promotion
+            'promotion': promotion
         }
         data = {k: v for (k, v) in data.items() if v is not None}
         data = json.dumps(data)
@@ -536,6 +572,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -547,7 +584,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -572,7 +609,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `Tasks` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -582,6 +619,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -592,7 +630,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -612,7 +650,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `GetTaskResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -622,6 +660,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -632,7 +671,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -655,7 +694,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `GetBackupInfoResponse` object
         """
 
-        if backup_id is None:
+        if not backup_id:
             raise ValueError('backup_id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -665,6 +704,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['backup_id']
@@ -675,7 +715,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -694,7 +734,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `Backups` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -704,6 +744,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -714,7 +755,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -734,7 +775,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `StartOndemandBackupResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -744,6 +785,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -754,11 +796,11 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
-    def get_pit_rdata(self,
+    def get_pitr_data(self,
         id: str,
         **kwargs
     ) -> DetailedResponse:
@@ -771,19 +813,20 @@ class CloudDatabasesV5(BaseService):
         :param str id: Deployment ID.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `PointInTimeRecoveryData` object
+        :rtype: DetailedResponse with `dict` result representing a `GetPITRDataResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
-                                      operation_id='get_pit_rdata')
+                                      operation_id='get_pitr_data')
         headers.update(sdk_headers)
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -794,7 +837,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -826,16 +869,16 @@ class CloudDatabasesV5(BaseService):
                for use by other commands.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Connection` object
+        :rtype: DetailedResponse with `dict` result representing a `GetConnectionResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if user_type is None:
+        if not user_type:
             raise ValueError('user_type must be provided')
-        if user_id is None:
+        if not user_id:
             raise ValueError('user_id must be provided')
-        if endpoint_type is None:
+        if not endpoint_type:
             raise ValueError('endpoint_type must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -849,6 +892,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'user_type', 'user_id', 'endpoint_type']
@@ -860,7 +904,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        params=params)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -894,16 +938,16 @@ class CloudDatabasesV5(BaseService):
                for use by other commands.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Connection` object
+        :rtype: DetailedResponse with `dict` result representing a `CompleteConnectionResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if user_type is None:
+        if not user_type:
             raise ValueError('user_type must be provided')
-        if user_id is None:
+        if not user_id:
             raise ValueError('user_id must be provided')
-        if endpoint_type is None:
+        if not endpoint_type:
             raise ValueError('endpoint_type must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -921,6 +965,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'user_type', 'user_id', 'endpoint_type']
@@ -932,7 +977,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -954,10 +999,10 @@ class CloudDatabasesV5(BaseService):
         :param str id: Deployment ID.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Groups` object
+        :rtype: DetailedResponse with `dict` result representing a `ListDeploymentScalingGroupsResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -967,6 +1012,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -977,7 +1023,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -995,10 +1041,10 @@ class CloudDatabasesV5(BaseService):
         :param str type: Database type name.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Groups` object
+        :rtype: DetailedResponse with `dict` result representing a `GetDefaultScalingGroupsResponse` object
         """
 
-        if type is None:
+        if not type:
             raise ValueError('type must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -1008,6 +1054,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['type']
@@ -1018,14 +1065,15 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
     def set_deployment_scaling_group(self,
         id: str,
         group_id: str,
-        set_deployment_scaling_group_request: 'SetDeploymentScalingGroupRequest',
+        *,
+        group: 'GroupScaling' = None,
         **kwargs
     ) -> DetailedResponse:
         """
@@ -1038,32 +1086,34 @@ class CloudDatabasesV5(BaseService):
 
         :param str id: Deployment ID.
         :param str group_id: Group Id.
-        :param SetDeploymentScalingGroupRequest
-               set_deployment_scaling_group_request: Scaling group settings.
+        :param GroupScaling group: (optional)
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `SetDeploymentScalingGroupResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if group_id is None:
+        if not group_id:
             raise ValueError('group_id must be provided')
-        if set_deployment_scaling_group_request is None:
-            raise ValueError('set_deployment_scaling_group_request must be provided')
-        if isinstance(set_deployment_scaling_group_request, SetDeploymentScalingGroupRequest):
-            set_deployment_scaling_group_request = convert_model(set_deployment_scaling_group_request)
+        if group is not None:
+            group = convert_model(group)
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
                                       service_version='V5',
                                       operation_id='set_deployment_scaling_group')
         headers.update(sdk_headers)
 
-        data = json.dumps(set_deployment_scaling_group_request)
+        data = {
+            'group': group
+        }
+        data = {k: v for (k, v) in data.items() if v is not None}
+        data = json.dumps(data)
         headers['content-type'] = 'application/json'
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'group_id']
@@ -1075,7 +1125,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -1102,9 +1152,9 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `AutoscalingGroup` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if group_id is None:
+        if not group_id:
             raise ValueError('group_id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -1114,6 +1164,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'group_id']
@@ -1124,7 +1175,7 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -1148,9 +1199,9 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `SetAutoscalingConditionsResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if group_id is None:
+        if not group_id:
             raise ValueError('group_id must be provided')
         if autoscaling is None:
             raise ValueError('autoscaling must be provided')
@@ -1170,6 +1221,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'group_id']
@@ -1181,7 +1233,7 @@ class CloudDatabasesV5(BaseService):
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -1205,7 +1257,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `KillConnectionsResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -1215,6 +1267,7 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
@@ -1225,7 +1278,106 @@ class CloudDatabasesV5(BaseService):
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
+        return response
+
+
+    def create_logical_replication_slot(self,
+        id: str,
+        *,
+        logical_replication_slot: 'LogicalReplicationSlot' = None,
+        **kwargs
+    ) -> DetailedResponse:
+        """
+        Create a new logical replication slot.
+
+        Creates a new logical replication slot on the specified database. For use with
+        PostgreSQL and wal2json only.
+
+        :param str id: Deployment ID.
+        :param LogicalReplicationSlot logical_replication_slot: (optional)
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `CreateLogicalReplicationSlotResponse` object
+        """
+
+        if not id:
+            raise ValueError('id must be provided')
+        if logical_replication_slot is not None:
+            logical_replication_slot = convert_model(logical_replication_slot)
+        headers = {}
+        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
+                                      service_version='V5',
+                                      operation_id='create_logical_replication_slot')
+        headers.update(sdk_headers)
+
+        data = {
+            'logical_replication_slot': logical_replication_slot
+        }
+        data = {k: v for (k, v) in data.items() if v is not None}
+        data = json.dumps(data)
+        headers['content-type'] = 'application/json'
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['id']
+        path_param_values = self.encode_path_vars(id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/deployments/{id}/postgresql/logical_replication_slots'.format(**path_param_dict)
+        request = self.prepare_request(method='POST',
+                                       url=url,
+                                       headers=headers,
+                                       data=data)
+
+        response = self.send(request, **kwargs)
+        return response
+
+
+    def delete_logical_replication_slot(self,
+        id: str,
+        name: str,
+        **kwargs
+    ) -> DetailedResponse:
+        """
+        Delete a logical replication slot.
+
+        Deletes a logical replication slot from a database. For use with PostgreSQL,
+        EnterpriseDB, and wal2json only.
+
+        :param str id: Deployment ID.
+        :param str name: Name of the logical replication slot.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `DeleteLogicalReplicationSlotResponse` object
+        """
+
+        if not id:
+            raise ValueError('id must be provided')
+        if not name:
+            raise ValueError('name must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
+                                      service_version='V5',
+                                      operation_id='delete_logical_replication_slot')
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['id', 'name']
+        path_param_values = self.encode_path_vars(id, name)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/deployments/{id}/postgresql/logical_replication_slots/{name}'.format(**path_param_dict)
+        request = self.prepare_request(method='DELETE',
+                                       url=url,
+                                       headers=headers)
+
+        response = self.send(request, **kwargs)
         return response
 
     #########################
@@ -1245,10 +1397,10 @@ class CloudDatabasesV5(BaseService):
         :param str id: Deployment ID.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Allowlist` object
+        :rtype: DetailedResponse with `dict` result representing a `GetAllowlistResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -1258,17 +1410,18 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
         path_param_values = self.encode_path_vars(id)
         path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/whitelists/ip_addresses'.format(**path_param_dict)
+        url = '/deployments/{id}/allowlists/ip_addresses'.format(**path_param_dict)
         request = self.prepare_request(method='GET',
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -1288,8 +1441,7 @@ class CloudDatabasesV5(BaseService):
         are made by other clients are not accidentally overwritten.
 
         :param str id: Deployment ID.
-        :param List[AllowlistEntry] ip_addresses: (optional) An array of allowlist
-               entries.
+        :param List[AllowlistEntry] ip_addresses: (optional)
         :param str if_match: (optional) Verify that the current allowlist matches a
                provided ETag value. Use in conjunction with the GET operation's ETag
                header to ensure synchronicity between clients.
@@ -1298,7 +1450,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `SetAllowlistResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         if ip_addresses is not None:
             ip_addresses = [convert_model(x) for x in ip_addresses]
@@ -1319,18 +1471,19 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
         path_param_values = self.encode_path_vars(id)
         path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/whitelists/ip_addresses'.format(**path_param_dict)
+        url = '/deployments/{id}/allowlists/ip_addresses'.format(**path_param_dict)
         request = self.prepare_request(method='PUT',
                                        url=url,
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -1352,7 +1505,7 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `AddAllowlistEntryResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
         if ip_address is not None:
             ip_address = convert_model(ip_address)
@@ -1371,18 +1524,19 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id']
         path_param_values = self.encode_path_vars(id)
         path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/whitelists/ip_addresses'.format(**path_param_dict)
+        url = '/deployments/{id}/allowlists/ip_addresses'.format(**path_param_dict)
         request = self.prepare_request(method='POST',
                                        url=url,
                                        headers=headers,
                                        data=data)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -1404,9 +1558,9 @@ class CloudDatabasesV5(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `DeleteAllowlistEntryResponse` object
         """
 
-        if id is None:
+        if not id:
             raise ValueError('id must be provided')
-        if ipaddress is None:
+        if not ipaddress:
             raise ValueError('ipaddress must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(service_name=self.DEFAULT_SERVICE_NAME,
@@ -1416,17 +1570,18 @@ class CloudDatabasesV5(BaseService):
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
+            del kwargs['headers']
         headers['Accept'] = 'application/json'
 
         path_param_keys = ['id', 'ipaddress']
         path_param_values = self.encode_path_vars(id, ipaddress)
         path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/deployments/{id}/whitelists/ip_addresses/{ipaddress}'.format(**path_param_dict)
+        url = '/deployments/{id}/allowlists/ip_addresses/{ipaddress}'.format(**path_param_dict)
         request = self.prepare_request(method='DELETE',
                                        url=url,
                                        headers=headers)
 
-        response = self.send(request)
+        response = self.send(request, **kwargs)
         return response
 
 
@@ -1476,61 +1631,6 @@ class GetDefaultScalingGroupsEnums:
 ##############################################################################
 
 
-class APasswordSettingUser():
-    """
-    APasswordSettingUser.
-
-    :attr str password: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 password: str = None) -> None:
-        """
-        Initialize a APasswordSettingUser object.
-
-        :param str password: (optional)
-        """
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'APasswordSettingUser':
-        """Initialize a APasswordSettingUser object from a json dictionary."""
-        args = {}
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a APasswordSettingUser object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this APasswordSettingUser object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'APasswordSettingUser') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'APasswordSettingUser') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
 class AddAllowlistEntryResponse():
     """
     AddAllowlistEntryResponse.
@@ -1565,7 +1665,10 @@ class AddAllowlistEntryResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -1583,63 +1686,6 @@ class AddAllowlistEntryResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'AddAllowlistEntryResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class Allowlist():
-    """
-    Allowlist.
-
-    :attr List[AllowlistEntry] ip_addresses: (optional) An array of allowlist
-          entries.
-    """
-
-    def __init__(self,
-                 *,
-                 ip_addresses: List['AllowlistEntry'] = None) -> None:
-        """
-        Initialize a Allowlist object.
-
-        :param List[AllowlistEntry] ip_addresses: (optional) An array of allowlist
-               entries.
-        """
-        self.ip_addresses = ip_addresses
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'Allowlist':
-        """Initialize a Allowlist object from a json dictionary."""
-        args = {}
-        if 'ip_addresses' in _dict:
-            args['ip_addresses'] = [AllowlistEntry.from_dict(x) for x in _dict.get('ip_addresses')]
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a Allowlist object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'ip_addresses') and self.ip_addresses is not None:
-            _dict['ip_addresses'] = [x.to_dict() for x in self.ip_addresses]
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this Allowlist object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'Allowlist') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'Allowlist') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -1714,18 +1760,18 @@ class AutoscalingCPUGroupCPU():
     """
     AutoscalingCPUGroupCPU.
 
-    :attr object scalers: (optional)
+    :attr dict scalers: (optional)
     :attr AutoscalingCPUGroupCPURate rate: (optional)
     """
 
     def __init__(self,
                  *,
-                 scalers: object = None,
+                 scalers: dict = None,
                  rate: 'AutoscalingCPUGroupCPURate' = None) -> None:
         """
         Initialize a AutoscalingCPUGroupCPU object.
 
-        :param object scalers: (optional)
+        :param dict scalers: (optional)
         :param AutoscalingCPUGroupCPURate rate: (optional)
         """
         self.scalers = scalers
@@ -1752,7 +1798,10 @@ class AutoscalingCPUGroupCPU():
         if hasattr(self, 'scalers') and self.scalers is not None:
             _dict['scalers'] = self.scalers
         if hasattr(self, 'rate') and self.rate is not None:
-            _dict['rate'] = self.rate.to_dict()
+            if isinstance(self.rate, dict):
+                _dict['rate'] = self.rate
+            else:
+                _dict['rate'] = self.rate.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -1892,9 +1941,15 @@ class AutoscalingDiskGroupDisk():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'scalers') and self.scalers is not None:
-            _dict['scalers'] = self.scalers.to_dict()
+            if isinstance(self.scalers, dict):
+                _dict['scalers'] = self.scalers
+            else:
+                _dict['scalers'] = self.scalers.to_dict()
         if hasattr(self, 'rate') and self.rate is not None:
-            _dict['rate'] = self.rate.to_dict()
+            if isinstance(self.rate, dict):
+                _dict['rate'] = self.rate
+            else:
+                _dict['rate'] = self.rate.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2035,9 +2090,15 @@ class AutoscalingDiskGroupDiskScalers():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'capacity') and self.capacity is not None:
-            _dict['capacity'] = self.capacity.to_dict()
+            if isinstance(self.capacity, dict):
+                _dict['capacity'] = self.capacity
+            else:
+                _dict['capacity'] = self.capacity.to_dict()
         if hasattr(self, 'io_utilization') and self.io_utilization is not None:
-            _dict['io_utilization'] = self.io_utilization.to_dict()
+            if isinstance(self.io_utilization, dict):
+                _dict['io_utilization'] = self.io_utilization
+            else:
+                _dict['io_utilization'] = self.io_utilization.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2227,7 +2288,10 @@ class AutoscalingGroup():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'autoscaling') and self.autoscaling is not None:
-            _dict['autoscaling'] = self.autoscaling.to_dict()
+            if isinstance(self.autoscaling, dict):
+                _dict['autoscaling'] = self.autoscaling
+            else:
+                _dict['autoscaling'] = self.autoscaling.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2294,11 +2358,20 @@ class AutoscalingGroupAutoscaling():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'disk') and self.disk is not None:
-            _dict['disk'] = self.disk.to_dict()
+            if isinstance(self.disk, dict):
+                _dict['disk'] = self.disk
+            else:
+                _dict['disk'] = self.disk.to_dict()
         if hasattr(self, 'memory') and self.memory is not None:
-            _dict['memory'] = self.memory.to_dict()
+            if isinstance(self.memory, dict):
+                _dict['memory'] = self.memory
+            else:
+                _dict['memory'] = self.memory.to_dict()
         if hasattr(self, 'cpu') and self.cpu is not None:
-            _dict['cpu'] = self.cpu.to_dict()
+            if isinstance(self.cpu, dict):
+                _dict['cpu'] = self.cpu
+            else:
+                _dict['cpu'] = self.cpu.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2359,9 +2432,15 @@ class AutoscalingMemoryGroupMemory():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'scalers') and self.scalers is not None:
-            _dict['scalers'] = self.scalers.to_dict()
+            if isinstance(self.scalers, dict):
+                _dict['scalers'] = self.scalers
+            else:
+                _dict['scalers'] = self.scalers.to_dict()
         if hasattr(self, 'rate') and self.rate is not None:
-            _dict['rate'] = self.rate.to_dict()
+            if isinstance(self.rate, dict):
+                _dict['rate'] = self.rate
+            else:
+                _dict['rate'] = self.rate.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2497,7 +2576,10 @@ class AutoscalingMemoryGroupMemoryScalers():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'io_utilization') and self.io_utilization is not None:
-            _dict['io_utilization'] = self.io_utilization.to_dict()
+            if isinstance(self.io_utilization, dict):
+                _dict['io_utilization'] = self.io_utilization
+            else:
+                _dict['io_utilization'] = self.io_utilization.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -2615,6 +2697,8 @@ class Backup():
     :attr bool is_downloadable: (optional) Is this backup available to download?.
     :attr bool is_restorable: (optional) Can this backup be used to restore an
           instance?.
+    :attr str download_link: (optional) URI which is currently available for file
+          downloading.
     :attr datetime created_at: (optional) Date and time when this backup was
           created.
     """
@@ -2627,6 +2711,7 @@ class Backup():
                  status: str = None,
                  is_downloadable: bool = None,
                  is_restorable: bool = None,
+                 download_link: str = None,
                  created_at: datetime = None) -> None:
         """
         Initialize a Backup object.
@@ -2640,6 +2725,8 @@ class Backup():
                download?.
         :param bool is_restorable: (optional) Can this backup be used to restore an
                instance?.
+        :param str download_link: (optional) URI which is currently available for
+               file downloading.
         :param datetime created_at: (optional) Date and time when this backup was
                created.
         """
@@ -2649,6 +2736,7 @@ class Backup():
         self.status = status
         self.is_downloadable = is_downloadable
         self.is_restorable = is_restorable
+        self.download_link = download_link
         self.created_at = created_at
 
     @classmethod
@@ -2667,6 +2755,8 @@ class Backup():
             args['is_downloadable'] = _dict.get('is_downloadable')
         if 'is_restorable' in _dict:
             args['is_restorable'] = _dict.get('is_restorable')
+        if 'download_link' in _dict:
+            args['download_link'] = _dict.get('download_link')
         if 'created_at' in _dict:
             args['created_at'] = string_to_datetime(_dict.get('created_at'))
         return cls(**args)
@@ -2691,6 +2781,8 @@ class Backup():
             _dict['is_downloadable'] = self.is_downloadable
         if hasattr(self, 'is_restorable') and self.is_restorable is not None:
             _dict['is_restorable'] = self.is_restorable
+        if hasattr(self, 'download_link') and self.download_link is not None:
+            _dict['download_link'] = self.download_link
         if hasattr(self, 'created_at') and self.created_at is not None:
             _dict['created_at'] = datetime_to_string(self.created_at)
         return _dict
@@ -2734,7 +2826,7 @@ class Backups():
     """
     Backups.
 
-    :attr List[Backup] backups: (optional)
+    :attr List[Backup] backups: (optional) An array of backups.
     """
 
     def __init__(self,
@@ -2743,7 +2835,7 @@ class Backups():
         """
         Initialize a Backups object.
 
-        :param List[Backup] backups: (optional)
+        :param List[Backup] backups: (optional) An array of backups.
         """
         self.backups = backups
 
@@ -2752,7 +2844,7 @@ class Backups():
         """Initialize a Backups object from a json dictionary."""
         args = {}
         if 'backups' in _dict:
-            args['backups'] = [Backup.from_dict(x) for x in _dict.get('backups')]
+            args['backups'] = [Backup.from_dict(v) for v in _dict.get('backups')]
         return cls(**args)
 
     @classmethod
@@ -2764,7 +2856,13 @@ class Backups():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'backups') and self.backups is not None:
-            _dict['backups'] = [x.to_dict() for x in self.backups]
+            backups_list = []
+            for v in self.backups:
+                if isinstance(v, dict):
+                    backups_list.append(v)
+                else:
+                    backups_list.append(v.to_dict())
+            _dict['backups'] = backups_list
         return _dict
 
     def _to_dict(self):
@@ -2785,90 +2883,34 @@ class Backups():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ChangeUserPasswordResponse():
+class CompleteConnectionResponse():
     """
-    ChangeUserPasswordResponse.
+    CompleteConnectionResponse.
 
-    :attr Task task: (optional)
+    :attr Connection connection: (optional)
     """
 
     def __init__(self,
                  *,
-                 task: 'Task' = None) -> None:
+                 connection: 'Connection' = None) -> None:
         """
-        Initialize a ChangeUserPasswordResponse object.
+        Initialize a CompleteConnectionResponse object.
 
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ChangeUserPasswordResponse':
-        """Initialize a ChangeUserPasswordResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ChangeUserPasswordResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ChangeUserPasswordResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ChangeUserPasswordResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ChangeUserPasswordResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class Connection():
-    """
-    Connection.
-
-    :attr ConnectionConnection connection:
-    """
-
-    def __init__(self,
-                 connection: 'ConnectionConnection') -> None:
-        """
-        Initialize a Connection object.
-
-        :param ConnectionConnection connection:
+        :param Connection connection: (optional)
         """
         self.connection = connection
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'Connection':
-        """Initialize a Connection object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'CompleteConnectionResponse':
+        """Initialize a CompleteConnectionResponse object from a json dictionary."""
         args = {}
         if 'connection' in _dict:
             args['connection'] = _dict.get('connection')
-        else:
-            raise ValueError('Required property \'connection\' not present in Connection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a Connection object from a json dictionary."""
+        """Initialize a CompleteConnectionResponse object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -2886,16 +2928,182 @@ class Connection():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this Connection object."""
+        """Return a `str` version of this CompleteConnectionResponse object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'Connection') -> bool:
+    def __eq__(self, other: 'CompleteConnectionResponse') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'Connection') -> bool:
+    def __ne__(self, other: 'CompleteConnectionResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class Configuration():
+    """
+    Configuration.
+
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize a Configuration object.
+
+        """
+        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
+                  ", ".join(['ConfigurationPGConfiguration', 'ConfigurationRedisConfiguration', 'ConfigurationRabbitMQConfiguration', 'ConfigurationMySQLConfiguration']))
+        raise Exception(msg)
+
+class Connection():
+    """
+    Connection.
+
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize a Connection object.
+
+        """
+        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
+                  ", ".join(['ConnectionPostgreSQLConnection', 'ConnectionRedisConnection', 'ConnectionElasticsearchConnection', 'ConnectionRabbitMQConnection', 'ConnectionEtcdConnection', 'ConnectionMongoDBConnection', 'ConnectionMongoDBEEConnection', 'ConnectionMongoDBEEOpsManagerConnection', 'ConnectionMySQLConnection', 'ConnectionDataStaxConnection', 'ConnectionEnterpriseDBConnection']))
+        raise Exception(msg)
+
+class ConnectionAuthentication():
+    """
+    Authentication data for Connection String.
+
+    :attr str method: (optional) Authentication method for this credential.
+    :attr str username: (optional) Username part of credential.
+    :attr str password: (optional) Password part of credential.
+    """
+
+    def __init__(self,
+                 *,
+                 method: str = None,
+                 username: str = None,
+                 password: str = None) -> None:
+        """
+        Initialize a ConnectionAuthentication object.
+
+        :param str method: (optional) Authentication method for this credential.
+        :param str username: (optional) Username part of credential.
+        :param str password: (optional) Password part of credential.
+        """
+        self.method = method
+        self.username = username
+        self.password = password
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionAuthentication':
+        """Initialize a ConnectionAuthentication object from a json dictionary."""
+        args = {}
+        if 'method' in _dict:
+            args['method'] = _dict.get('method')
+        if 'username' in _dict:
+            args['username'] = _dict.get('username')
+        if 'password' in _dict:
+            args['password'] = _dict.get('password')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionAuthentication object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'method') and self.method is not None:
+            _dict['method'] = self.method
+        if hasattr(self, 'username') and self.username is not None:
+            _dict['username'] = self.username
+        if hasattr(self, 'password') and self.password is not None:
+            _dict['password'] = self.password
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionAuthentication object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionAuthentication') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionAuthentication') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionBundle():
+    """
+    ConnectionBundle.
+
+    :attr str name: (optional) Name associated with the certificate.
+    :attr str bundle_base64: (optional) Base64 encoded version of the certificate
+          bundle.
+    """
+
+    def __init__(self,
+                 *,
+                 name: str = None,
+                 bundle_base64: str = None) -> None:
+        """
+        Initialize a ConnectionBundle object.
+
+        :param str name: (optional) Name associated with the certificate.
+        :param str bundle_base64: (optional) Base64 encoded version of the
+               certificate bundle.
+        """
+        self.name = name
+        self.bundle_base64 = bundle_base64
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionBundle':
+        """Initialize a ConnectionBundle object from a json dictionary."""
+        args = {}
+        if 'name' in _dict:
+            args['name'] = _dict.get('name')
+        if 'bundle_base64' in _dict:
+            args['bundle_base64'] = _dict.get('bundle_base64')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionBundle object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'bundle_base64') and self.bundle_base64 is not None:
+            _dict['bundle_base64'] = self.bundle_base64
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionBundle object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionBundle') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionBundle') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -2911,7 +3119,7 @@ class ConnectionCLI():
     :attr List[List[str]] arguments: (optional) Sets of arguments to call the
           executable with. The outer array corresponds to a possible way to call the CLI;
           the inner array is the set of arguments to use with that call.
-    :attr ConnectionCLICertificate certificate: (optional)
+    :attr ConnectionCertificate certificate: (optional)
     """
 
     def __init__(self,
@@ -2921,7 +3129,7 @@ class ConnectionCLI():
                  environment: dict = None,
                  bin: str = None,
                  arguments: List[List[str]] = None,
-                 certificate: 'ConnectionCLICertificate' = None) -> None:
+                 certificate: 'ConnectionCertificate' = None) -> None:
         """
         Initialize a ConnectionCLI object.
 
@@ -2933,7 +3141,7 @@ class ConnectionCLI():
         :param List[List[str]] arguments: (optional) Sets of arguments to call the
                executable with. The outer array corresponds to a possible way to call the
                CLI; the inner array is the set of arguments to use with that call.
-        :param ConnectionCLICertificate certificate: (optional)
+        :param ConnectionCertificate certificate: (optional)
         """
         self.type = type
         self.composed = composed
@@ -2957,7 +3165,7 @@ class ConnectionCLI():
         if 'arguments' in _dict:
             args['arguments'] = _dict.get('arguments')
         if 'certificate' in _dict:
-            args['certificate'] = ConnectionCLICertificate.from_dict(_dict.get('certificate'))
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
         return cls(**args)
 
     @classmethod
@@ -2979,7 +3187,10 @@ class ConnectionCLI():
         if hasattr(self, 'arguments') and self.arguments is not None:
             _dict['arguments'] = self.arguments
         if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -3000,9 +3211,9 @@ class ConnectionCLI():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ConnectionCLICertificate():
+class ConnectionCertificate():
     """
-    ConnectionCLICertificate.
+    ConnectionCertificate.
 
     :attr str name: (optional) Name associated with the certificate.
     :attr str certificate_base64: (optional) Base64 encoded version of the
@@ -3014,7 +3225,7 @@ class ConnectionCLICertificate():
                  name: str = None,
                  certificate_base64: str = None) -> None:
         """
-        Initialize a ConnectionCLICertificate object.
+        Initialize a ConnectionCertificate object.
 
         :param str name: (optional) Name associated with the certificate.
         :param str certificate_base64: (optional) Base64 encoded version of the
@@ -3024,8 +3235,8 @@ class ConnectionCLICertificate():
         self.certificate_base64 = certificate_base64
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionCLICertificate':
-        """Initialize a ConnectionCLICertificate object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionCertificate':
+        """Initialize a ConnectionCertificate object from a json dictionary."""
         args = {}
         if 'name' in _dict:
             args['name'] = _dict.get('name')
@@ -3035,7 +3246,7 @@ class ConnectionCLICertificate():
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a ConnectionCLICertificate object from a json dictionary."""
+        """Initialize a ConnectionCertificate object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -3052,85 +3263,62 @@ class ConnectionCLICertificate():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this ConnectionCLICertificate object."""
+        """Return a `str` version of this ConnectionCertificate object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'ConnectionCLICertificate') -> bool:
+    def __eq__(self, other: 'ConnectionCertificate') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'ConnectionCLICertificate') -> bool:
+    def __ne__(self, other: 'ConnectionCertificate') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ConnectionConnection():
+class ConnectionHost():
     """
-    ConnectionConnection.
+    Connection hostname and port.
 
-    """
-
-    def __init__(self) -> None:
-        """
-        Initialize a ConnectionConnection object.
-
-        """
-        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
-                  ", ".join(['ConnectionConnectionPostgreSQLConnection', 'ConnectionConnectionRedisConnection', 'ConnectionConnectionElasticsearchConnection', 'ConnectionConnectionRabbitMQConnection', 'ConnectionConnectionEtcdConnection', 'ConnectionConnectionMongoDBConnection']))
-        raise Exception(msg)
-
-class CreateDatabaseUserRequestUser():
-    """
-    CreateDatabaseUserRequestUser.
-
-    :attr str user_type: (optional) User type for new user.
-    :attr str username: (optional) Username for new user.
-    :attr str password: (optional) Password for new user.
+    :attr str hostname: (optional) Hostname for connection.
+    :attr int port: (optional) Port number for connection.
     """
 
     def __init__(self,
                  *,
-                 user_type: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
+                 hostname: str = None,
+                 port: int = None) -> None:
         """
-        Initialize a CreateDatabaseUserRequestUser object.
+        Initialize a ConnectionHost object.
 
-        :param str user_type: (optional) User type for new user.
-        :param str username: (optional) Username for new user.
-        :param str password: (optional) Password for new user.
+        :param str hostname: (optional) Hostname for connection.
+        :param int port: (optional) Port number for connection.
         """
-        self.user_type = user_type
-        self.username = username
-        self.password = password
+        self.hostname = hostname
+        self.port = port
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'CreateDatabaseUserRequestUser':
-        """Initialize a CreateDatabaseUserRequestUser object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionHost':
+        """Initialize a ConnectionHost object from a json dictionary."""
         args = {}
-        if 'user_type' in _dict:
-            args['user_type'] = _dict.get('user_type')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
+        if 'hostname' in _dict:
+            args['hostname'] = _dict.get('hostname')
+        if 'port' in _dict:
+            args['port'] = _dict.get('port')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a CreateDatabaseUserRequestUser object from a json dictionary."""
+        """Initialize a ConnectionHost object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'user_type') and self.user_type is not None:
-            _dict['user_type'] = self.user_type
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
+        if hasattr(self, 'hostname') and self.hostname is not None:
+            _dict['hostname'] = self.hostname
+        if hasattr(self, 'port') and self.port is not None:
+            _dict['port'] = self.port
         return _dict
 
     def _to_dict(self):
@@ -3138,16 +3326,160 @@ class CreateDatabaseUserRequestUser():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this CreateDatabaseUserRequestUser object."""
+        """Return a `str` version of this ConnectionHost object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'CreateDatabaseUserRequestUser') -> bool:
+    def __eq__(self, other: 'ConnectionHost') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'CreateDatabaseUserRequestUser') -> bool:
+    def __ne__(self, other: 'ConnectionHost') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionURI():
+    """
+    ConnectionURI.
+
+    :attr str type: (optional) Type of connection being described.
+    :attr List[str] composed: (optional)
+    :attr str scheme: (optional) Scheme/protocol for URI connection.
+    :attr List[ConnectionHost] hosts: (optional)
+    :attr str path: (optional) Path for URI connection.
+    :attr dict query_options: (optional) Query options to add to the URI connection.
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionCertificate certificate: (optional)
+    :attr bool ssl: (optional) Indicates ssl is required for the connection.
+    :attr bool browser_accessible: (optional) Indicates the address is accessible by
+          browser.
+    """
+
+    def __init__(self,
+                 *,
+                 type: str = None,
+                 composed: List[str] = None,
+                 scheme: str = None,
+                 hosts: List['ConnectionHost'] = None,
+                 path: str = None,
+                 query_options: dict = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 certificate: 'ConnectionCertificate' = None,
+                 ssl: bool = None,
+                 browser_accessible: bool = None) -> None:
+        """
+        Initialize a ConnectionURI object.
+
+        :param str type: (optional) Type of connection being described.
+        :param List[str] composed: (optional)
+        :param str scheme: (optional) Scheme/protocol for URI connection.
+        :param List[ConnectionHost] hosts: (optional)
+        :param str path: (optional) Path for URI connection.
+        :param dict query_options: (optional) Query options to add to the URI
+               connection.
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionCertificate certificate: (optional)
+        :param bool ssl: (optional) Indicates ssl is required for the connection.
+        :param bool browser_accessible: (optional) Indicates the address is
+               accessible by browser.
+        """
+        self.type = type
+        self.composed = composed
+        self.scheme = scheme
+        self.hosts = hosts
+        self.path = path
+        self.query_options = query_options
+        self.authentication = authentication
+        self.certificate = certificate
+        self.ssl = ssl
+        self.browser_accessible = browser_accessible
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionURI':
+        """Initialize a ConnectionURI object from a json dictionary."""
+        args = {}
+        if 'type' in _dict:
+            args['type'] = _dict.get('type')
+        if 'composed' in _dict:
+            args['composed'] = _dict.get('composed')
+        if 'scheme' in _dict:
+            args['scheme'] = _dict.get('scheme')
+        if 'hosts' in _dict:
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
+        if 'path' in _dict:
+            args['path'] = _dict.get('path')
+        if 'query_options' in _dict:
+            args['query_options'] = _dict.get('query_options')
+        if 'authentication' in _dict:
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
+        if 'certificate' in _dict:
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
+        if 'ssl' in _dict:
+            args['ssl'] = _dict.get('ssl')
+        if 'browser_accessible' in _dict:
+            args['browser_accessible'] = _dict.get('browser_accessible')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionURI object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'composed') and self.composed is not None:
+            _dict['composed'] = self.composed
+        if hasattr(self, 'scheme') and self.scheme is not None:
+            _dict['scheme'] = self.scheme
+        if hasattr(self, 'hosts') and self.hosts is not None:
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
+        if hasattr(self, 'path') and self.path is not None:
+            _dict['path'] = self.path
+        if hasattr(self, 'query_options') and self.query_options is not None:
+            _dict['query_options'] = self.query_options
+        if hasattr(self, 'authentication') and self.authentication is not None:
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
+        if hasattr(self, 'certificate') and self.certificate is not None:
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ssl') and self.ssl is not None:
+            _dict['ssl'] = self.ssl
+        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
+            _dict['browser_accessible'] = self.browser_accessible
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionURI object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionURI') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionURI') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -3185,7 +3517,10 @@ class CreateDatabaseUserResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -3203,6 +3538,149 @@ class CreateDatabaseUserResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'CreateDatabaseUserResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class CreateLogicalReplicationSlotResponse():
+    """
+    CreateLogicalReplicationSlotResponse.
+
+    :attr Task task: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 task: 'Task' = None) -> None:
+        """
+        Initialize a CreateLogicalReplicationSlotResponse object.
+
+        :param Task task: (optional)
+        """
+        self.task = task
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'CreateLogicalReplicationSlotResponse':
+        """Initialize a CreateLogicalReplicationSlotResponse object from a json dictionary."""
+        args = {}
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a CreateLogicalReplicationSlotResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'task') and self.task is not None:
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this CreateLogicalReplicationSlotResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'CreateLogicalReplicationSlotResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'CreateLogicalReplicationSlotResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class DataStaxConnectionURI():
+    """
+    DataStaxConnectionURI.
+
+    :attr List[ConnectionHost] hosts: (optional)
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionBundle bundle: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 hosts: List['ConnectionHost'] = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 bundle: 'ConnectionBundle' = None) -> None:
+        """
+        Initialize a DataStaxConnectionURI object.
+
+        :param List[ConnectionHost] hosts: (optional)
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionBundle bundle: (optional)
+        """
+        self.hosts = hosts
+        self.authentication = authentication
+        self.bundle = bundle
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'DataStaxConnectionURI':
+        """Initialize a DataStaxConnectionURI object from a json dictionary."""
+        args = {}
+        if 'hosts' in _dict:
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
+        if 'authentication' in _dict:
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
+        if 'bundle' in _dict:
+            args['bundle'] = ConnectionBundle.from_dict(_dict.get('bundle'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a DataStaxConnectionURI object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'hosts') and self.hosts is not None:
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
+        if hasattr(self, 'authentication') and self.authentication is not None:
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
+        if hasattr(self, 'bundle') and self.bundle is not None:
+            if isinstance(self.bundle, dict):
+                _dict['bundle'] = self.bundle
+            else:
+                _dict['bundle'] = self.bundle.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this DataStaxConnectionURI object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'DataStaxConnectionURI') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'DataStaxConnectionURI') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -3240,7 +3718,10 @@ class DeleteAllowlistEntryResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -3295,7 +3776,10 @@ class DeleteDatabaseUserResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -3313,6 +3797,64 @@ class DeleteDatabaseUserResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'DeleteDatabaseUserResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class DeleteLogicalReplicationSlotResponse():
+    """
+    DeleteLogicalReplicationSlotResponse.
+
+    :attr Task task: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 task: 'Task' = None) -> None:
+        """
+        Initialize a DeleteLogicalReplicationSlotResponse object.
+
+        :param Task task: (optional)
+        """
+        self.task = task
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'DeleteLogicalReplicationSlotResponse':
+        """Initialize a DeleteLogicalReplicationSlotResponse object from a json dictionary."""
+        args = {}
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a DeleteLogicalReplicationSlotResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'task') and self.task is not None:
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this DeleteLogicalReplicationSlotResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'DeleteLogicalReplicationSlotResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'DeleteLogicalReplicationSlotResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -3347,7 +3889,7 @@ class Deployables():
         if 'type' in _dict:
             args['type'] = _dict.get('type')
         if 'versions' in _dict:
-            args['versions'] = [DeployablesVersionsItem.from_dict(x) for x in _dict.get('versions')]
+            args['versions'] = [DeployablesVersionsItem.from_dict(v) for v in _dict.get('versions')]
         return cls(**args)
 
     @classmethod
@@ -3361,7 +3903,13 @@ class Deployables():
         if hasattr(self, 'type') and self.type is not None:
             _dict['type'] = self.type
         if hasattr(self, 'versions') and self.versions is not None:
-            _dict['versions'] = [x.to_dict() for x in self.versions]
+            versions_list = []
+            for v in self.versions:
+                if isinstance(v, dict):
+                    versions_list.append(v)
+                else:
+                    versions_list.append(v.to_dict())
+            _dict['versions'] = versions_list
         return _dict
 
     def _to_dict(self):
@@ -3426,7 +3974,7 @@ class DeployablesVersionsItem():
         if 'is_preferred' in _dict:
             args['is_preferred'] = _dict.get('is_preferred')
         if 'transitions' in _dict:
-            args['transitions'] = [DeployablesVersionsItemTransitionsItem.from_dict(x) for x in _dict.get('transitions')]
+            args['transitions'] = [DeployablesVersionsItemTransitionsItem.from_dict(v) for v in _dict.get('transitions')]
         return cls(**args)
 
     @classmethod
@@ -3444,7 +3992,13 @@ class DeployablesVersionsItem():
         if hasattr(self, 'is_preferred') and self.is_preferred is not None:
             _dict['is_preferred'] = self.is_preferred
         if hasattr(self, 'transitions') and self.transitions is not None:
-            _dict['transitions'] = [x.to_dict() for x in self.transitions]
+            transitions_list = []
+            for v in self.transitions:
+                if isinstance(v, dict):
+                    transitions_list.append(v)
+                else:
+                    transitions_list.append(v.to_dict())
+            _dict['transitions'] = transitions_list
         return _dict
 
     def _to_dict(self):
@@ -3561,7 +4115,8 @@ class Deployment():
     :attr str id: (optional) ID of this deployment.
     :attr str name: (optional) Readable name of this deployment.
     :attr str type: (optional) Database type within this deployment.
-    :attr object platform_options: (optional) Platform-specific options for this
+    :attr str platform: (optional) Platform for this deployment.
+    :attr dict platform_options: (optional) Platform-specific options for this
           deployment.
     :attr str version: (optional) Version number of the database.
     :attr dict admin_usernames: (optional) Login name of administration level user.
@@ -3579,7 +4134,8 @@ class Deployment():
                  id: str = None,
                  name: str = None,
                  type: str = None,
-                 platform_options: object = None,
+                 platform: str = None,
+                 platform_options: dict = None,
                  version: str = None,
                  admin_usernames: dict = None,
                  enable_public_endpoints: bool = None,
@@ -3590,8 +4146,9 @@ class Deployment():
         :param str id: (optional) ID of this deployment.
         :param str name: (optional) Readable name of this deployment.
         :param str type: (optional) Database type within this deployment.
-        :param object platform_options: (optional) Platform-specific options for
-               this deployment.
+        :param str platform: (optional) Platform for this deployment.
+        :param dict platform_options: (optional) Platform-specific options for this
+               deployment.
         :param str version: (optional) Version number of the database.
         :param dict admin_usernames: (optional) Login name of administration level
                user.
@@ -3607,6 +4164,7 @@ class Deployment():
         self.id = id
         self.name = name
         self.type = type
+        self.platform = platform
         self.platform_options = platform_options
         self.version = version
         self.admin_usernames = admin_usernames
@@ -3623,6 +4181,8 @@ class Deployment():
             args['name'] = _dict.get('name')
         if 'type' in _dict:
             args['type'] = _dict.get('type')
+        if 'platform' in _dict:
+            args['platform'] = _dict.get('platform')
         if 'platform_options' in _dict:
             args['platform_options'] = _dict.get('platform_options')
         if 'version' in _dict:
@@ -3649,6 +4209,8 @@ class Deployment():
             _dict['name'] = self.name
         if hasattr(self, 'type') and self.type is not None:
             _dict['type'] = self.type
+        if hasattr(self, 'platform') and self.platform is not None:
+            _dict['platform'] = self.platform
         if hasattr(self, 'platform_options') and self.platform_options is not None:
             _dict['platform_options'] = self.platform_options
         if hasattr(self, 'version') and self.version is not None:
@@ -3679,100 +4241,47 @@ class Deployment():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ElasticsearchConnectionHTTPS():
+class GetAllowlistResponse():
     """
-    ElasticsearchConnectionHTTPS.
+    GetAllowlistResponse.
 
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[ElasticsearchConnectionHTTPSHostsItem] hosts: (optional)
-    :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr ElasticsearchConnectionHTTPSAuthentication authentication: (optional)
-    :attr ElasticsearchConnectionHTTPSCertificate certificate: (optional)
+    :attr List[AllowlistEntry] ip_addresses: (optional)
     """
 
     def __init__(self,
                  *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 scheme: str = None,
-                 hosts: List['ElasticsearchConnectionHTTPSHostsItem'] = None,
-                 path: str = None,
-                 query_options: object = None,
-                 authentication: 'ElasticsearchConnectionHTTPSAuthentication' = None,
-                 certificate: 'ElasticsearchConnectionHTTPSCertificate' = None) -> None:
+                 ip_addresses: List['AllowlistEntry'] = None) -> None:
         """
-        Initialize a ElasticsearchConnectionHTTPS object.
+        Initialize a GetAllowlistResponse object.
 
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[ElasticsearchConnectionHTTPSHostsItem] hosts: (optional)
-        :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
-               connection.
-        :param ElasticsearchConnectionHTTPSAuthentication authentication:
-               (optional)
-        :param ElasticsearchConnectionHTTPSCertificate certificate: (optional)
+        :param List[AllowlistEntry] ip_addresses: (optional)
         """
-        self.type = type
-        self.composed = composed
-        self.scheme = scheme
-        self.hosts = hosts
-        self.path = path
-        self.query_options = query_options
-        self.authentication = authentication
-        self.certificate = certificate
+        self.ip_addresses = ip_addresses
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ElasticsearchConnectionHTTPS':
-        """Initialize a ElasticsearchConnectionHTTPS object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'GetAllowlistResponse':
+        """Initialize a GetAllowlistResponse object from a json dictionary."""
         args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'scheme' in _dict:
-            args['scheme'] = _dict.get('scheme')
-        if 'hosts' in _dict:
-            args['hosts'] = [ElasticsearchConnectionHTTPSHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'path' in _dict:
-            args['path'] = _dict.get('path')
-        if 'query_options' in _dict:
-            args['query_options'] = _dict.get('query_options')
-        if 'authentication' in _dict:
-            args['authentication'] = ElasticsearchConnectionHTTPSAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = ElasticsearchConnectionHTTPSCertificate.from_dict(_dict.get('certificate'))
+        if 'ip_addresses' in _dict:
+            args['ip_addresses'] = [AllowlistEntry.from_dict(v) for v in _dict.get('ip_addresses')]
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a ElasticsearchConnectionHTTPS object from a json dictionary."""
+        """Initialize a GetAllowlistResponse object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'scheme') and self.scheme is not None:
-            _dict['scheme'] = self.scheme
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'path') and self.path is not None:
-            _dict['path'] = self.path
-        if hasattr(self, 'query_options') and self.query_options is not None:
-            _dict['query_options'] = self.query_options
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ip_addresses') and self.ip_addresses is not None:
+            ip_addresses_list = []
+            for v in self.ip_addresses:
+                if isinstance(v, dict):
+                    ip_addresses_list.append(v)
+                else:
+                    ip_addresses_list.append(v.to_dict())
+            _dict['ip_addresses'] = ip_addresses_list
         return _dict
 
     def _to_dict(self):
@@ -3780,527 +4289,16 @@ class ElasticsearchConnectionHTTPS():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this ElasticsearchConnectionHTTPS object."""
+        """Return a `str` version of this GetAllowlistResponse object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'ElasticsearchConnectionHTTPS') -> bool:
+    def __eq__(self, other: 'GetAllowlistResponse') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'ElasticsearchConnectionHTTPS') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ElasticsearchConnectionHTTPSAuthentication():
-    """
-    ElasticsearchConnectionHTTPSAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a ElasticsearchConnectionHTTPSAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ElasticsearchConnectionHTTPSAuthentication':
-        """Initialize a ElasticsearchConnectionHTTPSAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ElasticsearchConnectionHTTPSAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ElasticsearchConnectionHTTPSAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ElasticsearchConnectionHTTPSAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ElasticsearchConnectionHTTPSAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ElasticsearchConnectionHTTPSCertificate():
-    """
-    ElasticsearchConnectionHTTPSCertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a ElasticsearchConnectionHTTPSCertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ElasticsearchConnectionHTTPSCertificate':
-        """Initialize a ElasticsearchConnectionHTTPSCertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ElasticsearchConnectionHTTPSCertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ElasticsearchConnectionHTTPSCertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ElasticsearchConnectionHTTPSCertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ElasticsearchConnectionHTTPSCertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ElasticsearchConnectionHTTPSHostsItem():
-    """
-    ElasticsearchConnectionHTTPSHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a ElasticsearchConnectionHTTPSHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ElasticsearchConnectionHTTPSHostsItem':
-        """Initialize a ElasticsearchConnectionHTTPSHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ElasticsearchConnectionHTTPSHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ElasticsearchConnectionHTTPSHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ElasticsearchConnectionHTTPSHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ElasticsearchConnectionHTTPSHostsItem') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class GRPCConnectionURI():
-    """
-    GRPCConnectionURI.
-
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[GRPCConnectionURIHostsItem] hosts: (optional)
-    :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr GRPCConnectionURIAuthentication authentication: (optional)
-    :attr GRPCConnectionURICertificate certificate: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 scheme: str = None,
-                 hosts: List['GRPCConnectionURIHostsItem'] = None,
-                 path: str = None,
-                 query_options: object = None,
-                 authentication: 'GRPCConnectionURIAuthentication' = None,
-                 certificate: 'GRPCConnectionURICertificate' = None) -> None:
-        """
-        Initialize a GRPCConnectionURI object.
-
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[GRPCConnectionURIHostsItem] hosts: (optional)
-        :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
-               connection.
-        :param GRPCConnectionURIAuthentication authentication: (optional)
-        :param GRPCConnectionURICertificate certificate: (optional)
-        """
-        self.type = type
-        self.composed = composed
-        self.scheme = scheme
-        self.hosts = hosts
-        self.path = path
-        self.query_options = query_options
-        self.authentication = authentication
-        self.certificate = certificate
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'GRPCConnectionURI':
-        """Initialize a GRPCConnectionURI object from a json dictionary."""
-        args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'scheme' in _dict:
-            args['scheme'] = _dict.get('scheme')
-        if 'hosts' in _dict:
-            args['hosts'] = [GRPCConnectionURIHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'path' in _dict:
-            args['path'] = _dict.get('path')
-        if 'query_options' in _dict:
-            args['query_options'] = _dict.get('query_options')
-        if 'authentication' in _dict:
-            args['authentication'] = GRPCConnectionURIAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = GRPCConnectionURICertificate.from_dict(_dict.get('certificate'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a GRPCConnectionURI object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'scheme') and self.scheme is not None:
-            _dict['scheme'] = self.scheme
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'path') and self.path is not None:
-            _dict['path'] = self.path
-        if hasattr(self, 'query_options') and self.query_options is not None:
-            _dict['query_options'] = self.query_options
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this GRPCConnectionURI object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'GRPCConnectionURI') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'GRPCConnectionURI') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class GRPCConnectionURIAuthentication():
-    """
-    GRPCConnectionURIAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a GRPCConnectionURIAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'GRPCConnectionURIAuthentication':
-        """Initialize a GRPCConnectionURIAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a GRPCConnectionURIAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this GRPCConnectionURIAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'GRPCConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'GRPCConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class GRPCConnectionURICertificate():
-    """
-    GRPCConnectionURICertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a GRPCConnectionURICertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'GRPCConnectionURICertificate':
-        """Initialize a GRPCConnectionURICertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a GRPCConnectionURICertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this GRPCConnectionURICertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'GRPCConnectionURICertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'GRPCConnectionURICertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class GRPCConnectionURIHostsItem():
-    """
-    GRPCConnectionURIHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a GRPCConnectionURIHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'GRPCConnectionURIHostsItem':
-        """Initialize a GRPCConnectionURIHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a GRPCConnectionURIHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this GRPCConnectionURIHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'GRPCConnectionURIHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'GRPCConnectionURIHostsItem') -> bool:
+    def __ne__(self, other: 'GetAllowlistResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -4338,7 +4336,10 @@ class GetBackupInfoResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'backup') and self.backup is not None:
-            _dict['backup'] = self.backup.to_dict()
+            if isinstance(self.backup, dict):
+                _dict['backup'] = self.backup
+            else:
+                _dict['backup'] = self.backup.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -4356,6 +4357,125 @@ class GetBackupInfoResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'GetBackupInfoResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GetConnectionResponse():
+    """
+    GetConnectionResponse.
+
+    :attr Connection connection: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 connection: 'Connection' = None) -> None:
+        """
+        Initialize a GetConnectionResponse object.
+
+        :param Connection connection: (optional)
+        """
+        self.connection = connection
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GetConnectionResponse':
+        """Initialize a GetConnectionResponse object from a json dictionary."""
+        args = {}
+        if 'connection' in _dict:
+            args['connection'] = _dict.get('connection')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GetConnectionResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'connection') and self.connection is not None:
+            if isinstance(self.connection, dict):
+                _dict['connection'] = self.connection
+            else:
+                _dict['connection'] = self.connection.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GetConnectionResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GetConnectionResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GetConnectionResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GetDefaultScalingGroupsResponse():
+    """
+    GetDefaultScalingGroupsResponse.
+
+    :attr List[Group] groups: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 groups: List['Group'] = None) -> None:
+        """
+        Initialize a GetDefaultScalingGroupsResponse object.
+
+        :param List[Group] groups: (optional)
+        """
+        self.groups = groups
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GetDefaultScalingGroupsResponse':
+        """Initialize a GetDefaultScalingGroupsResponse object from a json dictionary."""
+        args = {}
+        if 'groups' in _dict:
+            args['groups'] = [Group.from_dict(v) for v in _dict.get('groups')]
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GetDefaultScalingGroupsResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'groups') and self.groups is not None:
+            groups_list = []
+            for v in self.groups:
+                if isinstance(v, dict):
+                    groups_list.append(v)
+                else:
+                    groups_list.append(v.to_dict())
+            _dict['groups'] = groups_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GetDefaultScalingGroupsResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GetDefaultScalingGroupsResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GetDefaultScalingGroupsResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -4393,7 +4513,10 @@ class GetDeploymentInfoResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'deployment') and self.deployment is not None:
-            _dict['deployment'] = self.deployment.to_dict()
+            if isinstance(self.deployment, dict):
+                _dict['deployment'] = self.deployment
+            else:
+                _dict['deployment'] = self.deployment.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -4411,6 +4534,64 @@ class GetDeploymentInfoResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'GetDeploymentInfoResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GetPITRDataResponse():
+    """
+    GetPITRDataResponse.
+
+    :attr PointInTimeRecoveryData point_in_time_recovery_data: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 point_in_time_recovery_data: 'PointInTimeRecoveryData' = None) -> None:
+        """
+        Initialize a GetPITRDataResponse object.
+
+        :param PointInTimeRecoveryData point_in_time_recovery_data: (optional)
+        """
+        self.point_in_time_recovery_data = point_in_time_recovery_data
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GetPITRDataResponse':
+        """Initialize a GetPITRDataResponse object from a json dictionary."""
+        args = {}
+        if 'point_in_time_recovery_data' in _dict:
+            args['point_in_time_recovery_data'] = PointInTimeRecoveryData.from_dict(_dict.get('point_in_time_recovery_data'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GetPITRDataResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'point_in_time_recovery_data') and self.point_in_time_recovery_data is not None:
+            if isinstance(self.point_in_time_recovery_data, dict):
+                _dict['point_in_time_recovery_data'] = self.point_in_time_recovery_data
+            else:
+                _dict['point_in_time_recovery_data'] = self.point_in_time_recovery_data.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GetPITRDataResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GetPITRDataResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GetPITRDataResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -4448,7 +4629,10 @@ class GetTaskResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -4479,6 +4663,7 @@ class Group():
     :attr GroupMemory memory: (optional)
     :attr GroupCpu cpu: (optional)
     :attr GroupDisk disk: (optional)
+    :attr GroupHostFlavor host_flavor: (optional)
     """
 
     def __init__(self,
@@ -4488,7 +4673,8 @@ class Group():
                  members: 'GroupMembers' = None,
                  memory: 'GroupMemory' = None,
                  cpu: 'GroupCpu' = None,
-                 disk: 'GroupDisk' = None) -> None:
+                 disk: 'GroupDisk' = None,
+                 host_flavor: 'GroupHostFlavor' = None) -> None:
         """
         Initialize a Group object.
 
@@ -4498,6 +4684,7 @@ class Group():
         :param GroupMemory memory: (optional)
         :param GroupCpu cpu: (optional)
         :param GroupDisk disk: (optional)
+        :param GroupHostFlavor host_flavor: (optional)
         """
         self.id = id
         self.count = count
@@ -4505,6 +4692,7 @@ class Group():
         self.memory = memory
         self.cpu = cpu
         self.disk = disk
+        self.host_flavor = host_flavor
 
     @classmethod
     def from_dict(cls, _dict: Dict) -> 'Group':
@@ -4522,6 +4710,8 @@ class Group():
             args['cpu'] = GroupCpu.from_dict(_dict.get('cpu'))
         if 'disk' in _dict:
             args['disk'] = GroupDisk.from_dict(_dict.get('disk'))
+        if 'host_flavor' in _dict:
+            args['host_flavor'] = GroupHostFlavor.from_dict(_dict.get('host_flavor'))
         return cls(**args)
 
     @classmethod
@@ -4537,13 +4727,30 @@ class Group():
         if hasattr(self, 'count') and self.count is not None:
             _dict['count'] = self.count
         if hasattr(self, 'members') and self.members is not None:
-            _dict['members'] = self.members.to_dict()
+            if isinstance(self.members, dict):
+                _dict['members'] = self.members
+            else:
+                _dict['members'] = self.members.to_dict()
         if hasattr(self, 'memory') and self.memory is not None:
-            _dict['memory'] = self.memory.to_dict()
+            if isinstance(self.memory, dict):
+                _dict['memory'] = self.memory
+            else:
+                _dict['memory'] = self.memory.to_dict()
         if hasattr(self, 'cpu') and self.cpu is not None:
-            _dict['cpu'] = self.cpu.to_dict()
+            if isinstance(self.cpu, dict):
+                _dict['cpu'] = self.cpu
+            else:
+                _dict['cpu'] = self.cpu.to_dict()
         if hasattr(self, 'disk') and self.disk is not None:
-            _dict['disk'] = self.disk.to_dict()
+            if isinstance(self.disk, dict):
+                _dict['disk'] = self.disk
+            else:
+                _dict['disk'] = self.disk.to_dict()
+        if hasattr(self, 'host_flavor') and self.host_flavor is not None:
+            if isinstance(self.host_flavor, dict):
+                _dict['host_flavor'] = self.host_flavor
+            else:
+                _dict['host_flavor'] = self.host_flavor.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -4563,6 +4770,16 @@ class Group():
     def __ne__(self, other: 'Group') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
+
+    class IdEnum(str, Enum):
+        """
+        Id/name for group.
+        """
+        MEMBER = 'member'
+        SEARCH = 'search'
+        BI_CONNECTOR = 'bi_connector'
+        ANALYTICS = 'analytics'
+
 
 class GroupCpu():
     """
@@ -4786,6 +5003,77 @@ class GroupDisk():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'GroupDisk') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupHostFlavor():
+    """
+    GroupHostFlavor.
+
+    :attr str id: (optional) Group's host flavor id.
+    :attr str name: (optional) Group's hostflavor name.
+    :attr str hosting_size: (optional) Group's host flavor size.
+    """
+
+    def __init__(self,
+                 *,
+                 id: str = None,
+                 name: str = None,
+                 hosting_size: str = None) -> None:
+        """
+        Initialize a GroupHostFlavor object.
+
+        :param str id: (optional) Group's host flavor id.
+        :param str name: (optional) Group's hostflavor name.
+        :param str hosting_size: (optional) Group's host flavor size.
+        """
+        self.id = id
+        self.name = name
+        self.hosting_size = hosting_size
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupHostFlavor':
+        """Initialize a GroupHostFlavor object from a json dictionary."""
+        args = {}
+        if 'id' in _dict:
+            args['id'] = _dict.get('id')
+        if 'name' in _dict:
+            args['name'] = _dict.get('name')
+        if 'hosting_size' in _dict:
+            args['hosting_size'] = _dict.get('hosting_size')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupHostFlavor object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'id') and self.id is not None:
+            _dict['id'] = self.id
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'hosting_size') and self.hosting_size is not None:
+            _dict['hosting_size'] = self.hosting_size
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupHostFlavor object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupHostFlavor') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupHostFlavor') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -5018,41 +5306,88 @@ class GroupMemory():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class Groups():
+class GroupScaling():
     """
-    Groups.
+    GroupScaling.
 
-    :attr List[Group] groups: (optional)
+    :attr GroupScalingMembers members: (optional)
+    :attr GroupScalingMemory memory: (optional)
+    :attr GroupScalingCpu cpu: (optional)
+    :attr GroupScalingDisk disk: (optional)
+    :attr GroupScalingHostFlavor host_flavor: (optional)
     """
 
     def __init__(self,
                  *,
-                 groups: List['Group'] = None) -> None:
+                 members: 'GroupScalingMembers' = None,
+                 memory: 'GroupScalingMemory' = None,
+                 cpu: 'GroupScalingCpu' = None,
+                 disk: 'GroupScalingDisk' = None,
+                 host_flavor: 'GroupScalingHostFlavor' = None) -> None:
         """
-        Initialize a Groups object.
+        Initialize a GroupScaling object.
 
-        :param List[Group] groups: (optional)
+        :param GroupScalingMembers members: (optional)
+        :param GroupScalingMemory memory: (optional)
+        :param GroupScalingCpu cpu: (optional)
+        :param GroupScalingDisk disk: (optional)
+        :param GroupScalingHostFlavor host_flavor: (optional)
         """
-        self.groups = groups
+        self.members = members
+        self.memory = memory
+        self.cpu = cpu
+        self.disk = disk
+        self.host_flavor = host_flavor
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'Groups':
-        """Initialize a Groups object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'GroupScaling':
+        """Initialize a GroupScaling object from a json dictionary."""
         args = {}
-        if 'groups' in _dict:
-            args['groups'] = [Group.from_dict(x) for x in _dict.get('groups')]
+        if 'members' in _dict:
+            args['members'] = GroupScalingMembers.from_dict(_dict.get('members'))
+        if 'memory' in _dict:
+            args['memory'] = GroupScalingMemory.from_dict(_dict.get('memory'))
+        if 'cpu' in _dict:
+            args['cpu'] = GroupScalingCpu.from_dict(_dict.get('cpu'))
+        if 'disk' in _dict:
+            args['disk'] = GroupScalingDisk.from_dict(_dict.get('disk'))
+        if 'host_flavor' in _dict:
+            args['host_flavor'] = GroupScalingHostFlavor.from_dict(_dict.get('host_flavor'))
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a Groups object from a json dictionary."""
+        """Initialize a GroupScaling object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'groups') and self.groups is not None:
-            _dict['groups'] = [x.to_dict() for x in self.groups]
+        if hasattr(self, 'members') and self.members is not None:
+            if isinstance(self.members, dict):
+                _dict['members'] = self.members
+            else:
+                _dict['members'] = self.members.to_dict()
+        if hasattr(self, 'memory') and self.memory is not None:
+            if isinstance(self.memory, dict):
+                _dict['memory'] = self.memory
+            else:
+                _dict['memory'] = self.memory.to_dict()
+        if hasattr(self, 'cpu') and self.cpu is not None:
+            if isinstance(self.cpu, dict):
+                _dict['cpu'] = self.cpu
+            else:
+                _dict['cpu'] = self.cpu.to_dict()
+        if hasattr(self, 'disk') and self.disk is not None:
+            if isinstance(self.disk, dict):
+                _dict['disk'] = self.disk
+            else:
+                _dict['disk'] = self.disk.to_dict()
+        if hasattr(self, 'host_flavor') and self.host_flavor is not None:
+            if isinstance(self.host_flavor, dict):
+                _dict['host_flavor'] = self.host_flavor
+            else:
+                _dict['host_flavor'] = self.host_flavor.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -5060,16 +5395,313 @@ class Groups():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this Groups object."""
+        """Return a `str` version of this GroupScaling object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'Groups') -> bool:
+    def __eq__(self, other: 'GroupScaling') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'Groups') -> bool:
+    def __ne__(self, other: 'GroupScaling') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupScalingCpu():
+    """
+    GroupScalingCpu.
+
+    :attr int allocation_count: (optional) Number of allocated CPUs.
+    """
+
+    def __init__(self,
+                 *,
+                 allocation_count: int = None) -> None:
+        """
+        Initialize a GroupScalingCpu object.
+
+        :param int allocation_count: (optional) Number of allocated CPUs.
+        """
+        self.allocation_count = allocation_count
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupScalingCpu':
+        """Initialize a GroupScalingCpu object from a json dictionary."""
+        args = {}
+        if 'allocation_count' in _dict:
+            args['allocation_count'] = _dict.get('allocation_count')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupScalingCpu object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'allocation_count') and self.allocation_count is not None:
+            _dict['allocation_count'] = self.allocation_count
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupScalingCpu object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupScalingCpu') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupScalingCpu') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupScalingDisk():
+    """
+    GroupScalingDisk.
+
+    :attr int allocation_mb: (optional) Allocated storage in MB.
+    """
+
+    def __init__(self,
+                 *,
+                 allocation_mb: int = None) -> None:
+        """
+        Initialize a GroupScalingDisk object.
+
+        :param int allocation_mb: (optional) Allocated storage in MB.
+        """
+        self.allocation_mb = allocation_mb
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupScalingDisk':
+        """Initialize a GroupScalingDisk object from a json dictionary."""
+        args = {}
+        if 'allocation_mb' in _dict:
+            args['allocation_mb'] = _dict.get('allocation_mb')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupScalingDisk object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'allocation_mb') and self.allocation_mb is not None:
+            _dict['allocation_mb'] = self.allocation_mb
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupScalingDisk object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupScalingDisk') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupScalingDisk') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupScalingHostFlavor():
+    """
+    GroupScalingHostFlavor.
+
+    :attr str id: (optional) **Beta feature:** The hosting infrastructure
+          identifier. Selecting `multitenant` places your database on a logically
+          separated, multi-tenant machine. With this identifier, minimum resource
+          configurations apply. Alternatively, setting the identifier to any of the
+          following host sizes places your database on the specified host size with no
+          other tenants.
+          - `b3c.4x16.encrypted`
+          - `b3c.8x32.encrypted`
+          - `m3c.8x64.encrypted`
+          - `b3c.16x64.encrypted`
+          - `b3c.32x128.encrypted`
+          - `m3c.30x240.encrypted`.
+    """
+
+    def __init__(self,
+                 *,
+                 id: str = None) -> None:
+        """
+        Initialize a GroupScalingHostFlavor object.
+
+        :param str id: (optional) **Beta feature:** The hosting infrastructure
+               identifier. Selecting `multitenant` places your database on a logically
+               separated, multi-tenant machine. With this identifier, minimum resource
+               configurations apply. Alternatively, setting the identifier to any of the
+               following host sizes places your database on the specified host size with
+               no other tenants.
+               - `b3c.4x16.encrypted`
+               - `b3c.8x32.encrypted`
+               - `m3c.8x64.encrypted`
+               - `b3c.16x64.encrypted`
+               - `b3c.32x128.encrypted`
+               - `m3c.30x240.encrypted`.
+        """
+        self.id = id
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupScalingHostFlavor':
+        """Initialize a GroupScalingHostFlavor object from a json dictionary."""
+        args = {}
+        if 'id' in _dict:
+            args['id'] = _dict.get('id')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupScalingHostFlavor object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'id') and self.id is not None:
+            _dict['id'] = self.id
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupScalingHostFlavor object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupScalingHostFlavor') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupScalingHostFlavor') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupScalingMembers():
+    """
+    GroupScalingMembers.
+
+    :attr int allocation_count: (optional) Allocated number of members.
+    """
+
+    def __init__(self,
+                 *,
+                 allocation_count: int = None) -> None:
+        """
+        Initialize a GroupScalingMembers object.
+
+        :param int allocation_count: (optional) Allocated number of members.
+        """
+        self.allocation_count = allocation_count
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupScalingMembers':
+        """Initialize a GroupScalingMembers object from a json dictionary."""
+        args = {}
+        if 'allocation_count' in _dict:
+            args['allocation_count'] = _dict.get('allocation_count')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupScalingMembers object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'allocation_count') and self.allocation_count is not None:
+            _dict['allocation_count'] = self.allocation_count
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupScalingMembers object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupScalingMembers') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupScalingMembers') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class GroupScalingMemory():
+    """
+    GroupScalingMemory.
+
+    :attr int allocation_mb: (optional) Allocated memory in MB.
+    """
+
+    def __init__(self,
+                 *,
+                 allocation_mb: int = None) -> None:
+        """
+        Initialize a GroupScalingMemory object.
+
+        :param int allocation_mb: (optional) Allocated memory in MB.
+        """
+        self.allocation_mb = allocation_mb
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'GroupScalingMemory':
+        """Initialize a GroupScalingMemory object from a json dictionary."""
+        args = {}
+        if 'allocation_mb' in _dict:
+            args['allocation_mb'] = _dict.get('allocation_mb')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a GroupScalingMemory object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'allocation_mb') and self.allocation_mb is not None:
+            _dict['allocation_mb'] = self.allocation_mb
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this GroupScalingMemory object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'GroupScalingMemory') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'GroupScalingMemory') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -5107,7 +5739,10 @@ class KillConnectionsResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -5150,7 +5785,7 @@ class ListDeployablesResponse():
         """Initialize a ListDeployablesResponse object from a json dictionary."""
         args = {}
         if 'deployables' in _dict:
-            args['deployables'] = [Deployables.from_dict(x) for x in _dict.get('deployables')]
+            args['deployables'] = [Deployables.from_dict(v) for v in _dict.get('deployables')]
         return cls(**args)
 
     @classmethod
@@ -5162,7 +5797,13 @@ class ListDeployablesResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'deployables') and self.deployables is not None:
-            _dict['deployables'] = [x.to_dict() for x in self.deployables]
+            deployables_list = []
+            for v in self.deployables:
+                if isinstance(v, dict):
+                    deployables_list.append(v)
+                else:
+                    deployables_list.append(v.to_dict())
+            _dict['deployables'] = deployables_list
         return _dict
 
     def _to_dict(self):
@@ -5180,6 +5821,67 @@ class ListDeployablesResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'ListDeployablesResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ListDeploymentScalingGroupsResponse():
+    """
+    ListDeploymentScalingGroupsResponse.
+
+    :attr List[Group] groups: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 groups: List['Group'] = None) -> None:
+        """
+        Initialize a ListDeploymentScalingGroupsResponse object.
+
+        :param List[Group] groups: (optional)
+        """
+        self.groups = groups
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ListDeploymentScalingGroupsResponse':
+        """Initialize a ListDeploymentScalingGroupsResponse object from a json dictionary."""
+        args = {}
+        if 'groups' in _dict:
+            args['groups'] = [Group.from_dict(v) for v in _dict.get('groups')]
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ListDeploymentScalingGroupsResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'groups') and self.groups is not None:
+            groups_list = []
+            for v in self.groups:
+                if isinstance(v, dict):
+                    groups_list.append(v)
+                else:
+                    groups_list.append(v.to_dict())
+            _dict['groups'] = groups_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ListDeploymentScalingGroupsResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ListDeploymentScalingGroupsResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ListDeploymentScalingGroupsResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -5272,7 +5974,10 @@ class ListRemotesResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'remotes') and self.remotes is not None:
-            _dict['remotes'] = self.remotes.to_dict()
+            if isinstance(self.remotes, dict):
+                _dict['remotes'] = self.remotes
+            else:
+                _dict['remotes'] = self.remotes.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -5293,6 +5998,86 @@ class ListRemotesResponse():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
+class LogicalReplicationSlot():
+    """
+    LogicalReplicationSlot.
+
+    :attr str name: name of the replication slot.
+    :attr str database_name: name of the database the replication slot is created
+          on.
+    :attr str plugin_type: creating a replication slot is only supported for use
+          with wal2json.
+    """
+
+    def __init__(self,
+                 name: str,
+                 database_name: str,
+                 plugin_type: str) -> None:
+        """
+        Initialize a LogicalReplicationSlot object.
+
+        :param str name: name of the replication slot.
+        :param str database_name: name of the database the replication slot is
+               created on.
+        :param str plugin_type: creating a replication slot is only supported for
+               use with wal2json.
+        """
+        self.name = name
+        self.database_name = database_name
+        self.plugin_type = plugin_type
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'LogicalReplicationSlot':
+        """Initialize a LogicalReplicationSlot object from a json dictionary."""
+        args = {}
+        if 'name' in _dict:
+            args['name'] = _dict.get('name')
+        else:
+            raise ValueError('Required property \'name\' not present in LogicalReplicationSlot JSON')
+        if 'database_name' in _dict:
+            args['database_name'] = _dict.get('database_name')
+        else:
+            raise ValueError('Required property \'database_name\' not present in LogicalReplicationSlot JSON')
+        if 'plugin_type' in _dict:
+            args['plugin_type'] = _dict.get('plugin_type')
+        else:
+            raise ValueError('Required property \'plugin_type\' not present in LogicalReplicationSlot JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a LogicalReplicationSlot object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'database_name') and self.database_name is not None:
+            _dict['database_name'] = self.database_name
+        if hasattr(self, 'plugin_type') and self.plugin_type is not None:
+            _dict['plugin_type'] = self.plugin_type
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this LogicalReplicationSlot object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'LogicalReplicationSlot') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'LogicalReplicationSlot') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
 class MongoDBConnectionURI():
     """
     MongoDBConnectionURI.
@@ -5300,12 +6085,15 @@ class MongoDBConnectionURI():
     :attr str type: (optional) Type of connection being described.
     :attr List[str] composed: (optional)
     :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[MongoDBConnectionURIHostsItem] hosts: (optional)
+    :attr List[ConnectionHost] hosts: (optional)
     :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr MongoDBConnectionURIAuthentication authentication: (optional)
-    :attr MongoDBConnectionURICertificate certificate: (optional)
+    :attr dict query_options: (optional) Query options to add to the URI connection.
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionCertificate certificate: (optional)
+    :attr bool ssl: (optional) Indicates ssl is required for the connection.
+    :attr bool browser_accessible: (optional) Indicates the address is accessible by
+          browser.
     :attr str database: (optional) Name of the database to use in the URI
           connection.
     :attr str replica_set: (optional) Name of the replica set to use in the URI
@@ -5317,11 +6105,13 @@ class MongoDBConnectionURI():
                  type: str = None,
                  composed: List[str] = None,
                  scheme: str = None,
-                 hosts: List['MongoDBConnectionURIHostsItem'] = None,
+                 hosts: List['ConnectionHost'] = None,
                  path: str = None,
-                 query_options: object = None,
-                 authentication: 'MongoDBConnectionURIAuthentication' = None,
-                 certificate: 'MongoDBConnectionURICertificate' = None,
+                 query_options: dict = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 certificate: 'ConnectionCertificate' = None,
+                 ssl: bool = None,
+                 browser_accessible: bool = None,
                  database: str = None,
                  replica_set: str = None) -> None:
         """
@@ -5330,12 +6120,16 @@ class MongoDBConnectionURI():
         :param str type: (optional) Type of connection being described.
         :param List[str] composed: (optional)
         :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[MongoDBConnectionURIHostsItem] hosts: (optional)
+        :param List[ConnectionHost] hosts: (optional)
         :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
+        :param dict query_options: (optional) Query options to add to the URI
                connection.
-        :param MongoDBConnectionURIAuthentication authentication: (optional)
-        :param MongoDBConnectionURICertificate certificate: (optional)
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionCertificate certificate: (optional)
+        :param bool ssl: (optional) Indicates ssl is required for the connection.
+        :param bool browser_accessible: (optional) Indicates the address is
+               accessible by browser.
         :param str database: (optional) Name of the database to use in the URI
                connection.
         :param str replica_set: (optional) Name of the replica set to use in the
@@ -5349,6 +6143,8 @@ class MongoDBConnectionURI():
         self.query_options = query_options
         self.authentication = authentication
         self.certificate = certificate
+        self.ssl = ssl
+        self.browser_accessible = browser_accessible
         self.database = database
         self.replica_set = replica_set
 
@@ -5363,15 +6159,19 @@ class MongoDBConnectionURI():
         if 'scheme' in _dict:
             args['scheme'] = _dict.get('scheme')
         if 'hosts' in _dict:
-            args['hosts'] = [MongoDBConnectionURIHostsItem.from_dict(x) for x in _dict.get('hosts')]
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
         if 'path' in _dict:
             args['path'] = _dict.get('path')
         if 'query_options' in _dict:
             args['query_options'] = _dict.get('query_options')
         if 'authentication' in _dict:
-            args['authentication'] = MongoDBConnectionURIAuthentication.from_dict(_dict.get('authentication'))
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
         if 'certificate' in _dict:
-            args['certificate'] = MongoDBConnectionURICertificate.from_dict(_dict.get('certificate'))
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
+        if 'ssl' in _dict:
+            args['ssl'] = _dict.get('ssl')
+        if 'browser_accessible' in _dict:
+            args['browser_accessible'] = _dict.get('browser_accessible')
         if 'database' in _dict:
             args['database'] = _dict.get('database')
         if 'replica_set' in _dict:
@@ -5393,15 +6193,31 @@ class MongoDBConnectionURI():
         if hasattr(self, 'scheme') and self.scheme is not None:
             _dict['scheme'] = self.scheme
         if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
         if hasattr(self, 'path') and self.path is not None:
             _dict['path'] = self.path
         if hasattr(self, 'query_options') and self.query_options is not None:
             _dict['query_options'] = self.query_options
         if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
         if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ssl') and self.ssl is not None:
+            _dict['ssl'] = self.ssl
+        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
+            _dict['browser_accessible'] = self.browser_accessible
         if hasattr(self, 'database') and self.database is not None:
             _dict['database'] = self.database
         if hasattr(self, 'replica_set') and self.replica_set is not None:
@@ -5426,57 +6242,140 @@ class MongoDBConnectionURI():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class MongoDBConnectionURIAuthentication():
+class MySQLConnectionURI():
     """
-    MongoDBConnectionURIAuthentication.
+    MySQLConnectionURI.
 
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
+    :attr str type: (optional) Type of connection being described.
+    :attr List[str] composed: (optional)
+    :attr str scheme: (optional) Scheme/protocol for URI connection.
+    :attr List[ConnectionHost] hosts: (optional)
+    :attr str path: (optional) Path for URI connection.
+    :attr dict query_options: (optional) Query options to add to the URI connection.
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionCertificate certificate: (optional)
+    :attr bool ssl: (optional) Indicates ssl is required for the connection.
+    :attr bool browser_accessible: (optional) Indicates the address is accessible by
+          browser.
+    :attr str database: (optional) Name of the database to use in the URI
+          connection.
     """
 
     def __init__(self,
                  *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
+                 type: str = None,
+                 composed: List[str] = None,
+                 scheme: str = None,
+                 hosts: List['ConnectionHost'] = None,
+                 path: str = None,
+                 query_options: dict = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 certificate: 'ConnectionCertificate' = None,
+                 ssl: bool = None,
+                 browser_accessible: bool = None,
+                 database: str = None) -> None:
         """
-        Initialize a MongoDBConnectionURIAuthentication object.
+        Initialize a MySQLConnectionURI object.
 
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
+        :param str type: (optional) Type of connection being described.
+        :param List[str] composed: (optional)
+        :param str scheme: (optional) Scheme/protocol for URI connection.
+        :param List[ConnectionHost] hosts: (optional)
+        :param str path: (optional) Path for URI connection.
+        :param dict query_options: (optional) Query options to add to the URI
+               connection.
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionCertificate certificate: (optional)
+        :param bool ssl: (optional) Indicates ssl is required for the connection.
+        :param bool browser_accessible: (optional) Indicates the address is
+               accessible by browser.
+        :param str database: (optional) Name of the database to use in the URI
+               connection.
         """
-        self.method = method
-        self.username = username
-        self.password = password
+        self.type = type
+        self.composed = composed
+        self.scheme = scheme
+        self.hosts = hosts
+        self.path = path
+        self.query_options = query_options
+        self.authentication = authentication
+        self.certificate = certificate
+        self.ssl = ssl
+        self.browser_accessible = browser_accessible
+        self.database = database
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'MongoDBConnectionURIAuthentication':
-        """Initialize a MongoDBConnectionURIAuthentication object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'MySQLConnectionURI':
+        """Initialize a MySQLConnectionURI object from a json dictionary."""
         args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
+        if 'type' in _dict:
+            args['type'] = _dict.get('type')
+        if 'composed' in _dict:
+            args['composed'] = _dict.get('composed')
+        if 'scheme' in _dict:
+            args['scheme'] = _dict.get('scheme')
+        if 'hosts' in _dict:
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
+        if 'path' in _dict:
+            args['path'] = _dict.get('path')
+        if 'query_options' in _dict:
+            args['query_options'] = _dict.get('query_options')
+        if 'authentication' in _dict:
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
+        if 'certificate' in _dict:
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
+        if 'ssl' in _dict:
+            args['ssl'] = _dict.get('ssl')
+        if 'browser_accessible' in _dict:
+            args['browser_accessible'] = _dict.get('browser_accessible')
+        if 'database' in _dict:
+            args['database'] = _dict.get('database')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a MongoDBConnectionURIAuthentication object from a json dictionary."""
+        """Initialize a MySQLConnectionURI object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'composed') and self.composed is not None:
+            _dict['composed'] = self.composed
+        if hasattr(self, 'scheme') and self.scheme is not None:
+            _dict['scheme'] = self.scheme
+        if hasattr(self, 'hosts') and self.hosts is not None:
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
+        if hasattr(self, 'path') and self.path is not None:
+            _dict['path'] = self.path
+        if hasattr(self, 'query_options') and self.query_options is not None:
+            _dict['query_options'] = self.query_options
+        if hasattr(self, 'authentication') and self.authentication is not None:
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
+        if hasattr(self, 'certificate') and self.certificate is not None:
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ssl') and self.ssl is not None:
+            _dict['ssl'] = self.ssl
+        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
+            _dict['browser_accessible'] = self.browser_accessible
+        if hasattr(self, 'database') and self.database is not None:
+            _dict['database'] = self.database
         return _dict
 
     def _to_dict(self):
@@ -5484,144 +6383,16 @@ class MongoDBConnectionURIAuthentication():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this MongoDBConnectionURIAuthentication object."""
+        """Return a `str` version of this MySQLConnectionURI object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'MongoDBConnectionURIAuthentication') -> bool:
+    def __eq__(self, other: 'MySQLConnectionURI') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'MongoDBConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class MongoDBConnectionURICertificate():
-    """
-    MongoDBConnectionURICertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a MongoDBConnectionURICertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'MongoDBConnectionURICertificate':
-        """Initialize a MongoDBConnectionURICertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a MongoDBConnectionURICertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this MongoDBConnectionURICertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'MongoDBConnectionURICertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'MongoDBConnectionURICertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class MongoDBConnectionURIHostsItem():
-    """
-    MongoDBConnectionURIHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a MongoDBConnectionURIHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'MongoDBConnectionURIHostsItem':
-        """Initialize a MongoDBConnectionURIHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a MongoDBConnectionURIHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this MongoDBConnectionURIHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'MongoDBConnectionURIHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'MongoDBConnectionURIHostsItem') -> bool:
+    def __ne__(self, other: 'MySQLConnectionURI') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -5687,12 +6458,15 @@ class PostgreSQLConnectionURI():
     :attr str type: (optional) Type of connection being described.
     :attr List[str] composed: (optional)
     :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[PostgreSQLConnectionURIHostsItem] hosts: (optional)
+    :attr List[ConnectionHost] hosts: (optional)
     :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr PostgreSQLConnectionURIAuthentication authentication: (optional)
-    :attr PostgreSQLConnectionURICertificate certificate: (optional)
+    :attr dict query_options: (optional) Query options to add to the URI connection.
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionCertificate certificate: (optional)
+    :attr bool ssl: (optional) Indicates ssl is required for the connection.
+    :attr bool browser_accessible: (optional) Indicates the address is accessible by
+          browser.
     :attr str database: (optional) Name of the database to use in the URI
           connection.
     """
@@ -5702,11 +6476,13 @@ class PostgreSQLConnectionURI():
                  type: str = None,
                  composed: List[str] = None,
                  scheme: str = None,
-                 hosts: List['PostgreSQLConnectionURIHostsItem'] = None,
+                 hosts: List['ConnectionHost'] = None,
                  path: str = None,
-                 query_options: object = None,
-                 authentication: 'PostgreSQLConnectionURIAuthentication' = None,
-                 certificate: 'PostgreSQLConnectionURICertificate' = None,
+                 query_options: dict = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 certificate: 'ConnectionCertificate' = None,
+                 ssl: bool = None,
+                 browser_accessible: bool = None,
                  database: str = None) -> None:
         """
         Initialize a PostgreSQLConnectionURI object.
@@ -5714,12 +6490,16 @@ class PostgreSQLConnectionURI():
         :param str type: (optional) Type of connection being described.
         :param List[str] composed: (optional)
         :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[PostgreSQLConnectionURIHostsItem] hosts: (optional)
+        :param List[ConnectionHost] hosts: (optional)
         :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
+        :param dict query_options: (optional) Query options to add to the URI
                connection.
-        :param PostgreSQLConnectionURIAuthentication authentication: (optional)
-        :param PostgreSQLConnectionURICertificate certificate: (optional)
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionCertificate certificate: (optional)
+        :param bool ssl: (optional) Indicates ssl is required for the connection.
+        :param bool browser_accessible: (optional) Indicates the address is
+               accessible by browser.
         :param str database: (optional) Name of the database to use in the URI
                connection.
         """
@@ -5731,6 +6511,8 @@ class PostgreSQLConnectionURI():
         self.query_options = query_options
         self.authentication = authentication
         self.certificate = certificate
+        self.ssl = ssl
+        self.browser_accessible = browser_accessible
         self.database = database
 
     @classmethod
@@ -5744,15 +6526,19 @@ class PostgreSQLConnectionURI():
         if 'scheme' in _dict:
             args['scheme'] = _dict.get('scheme')
         if 'hosts' in _dict:
-            args['hosts'] = [PostgreSQLConnectionURIHostsItem.from_dict(x) for x in _dict.get('hosts')]
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
         if 'path' in _dict:
             args['path'] = _dict.get('path')
         if 'query_options' in _dict:
             args['query_options'] = _dict.get('query_options')
         if 'authentication' in _dict:
-            args['authentication'] = PostgreSQLConnectionURIAuthentication.from_dict(_dict.get('authentication'))
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
         if 'certificate' in _dict:
-            args['certificate'] = PostgreSQLConnectionURICertificate.from_dict(_dict.get('certificate'))
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
+        if 'ssl' in _dict:
+            args['ssl'] = _dict.get('ssl')
+        if 'browser_accessible' in _dict:
+            args['browser_accessible'] = _dict.get('browser_accessible')
         if 'database' in _dict:
             args['database'] = _dict.get('database')
         return cls(**args)
@@ -5772,15 +6558,31 @@ class PostgreSQLConnectionURI():
         if hasattr(self, 'scheme') and self.scheme is not None:
             _dict['scheme'] = self.scheme
         if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
         if hasattr(self, 'path') and self.path is not None:
             _dict['path'] = self.path
         if hasattr(self, 'query_options') and self.query_options is not None:
             _dict['query_options'] = self.query_options
         if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
         if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ssl') and self.ssl is not None:
+            _dict['ssl'] = self.ssl
+        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
+            _dict['browser_accessible'] = self.browser_accessible
         if hasattr(self, 'database') and self.database is not None:
             _dict['database'] = self.database
         return _dict
@@ -5803,57 +6605,44 @@ class PostgreSQLConnectionURI():
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class PostgreSQLConnectionURIAuthentication():
+class PromoteReadOnlyReplicaResponse():
     """
-    PostgreSQLConnectionURIAuthentication.
+    PromoteReadOnlyReplicaResponse.
 
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
+    :attr Task task: (optional)
     """
 
     def __init__(self,
                  *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
+                 task: 'Task' = None) -> None:
         """
-        Initialize a PostgreSQLConnectionURIAuthentication object.
+        Initialize a PromoteReadOnlyReplicaResponse object.
 
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
+        :param Task task: (optional)
         """
-        self.method = method
-        self.username = username
-        self.password = password
+        self.task = task
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'PostgreSQLConnectionURIAuthentication':
-        """Initialize a PostgreSQLConnectionURIAuthentication object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'PromoteReadOnlyReplicaResponse':
+        """Initialize a PromoteReadOnlyReplicaResponse object from a json dictionary."""
         args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a PostgreSQLConnectionURIAuthentication object from a json dictionary."""
+        """Initialize a PromoteReadOnlyReplicaResponse object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
+        if hasattr(self, 'task') and self.task is not None:
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -5861,1384 +6650,16 @@ class PostgreSQLConnectionURIAuthentication():
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this PostgreSQLConnectionURIAuthentication object."""
+        """Return a `str` version of this PromoteReadOnlyReplicaResponse object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'PostgreSQLConnectionURIAuthentication') -> bool:
+    def __eq__(self, other: 'PromoteReadOnlyReplicaResponse') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'PostgreSQLConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class PostgreSQLConnectionURICertificate():
-    """
-    PostgreSQLConnectionURICertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a PostgreSQLConnectionURICertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'PostgreSQLConnectionURICertificate':
-        """Initialize a PostgreSQLConnectionURICertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a PostgreSQLConnectionURICertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this PostgreSQLConnectionURICertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'PostgreSQLConnectionURICertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'PostgreSQLConnectionURICertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class PostgreSQLConnectionURIHostsItem():
-    """
-    PostgreSQLConnectionURIHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a PostgreSQLConnectionURIHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'PostgreSQLConnectionURIHostsItem':
-        """Initialize a PostgreSQLConnectionURIHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a PostgreSQLConnectionURIHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this PostgreSQLConnectionURIHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'PostgreSQLConnectionURIHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'PostgreSQLConnectionURIHostsItem') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionAMQPS():
-    """
-    RabbitMQConnectionAMQPS.
-
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[RabbitMQConnectionAMQPSHostsItem] hosts: (optional)
-    :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr RabbitMQConnectionAMQPSAuthentication authentication: (optional)
-    :attr RabbitMQConnectionAMQPSCertificate certificate: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 scheme: str = None,
-                 hosts: List['RabbitMQConnectionAMQPSHostsItem'] = None,
-                 path: str = None,
-                 query_options: object = None,
-                 authentication: 'RabbitMQConnectionAMQPSAuthentication' = None,
-                 certificate: 'RabbitMQConnectionAMQPSCertificate' = None) -> None:
-        """
-        Initialize a RabbitMQConnectionAMQPS object.
-
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[RabbitMQConnectionAMQPSHostsItem] hosts: (optional)
-        :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
-               connection.
-        :param RabbitMQConnectionAMQPSAuthentication authentication: (optional)
-        :param RabbitMQConnectionAMQPSCertificate certificate: (optional)
-        """
-        self.type = type
-        self.composed = composed
-        self.scheme = scheme
-        self.hosts = hosts
-        self.path = path
-        self.query_options = query_options
-        self.authentication = authentication
-        self.certificate = certificate
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionAMQPS':
-        """Initialize a RabbitMQConnectionAMQPS object from a json dictionary."""
-        args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'scheme' in _dict:
-            args['scheme'] = _dict.get('scheme')
-        if 'hosts' in _dict:
-            args['hosts'] = [RabbitMQConnectionAMQPSHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'path' in _dict:
-            args['path'] = _dict.get('path')
-        if 'query_options' in _dict:
-            args['query_options'] = _dict.get('query_options')
-        if 'authentication' in _dict:
-            args['authentication'] = RabbitMQConnectionAMQPSAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = RabbitMQConnectionAMQPSCertificate.from_dict(_dict.get('certificate'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionAMQPS object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'scheme') and self.scheme is not None:
-            _dict['scheme'] = self.scheme
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'path') and self.path is not None:
-            _dict['path'] = self.path
-        if hasattr(self, 'query_options') and self.query_options is not None:
-            _dict['query_options'] = self.query_options
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionAMQPS object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionAMQPS') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionAMQPS') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionAMQPSAuthentication():
-    """
-    RabbitMQConnectionAMQPSAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionAMQPSAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionAMQPSAuthentication':
-        """Initialize a RabbitMQConnectionAMQPSAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionAMQPSAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionAMQPSAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionAMQPSAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionAMQPSAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionAMQPSCertificate():
-    """
-    RabbitMQConnectionAMQPSCertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionAMQPSCertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionAMQPSCertificate':
-        """Initialize a RabbitMQConnectionAMQPSCertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionAMQPSCertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionAMQPSCertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionAMQPSCertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionAMQPSCertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionAMQPSHostsItem():
-    """
-    RabbitMQConnectionAMQPSHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a RabbitMQConnectionAMQPSHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionAMQPSHostsItem':
-        """Initialize a RabbitMQConnectionAMQPSHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionAMQPSHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionAMQPSHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionAMQPSHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionAMQPSHostsItem') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionHTTPS():
-    """
-    RabbitMQConnectionHTTPS.
-
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[RabbitMQConnectionHTTPSHostsItem] hosts: (optional)
-    :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr RabbitMQConnectionHTTPSAuthentication authentication: (optional)
-    :attr RabbitMQConnectionHTTPSCertificate certificate: (optional)
-    :attr bool browser_accessible: (optional) Indicates the address is accessible by
-          browser, for the RabbitMQ Management UI.
-    """
-
-    def __init__(self,
-                 *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 scheme: str = None,
-                 hosts: List['RabbitMQConnectionHTTPSHostsItem'] = None,
-                 path: str = None,
-                 query_options: object = None,
-                 authentication: 'RabbitMQConnectionHTTPSAuthentication' = None,
-                 certificate: 'RabbitMQConnectionHTTPSCertificate' = None,
-                 browser_accessible: bool = None) -> None:
-        """
-        Initialize a RabbitMQConnectionHTTPS object.
-
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[RabbitMQConnectionHTTPSHostsItem] hosts: (optional)
-        :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
-               connection.
-        :param RabbitMQConnectionHTTPSAuthentication authentication: (optional)
-        :param RabbitMQConnectionHTTPSCertificate certificate: (optional)
-        :param bool browser_accessible: (optional) Indicates the address is
-               accessible by browser, for the RabbitMQ Management UI.
-        """
-        self.type = type
-        self.composed = composed
-        self.scheme = scheme
-        self.hosts = hosts
-        self.path = path
-        self.query_options = query_options
-        self.authentication = authentication
-        self.certificate = certificate
-        self.browser_accessible = browser_accessible
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionHTTPS':
-        """Initialize a RabbitMQConnectionHTTPS object from a json dictionary."""
-        args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'scheme' in _dict:
-            args['scheme'] = _dict.get('scheme')
-        if 'hosts' in _dict:
-            args['hosts'] = [RabbitMQConnectionHTTPSHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'path' in _dict:
-            args['path'] = _dict.get('path')
-        if 'query_options' in _dict:
-            args['query_options'] = _dict.get('query_options')
-        if 'authentication' in _dict:
-            args['authentication'] = RabbitMQConnectionHTTPSAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = RabbitMQConnectionHTTPSCertificate.from_dict(_dict.get('certificate'))
-        if 'browser_accessible' in _dict:
-            args['browser_accessible'] = _dict.get('browser_accessible')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionHTTPS object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'scheme') and self.scheme is not None:
-            _dict['scheme'] = self.scheme
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'path') and self.path is not None:
-            _dict['path'] = self.path
-        if hasattr(self, 'query_options') and self.query_options is not None:
-            _dict['query_options'] = self.query_options
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
-        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
-            _dict['browser_accessible'] = self.browser_accessible
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionHTTPS object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionHTTPS') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionHTTPS') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionHTTPSAuthentication():
-    """
-    RabbitMQConnectionHTTPSAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionHTTPSAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionHTTPSAuthentication':
-        """Initialize a RabbitMQConnectionHTTPSAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionHTTPSAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionHTTPSAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionHTTPSAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionHTTPSAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionHTTPSCertificate():
-    """
-    RabbitMQConnectionHTTPSCertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionHTTPSCertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionHTTPSCertificate':
-        """Initialize a RabbitMQConnectionHTTPSCertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionHTTPSCertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionHTTPSCertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionHTTPSCertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionHTTPSCertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionHTTPSHostsItem():
-    """
-    RabbitMQConnectionHTTPSHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a RabbitMQConnectionHTTPSHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionHTTPSHostsItem':
-        """Initialize a RabbitMQConnectionHTTPSHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionHTTPSHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionHTTPSHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionHTTPSHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionHTTPSHostsItem') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionMQTTS():
-    """
-    RabbitMQConnectionMQTTS.
-
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[RabbitMQConnectionMQTTSHostsItem] hosts: (optional)
-    :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr RabbitMQConnectionMQTTSAuthentication authentication: (optional)
-    :attr RabbitMQConnectionMQTTSCertificate certificate: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 scheme: str = None,
-                 hosts: List['RabbitMQConnectionMQTTSHostsItem'] = None,
-                 path: str = None,
-                 query_options: object = None,
-                 authentication: 'RabbitMQConnectionMQTTSAuthentication' = None,
-                 certificate: 'RabbitMQConnectionMQTTSCertificate' = None) -> None:
-        """
-        Initialize a RabbitMQConnectionMQTTS object.
-
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[RabbitMQConnectionMQTTSHostsItem] hosts: (optional)
-        :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
-               connection.
-        :param RabbitMQConnectionMQTTSAuthentication authentication: (optional)
-        :param RabbitMQConnectionMQTTSCertificate certificate: (optional)
-        """
-        self.type = type
-        self.composed = composed
-        self.scheme = scheme
-        self.hosts = hosts
-        self.path = path
-        self.query_options = query_options
-        self.authentication = authentication
-        self.certificate = certificate
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionMQTTS':
-        """Initialize a RabbitMQConnectionMQTTS object from a json dictionary."""
-        args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'scheme' in _dict:
-            args['scheme'] = _dict.get('scheme')
-        if 'hosts' in _dict:
-            args['hosts'] = [RabbitMQConnectionMQTTSHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'path' in _dict:
-            args['path'] = _dict.get('path')
-        if 'query_options' in _dict:
-            args['query_options'] = _dict.get('query_options')
-        if 'authentication' in _dict:
-            args['authentication'] = RabbitMQConnectionMQTTSAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = RabbitMQConnectionMQTTSCertificate.from_dict(_dict.get('certificate'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionMQTTS object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'scheme') and self.scheme is not None:
-            _dict['scheme'] = self.scheme
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'path') and self.path is not None:
-            _dict['path'] = self.path
-        if hasattr(self, 'query_options') and self.query_options is not None:
-            _dict['query_options'] = self.query_options
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionMQTTS object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionMQTTS') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionMQTTS') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionMQTTSAuthentication():
-    """
-    RabbitMQConnectionMQTTSAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionMQTTSAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionMQTTSAuthentication':
-        """Initialize a RabbitMQConnectionMQTTSAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionMQTTSAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionMQTTSAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionMQTTSAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionMQTTSAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionMQTTSCertificate():
-    """
-    RabbitMQConnectionMQTTSCertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionMQTTSCertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionMQTTSCertificate':
-        """Initialize a RabbitMQConnectionMQTTSCertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionMQTTSCertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionMQTTSCertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionMQTTSCertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionMQTTSCertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionMQTTSHostsItem():
-    """
-    RabbitMQConnectionMQTTSHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a RabbitMQConnectionMQTTSHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionMQTTSHostsItem':
-        """Initialize a RabbitMQConnectionMQTTSHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionMQTTSHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionMQTTSHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionMQTTSHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionMQTTSHostsItem') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionStompSSL():
-    """
-    RabbitMQConnectionStompSSL.
-
-    :attr str type: (optional) Type of connection being described.
-    :attr List[str] composed: (optional)
-    :attr List[RabbitMQConnectionStompSSLHostsItem] hosts: (optional)
-    :attr RabbitMQConnectionStompSSLAuthentication authentication: (optional)
-    :attr RabbitMQConnectionStompSSLCertificate certificate: (optional)
-    :attr bool ssl: (optional) Indicates ssl is required for the connection.
-    """
-
-    def __init__(self,
-                 *,
-                 type: str = None,
-                 composed: List[str] = None,
-                 hosts: List['RabbitMQConnectionStompSSLHostsItem'] = None,
-                 authentication: 'RabbitMQConnectionStompSSLAuthentication' = None,
-                 certificate: 'RabbitMQConnectionStompSSLCertificate' = None,
-                 ssl: bool = None) -> None:
-        """
-        Initialize a RabbitMQConnectionStompSSL object.
-
-        :param str type: (optional) Type of connection being described.
-        :param List[str] composed: (optional)
-        :param List[RabbitMQConnectionStompSSLHostsItem] hosts: (optional)
-        :param RabbitMQConnectionStompSSLAuthentication authentication: (optional)
-        :param RabbitMQConnectionStompSSLCertificate certificate: (optional)
-        :param bool ssl: (optional) Indicates ssl is required for the connection.
-        """
-        self.type = type
-        self.composed = composed
-        self.hosts = hosts
-        self.authentication = authentication
-        self.certificate = certificate
-        self.ssl = ssl
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionStompSSL':
-        """Initialize a RabbitMQConnectionStompSSL object from a json dictionary."""
-        args = {}
-        if 'type' in _dict:
-            args['type'] = _dict.get('type')
-        if 'composed' in _dict:
-            args['composed'] = _dict.get('composed')
-        if 'hosts' in _dict:
-            args['hosts'] = [RabbitMQConnectionStompSSLHostsItem.from_dict(x) for x in _dict.get('hosts')]
-        if 'authentication' in _dict:
-            args['authentication'] = RabbitMQConnectionStompSSLAuthentication.from_dict(_dict.get('authentication'))
-        if 'certificate' in _dict:
-            args['certificate'] = RabbitMQConnectionStompSSLCertificate.from_dict(_dict.get('certificate'))
-        if 'ssl' in _dict:
-            args['ssl'] = _dict.get('ssl')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionStompSSL object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'type') and self.type is not None:
-            _dict['type'] = self.type
-        if hasattr(self, 'composed') and self.composed is not None:
-            _dict['composed'] = self.composed
-        if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
-        if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
-        if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
-        if hasattr(self, 'ssl') and self.ssl is not None:
-            _dict['ssl'] = self.ssl
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionStompSSL object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionStompSSL') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionStompSSL') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionStompSSLAuthentication():
-    """
-    RabbitMQConnectionStompSSLAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionStompSSLAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionStompSSLAuthentication':
-        """Initialize a RabbitMQConnectionStompSSLAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionStompSSLAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionStompSSLAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionStompSSLAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionStompSSLAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionStompSSLCertificate():
-    """
-    RabbitMQConnectionStompSSLCertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a RabbitMQConnectionStompSSLCertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionStompSSLCertificate':
-        """Initialize a RabbitMQConnectionStompSSLCertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionStompSSLCertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionStompSSLCertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionStompSSLCertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionStompSSLCertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RabbitMQConnectionStompSSLHostsItem():
-    """
-    RabbitMQConnectionStompSSLHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a RabbitMQConnectionStompSSLHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RabbitMQConnectionStompSSLHostsItem':
-        """Initialize a RabbitMQConnectionStompSSLHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RabbitMQConnectionStompSSLHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RabbitMQConnectionStompSSLHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RabbitMQConnectionStompSSLHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RabbitMQConnectionStompSSLHostsItem') -> bool:
+    def __ne__(self, other: 'PromoteReadOnlyReplicaResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -7249,12 +6670,15 @@ class RedisConnectionURI():
     :attr str type: (optional) Type of connection being described.
     :attr List[str] composed: (optional)
     :attr str scheme: (optional) Scheme/protocol for URI connection.
-    :attr List[RedisConnectionURIHostsItem] hosts: (optional)
+    :attr List[ConnectionHost] hosts: (optional)
     :attr str path: (optional) Path for URI connection.
-    :attr object query_options: (optional) Query options to add to the URI
-          connection.
-    :attr RedisConnectionURIAuthentication authentication: (optional)
-    :attr RedisConnectionURICertificate certificate: (optional)
+    :attr dict query_options: (optional) Query options to add to the URI connection.
+    :attr ConnectionAuthentication authentication: (optional) Authentication data
+          for Connection String.
+    :attr ConnectionCertificate certificate: (optional)
+    :attr bool ssl: (optional) Indicates ssl is required for the connection.
+    :attr bool browser_accessible: (optional) Indicates the address is accessible by
+          browser.
     :attr int database: (optional) Number of the database to use in the URI
           connection.
     """
@@ -7264,11 +6688,13 @@ class RedisConnectionURI():
                  type: str = None,
                  composed: List[str] = None,
                  scheme: str = None,
-                 hosts: List['RedisConnectionURIHostsItem'] = None,
+                 hosts: List['ConnectionHost'] = None,
                  path: str = None,
-                 query_options: object = None,
-                 authentication: 'RedisConnectionURIAuthentication' = None,
-                 certificate: 'RedisConnectionURICertificate' = None,
+                 query_options: dict = None,
+                 authentication: 'ConnectionAuthentication' = None,
+                 certificate: 'ConnectionCertificate' = None,
+                 ssl: bool = None,
+                 browser_accessible: bool = None,
                  database: int = None) -> None:
         """
         Initialize a RedisConnectionURI object.
@@ -7276,12 +6702,16 @@ class RedisConnectionURI():
         :param str type: (optional) Type of connection being described.
         :param List[str] composed: (optional)
         :param str scheme: (optional) Scheme/protocol for URI connection.
-        :param List[RedisConnectionURIHostsItem] hosts: (optional)
+        :param List[ConnectionHost] hosts: (optional)
         :param str path: (optional) Path for URI connection.
-        :param object query_options: (optional) Query options to add to the URI
+        :param dict query_options: (optional) Query options to add to the URI
                connection.
-        :param RedisConnectionURIAuthentication authentication: (optional)
-        :param RedisConnectionURICertificate certificate: (optional)
+        :param ConnectionAuthentication authentication: (optional) Authentication
+               data for Connection String.
+        :param ConnectionCertificate certificate: (optional)
+        :param bool ssl: (optional) Indicates ssl is required for the connection.
+        :param bool browser_accessible: (optional) Indicates the address is
+               accessible by browser.
         :param int database: (optional) Number of the database to use in the URI
                connection.
         """
@@ -7293,6 +6723,8 @@ class RedisConnectionURI():
         self.query_options = query_options
         self.authentication = authentication
         self.certificate = certificate
+        self.ssl = ssl
+        self.browser_accessible = browser_accessible
         self.database = database
 
     @classmethod
@@ -7306,15 +6738,19 @@ class RedisConnectionURI():
         if 'scheme' in _dict:
             args['scheme'] = _dict.get('scheme')
         if 'hosts' in _dict:
-            args['hosts'] = [RedisConnectionURIHostsItem.from_dict(x) for x in _dict.get('hosts')]
+            args['hosts'] = [ConnectionHost.from_dict(v) for v in _dict.get('hosts')]
         if 'path' in _dict:
             args['path'] = _dict.get('path')
         if 'query_options' in _dict:
             args['query_options'] = _dict.get('query_options')
         if 'authentication' in _dict:
-            args['authentication'] = RedisConnectionURIAuthentication.from_dict(_dict.get('authentication'))
+            args['authentication'] = ConnectionAuthentication.from_dict(_dict.get('authentication'))
         if 'certificate' in _dict:
-            args['certificate'] = RedisConnectionURICertificate.from_dict(_dict.get('certificate'))
+            args['certificate'] = ConnectionCertificate.from_dict(_dict.get('certificate'))
+        if 'ssl' in _dict:
+            args['ssl'] = _dict.get('ssl')
+        if 'browser_accessible' in _dict:
+            args['browser_accessible'] = _dict.get('browser_accessible')
         if 'database' in _dict:
             args['database'] = _dict.get('database')
         return cls(**args)
@@ -7334,15 +6770,31 @@ class RedisConnectionURI():
         if hasattr(self, 'scheme') and self.scheme is not None:
             _dict['scheme'] = self.scheme
         if hasattr(self, 'hosts') and self.hosts is not None:
-            _dict['hosts'] = [x.to_dict() for x in self.hosts]
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
         if hasattr(self, 'path') and self.path is not None:
             _dict['path'] = self.path
         if hasattr(self, 'query_options') and self.query_options is not None:
             _dict['query_options'] = self.query_options
         if hasattr(self, 'authentication') and self.authentication is not None:
-            _dict['authentication'] = self.authentication.to_dict()
+            if isinstance(self.authentication, dict):
+                _dict['authentication'] = self.authentication
+            else:
+                _dict['authentication'] = self.authentication.to_dict()
         if hasattr(self, 'certificate') and self.certificate is not None:
-            _dict['certificate'] = self.certificate.to_dict()
+            if isinstance(self.certificate, dict):
+                _dict['certificate'] = self.certificate
+            else:
+                _dict['certificate'] = self.certificate.to_dict()
+        if hasattr(self, 'ssl') and self.ssl is not None:
+            _dict['ssl'] = self.ssl
+        if hasattr(self, 'browser_accessible') and self.browser_accessible is not None:
+            _dict['browser_accessible'] = self.browser_accessible
         if hasattr(self, 'database') and self.database is not None:
             _dict['database'] = self.database
         return _dict
@@ -7362,205 +6814,6 @@ class RedisConnectionURI():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'RedisConnectionURI') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RedisConnectionURIAuthentication():
-    """
-    RedisConnectionURIAuthentication.
-
-    :attr str method: (optional) Authentication method for this credential.
-    :attr str username: (optional) Username part of credential.
-    :attr str password: (optional) Password part of credential.
-    """
-
-    def __init__(self,
-                 *,
-                 method: str = None,
-                 username: str = None,
-                 password: str = None) -> None:
-        """
-        Initialize a RedisConnectionURIAuthentication object.
-
-        :param str method: (optional) Authentication method for this credential.
-        :param str username: (optional) Username part of credential.
-        :param str password: (optional) Password part of credential.
-        """
-        self.method = method
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RedisConnectionURIAuthentication':
-        """Initialize a RedisConnectionURIAuthentication object from a json dictionary."""
-        args = {}
-        if 'method' in _dict:
-            args['method'] = _dict.get('method')
-        if 'username' in _dict:
-            args['username'] = _dict.get('username')
-        if 'password' in _dict:
-            args['password'] = _dict.get('password')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RedisConnectionURIAuthentication object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'method') and self.method is not None:
-            _dict['method'] = self.method
-        if hasattr(self, 'username') and self.username is not None:
-            _dict['username'] = self.username
-        if hasattr(self, 'password') and self.password is not None:
-            _dict['password'] = self.password
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RedisConnectionURIAuthentication object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RedisConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RedisConnectionURIAuthentication') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RedisConnectionURICertificate():
-    """
-    RedisConnectionURICertificate.
-
-    :attr str name: (optional) Name associated with the certificate.
-    :attr str certificate_base64: (optional) Base64 encoded version of the
-          certificate.
-    """
-
-    def __init__(self,
-                 *,
-                 name: str = None,
-                 certificate_base64: str = None) -> None:
-        """
-        Initialize a RedisConnectionURICertificate object.
-
-        :param str name: (optional) Name associated with the certificate.
-        :param str certificate_base64: (optional) Base64 encoded version of the
-               certificate.
-        """
-        self.name = name
-        self.certificate_base64 = certificate_base64
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RedisConnectionURICertificate':
-        """Initialize a RedisConnectionURICertificate object from a json dictionary."""
-        args = {}
-        if 'name' in _dict:
-            args['name'] = _dict.get('name')
-        if 'certificate_base64' in _dict:
-            args['certificate_base64'] = _dict.get('certificate_base64')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RedisConnectionURICertificate object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'certificate_base64') and self.certificate_base64 is not None:
-            _dict['certificate_base64'] = self.certificate_base64
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RedisConnectionURICertificate object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RedisConnectionURICertificate') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RedisConnectionURICertificate') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class RedisConnectionURIHostsItem():
-    """
-    RedisConnectionURIHostsItem.
-
-    :attr str hostname: (optional) Hostname for connection.
-    :attr int port: (optional) Port number for connection.
-    """
-
-    def __init__(self,
-                 *,
-                 hostname: str = None,
-                 port: int = None) -> None:
-        """
-        Initialize a RedisConnectionURIHostsItem object.
-
-        :param str hostname: (optional) Hostname for connection.
-        :param int port: (optional) Port number for connection.
-        """
-        self.hostname = hostname
-        self.port = port
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'RedisConnectionURIHostsItem':
-        """Initialize a RedisConnectionURIHostsItem object from a json dictionary."""
-        args = {}
-        if 'hostname' in _dict:
-            args['hostname'] = _dict.get('hostname')
-        if 'port' in _dict:
-            args['port'] = _dict.get('port')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a RedisConnectionURIHostsItem object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'hostname') and self.hostname is not None:
-            _dict['hostname'] = self.hostname
-        if hasattr(self, 'port') and self.port is not None:
-            _dict['port'] = self.port
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this RedisConnectionURIHostsItem object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'RedisConnectionURIHostsItem') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'RedisConnectionURIHostsItem') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -7661,7 +6914,10 @@ class ResyncReplicaResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -7716,7 +6972,10 @@ class SetAllowlistResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -7771,7 +7030,10 @@ class SetAutoscalingConditionsResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -7791,91 +7053,6 @@ class SetAutoscalingConditionsResponse():
     def __ne__(self, other: 'SetAutoscalingConditionsResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
-
-class SetCPUGroupCPU():
-    """
-    SetCPUGroupCPU.
-
-    :attr int allocation_count: (optional) Number of allocated CPUs.
-    """
-
-    def __init__(self,
-                 *,
-                 allocation_count: int = None) -> None:
-        """
-        Initialize a SetCPUGroupCPU object.
-
-        :param int allocation_count: (optional) Number of allocated CPUs.
-        """
-        self.allocation_count = allocation_count
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetCPUGroupCPU':
-        """Initialize a SetCPUGroupCPU object from a json dictionary."""
-        args = {}
-        if 'allocation_count' in _dict:
-            args['allocation_count'] = _dict.get('allocation_count')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetCPUGroupCPU object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'allocation_count') and self.allocation_count is not None:
-            _dict['allocation_count'] = self.allocation_count
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetCPUGroupCPU object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetCPUGroupCPU') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetCPUGroupCPU') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetConfigurationConfiguration():
-    """
-    SetConfigurationConfiguration.
-
-    """
-
-    def __init__(self) -> None:
-        """
-        Initialize a SetConfigurationConfiguration object.
-
-        """
-        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
-                  ", ".join(['SetConfigurationConfigurationPGConfiguration', 'SetConfigurationConfigurationRedisConfiguration']))
-        raise Exception(msg)
-
-class SetDeploymentScalingGroupRequest():
-    """
-    SetDeploymentScalingGroupRequest.
-
-    """
-
-    def __init__(self) -> None:
-        """
-        Initialize a SetDeploymentScalingGroupRequest object.
-
-        """
-        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
-                  ", ".join(['SetDeploymentScalingGroupRequestSetMembersGroup', 'SetDeploymentScalingGroupRequestSetMemoryGroup', 'SetDeploymentScalingGroupRequestSetCPUGroup', 'SetDeploymentScalingGroupRequestSetDiskGroup']))
-        raise Exception(msg)
 
 class SetDeploymentScalingGroupResponse():
     """
@@ -7911,7 +7088,10 @@ class SetDeploymentScalingGroupResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -7929,241 +7109,6 @@ class SetDeploymentScalingGroupResponse():
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'SetDeploymentScalingGroupResponse') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetDiskGroupDisk():
-    """
-    SetDiskGroupDisk.
-
-    :attr int allocation_mb: (optional) Allocated storage in MB.
-    """
-
-    def __init__(self,
-                 *,
-                 allocation_mb: int = None) -> None:
-        """
-        Initialize a SetDiskGroupDisk object.
-
-        :param int allocation_mb: (optional) Allocated storage in MB.
-        """
-        self.allocation_mb = allocation_mb
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDiskGroupDisk':
-        """Initialize a SetDiskGroupDisk object from a json dictionary."""
-        args = {}
-        if 'allocation_mb' in _dict:
-            args['allocation_mb'] = _dict.get('allocation_mb')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetDiskGroupDisk object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'allocation_mb') and self.allocation_mb is not None:
-            _dict['allocation_mb'] = self.allocation_mb
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetDiskGroupDisk object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetDiskGroupDisk') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetDiskGroupDisk') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetMembersGroupMembers():
-    """
-    SetMembersGroupMembers.
-
-    :attr int allocation_count: (optional) Allocated number of members.
-    """
-
-    def __init__(self,
-                 *,
-                 allocation_count: int = None) -> None:
-        """
-        Initialize a SetMembersGroupMembers object.
-
-        :param int allocation_count: (optional) Allocated number of members.
-        """
-        self.allocation_count = allocation_count
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetMembersGroupMembers':
-        """Initialize a SetMembersGroupMembers object from a json dictionary."""
-        args = {}
-        if 'allocation_count' in _dict:
-            args['allocation_count'] = _dict.get('allocation_count')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetMembersGroupMembers object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'allocation_count') and self.allocation_count is not None:
-            _dict['allocation_count'] = self.allocation_count
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetMembersGroupMembers object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetMembersGroupMembers') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetMembersGroupMembers') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetMemoryGroupMemory():
-    """
-    SetMemoryGroupMemory.
-
-    :attr int allocation_mb: (optional) Allocated memory in MB.
-    """
-
-    def __init__(self,
-                 *,
-                 allocation_mb: int = None) -> None:
-        """
-        Initialize a SetMemoryGroupMemory object.
-
-        :param int allocation_mb: (optional) Allocated memory in MB.
-        """
-        self.allocation_mb = allocation_mb
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetMemoryGroupMemory':
-        """Initialize a SetMemoryGroupMemory object from a json dictionary."""
-        args = {}
-        if 'allocation_mb' in _dict:
-            args['allocation_mb'] = _dict.get('allocation_mb')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetMemoryGroupMemory object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'allocation_mb') and self.allocation_mb is not None:
-            _dict['allocation_mb'] = self.allocation_mb
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetMemoryGroupMemory object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetMemoryGroupMemory') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetMemoryGroupMemory') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetPromotionPromotion():
-    """
-    SetPromotionPromotion.
-
-    """
-
-    def __init__(self) -> None:
-        """
-        Initialize a SetPromotionPromotion object.
-
-        """
-        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
-                  ", ".join(['SetPromotionPromotionPromote', 'SetPromotionPromotionUpgradePromote']))
-        raise Exception(msg)
-
-class SetPromotionResponse():
-    """
-    SetPromotionResponse.
-
-    :attr Task task: (optional)
-    """
-
-    def __init__(self,
-                 *,
-                 task: 'Task' = None) -> None:
-        """
-        Initialize a SetPromotionResponse object.
-
-        :param Task task: (optional)
-        """
-        self.task = task
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetPromotionResponse':
-        """Initialize a SetPromotionResponse object from a json dictionary."""
-        args = {}
-        if 'task' in _dict:
-            args['task'] = Task.from_dict(_dict.get('task'))
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SetPromotionResponse object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SetPromotionResponse object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SetPromotionResponse') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SetPromotionResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -8201,7 +7146,10 @@ class StartOndemandBackupResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8353,7 +7301,7 @@ class Tasks():
         """Initialize a Tasks object from a json dictionary."""
         args = {}
         if 'tasks' in _dict:
-            args['tasks'] = [Task.from_dict(x) for x in _dict.get('tasks')]
+            args['tasks'] = [Task.from_dict(v) for v in _dict.get('tasks')]
         return cls(**args)
 
     @classmethod
@@ -8365,7 +7313,13 @@ class Tasks():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'tasks') and self.tasks is not None:
-            _dict['tasks'] = [x.to_dict() for x in self.tasks]
+            tasks_list = []
+            for v in self.tasks:
+                if isinstance(v, dict):
+                    tasks_list.append(v)
+                else:
+                    tasks_list.append(v.to_dict())
+            _dict['tasks'] = tasks_list
         return _dict
 
     def _to_dict(self):
@@ -8420,7 +7374,10 @@ class UpdateDatabaseConfigurationResponse():
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'task') and self.task is not None:
-            _dict['task'] = self.task.to_dict()
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8440,6 +7397,94 @@ class UpdateDatabaseConfigurationResponse():
     def __ne__(self, other: 'UpdateDatabaseConfigurationResponse') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
+
+class UpdateUserResponse():
+    """
+    UpdateUserResponse.
+
+    :attr Task task: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 task: 'Task' = None) -> None:
+        """
+        Initialize a UpdateUserResponse object.
+
+        :param Task task: (optional)
+        """
+        self.task = task
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UpdateUserResponse':
+        """Initialize a UpdateUserResponse object from a json dictionary."""
+        args = {}
+        if 'task' in _dict:
+            args['task'] = Task.from_dict(_dict.get('task'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UpdateUserResponse object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'task') and self.task is not None:
+            if isinstance(self.task, dict):
+                _dict['task'] = self.task
+            else:
+                _dict['task'] = self.task.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UpdateUserResponse object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UpdateUserResponse') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UpdateUserResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class User():
+    """
+    User.
+
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize a User object.
+
+        """
+        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
+                  ", ".join(['UserDatabaseUser', 'UserRedisDatabaseUser', 'UserOpsManagerUser']))
+        raise Exception(msg)
+
+class UserUpdate():
+    """
+    UserUpdate.
+
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize a UserUpdate object.
+
+        """
+        msg = "Cannot instantiate base class. Instead, instantiate one of the defined subclasses: {0}".format(
+                  ", ".join(['UserUpdatePasswordSetting', 'UserUpdateRedisRoleSetting']))
+        raise Exception(msg)
 
 class AutoscalingSetGroupAutoscalingAutoscalingCPUGroup(AutoscalingSetGroupAutoscaling):
     """
@@ -8476,7 +7521,10 @@ class AutoscalingSetGroupAutoscalingAutoscalingCPUGroup(AutoscalingSetGroupAutos
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'cpu') and self.cpu is not None:
-            _dict['cpu'] = self.cpu.to_dict()
+            if isinstance(self.cpu, dict):
+                _dict['cpu'] = self.cpu
+            else:
+                _dict['cpu'] = self.cpu.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8532,7 +7580,10 @@ class AutoscalingSetGroupAutoscalingAutoscalingDiskGroup(AutoscalingSetGroupAuto
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'disk') and self.disk is not None:
-            _dict['disk'] = self.disk.to_dict()
+            if isinstance(self.disk, dict):
+                _dict['disk'] = self.disk
+            else:
+                _dict['disk'] = self.disk.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8588,7 +7639,10 @@ class AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup(AutoscalingSetGroupAu
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'memory') and self.memory is not None:
-            _dict['memory'] = self.memory.to_dict()
+            if isinstance(self.memory, dict):
+                _dict['memory'] = self.memory
+            else:
+                _dict['memory'] = self.memory.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8609,55 +7663,198 @@ class AutoscalingSetGroupAutoscalingAutoscalingMemoryGroup(AutoscalingSetGroupAu
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ConnectionConnectionElasticsearchConnection(ConnectionConnection):
+class ConfigurationMySQLConfiguration(Configuration):
     """
-    Elasticsearch Connection Strings.
+    MySQL Configuration.
 
-    :attr ElasticsearchConnectionHTTPS https: Elasticsearch Connection information
-          for drivers and libraries.
-    :attr ConnectionCLI cli: Connection information for cURL.
+    :attr str default_authentication_plugin: (optional) Determines which
+          authentication plugin the server assigns to new accounts created by CREATE USER
+          and GRANT statements that do not explicitly specify an authentication plugin.
+    :attr int innodb_buffer_pool_size_percentage: (optional) Percentage of memory to
+          use for innodb_buffer_pool_size.
+    :attr int innodb_flush_log_at_trx_commit: (optional) Controls the balance
+          between strict ACID compliance for commit operations and higher performance. See
+          official MySQL documentation for more details.
+    :attr int innodb_log_buffer_size: (optional) InnoDB log buffer size in bytes.
+    :attr int innodb_log_file_size: (optional) InnoDB log file size in bytes.
+    :attr int innodb_lru_scan_depth: (optional) An InnoDB MySQL option that may
+          affect performance. Check official MySQL documentation for a detailed
+          description of this option's use cases.
+    :attr int innodb_read_io_threads: (optional) The number of I/O Threads for read
+          operations in InnoDB.
+    :attr int innodb_write_io_threads: (optional) The number of I/O Threads for
+          write operations in InnoDB.
+    :attr int max_allowed_packet: (optional) The maximum size of a packet message
+          buffer in bytes.
+    :attr int max_connections: (optional) Maximum number of allowed MySQL
+          connections.
+    :attr int mysql_max_binlog_age_sec: (optional) Maximum age for a binlog in
+          seconds. If a binlog is older, it's archived.
+    :attr int net_read_timeout: (optional) The number of seconds to wait for more
+          data from a connection before aborting the read.
+    :attr int net_write_timeout: (optional) The number of seconds to wait for a
+          block to be written to a connection before aborting the write.
+    :attr str sql_mode: (optional) The comma-separated list of SQL modes applied on
+          this server globally.
+    :attr int wait_timeout: (optional) The number of seconds the server waits for
+          activity on a noninteractive connection before closing it.
+    :attr int max_prepared_stmt_count: (optional) This variable limits the total
+          number of prepared statements in the server.
     """
 
     def __init__(self,
-                 https: 'ElasticsearchConnectionHTTPS',
-                 cli: 'ConnectionCLI') -> None:
+                 *,
+                 default_authentication_plugin: str = None,
+                 innodb_buffer_pool_size_percentage: int = None,
+                 innodb_flush_log_at_trx_commit: int = None,
+                 innodb_log_buffer_size: int = None,
+                 innodb_log_file_size: int = None,
+                 innodb_lru_scan_depth: int = None,
+                 innodb_read_io_threads: int = None,
+                 innodb_write_io_threads: int = None,
+                 max_allowed_packet: int = None,
+                 max_connections: int = None,
+                 mysql_max_binlog_age_sec: int = None,
+                 net_read_timeout: int = None,
+                 net_write_timeout: int = None,
+                 sql_mode: str = None,
+                 wait_timeout: int = None,
+                 max_prepared_stmt_count: int = None) -> None:
         """
-        Initialize a ConnectionConnectionElasticsearchConnection object.
+        Initialize a ConfigurationMySQLConfiguration object.
 
-        :param ElasticsearchConnectionHTTPS https: Elasticsearch Connection
-               information for drivers and libraries.
-        :param ConnectionCLI cli: Connection information for cURL.
+        :param str default_authentication_plugin: (optional) Determines which
+               authentication plugin the server assigns to new accounts created by CREATE
+               USER and GRANT statements that do not explicitly specify an authentication
+               plugin.
+        :param int innodb_buffer_pool_size_percentage: (optional) Percentage of
+               memory to use for innodb_buffer_pool_size.
+        :param int innodb_flush_log_at_trx_commit: (optional) Controls the balance
+               between strict ACID compliance for commit operations and higher
+               performance. See official MySQL documentation for more details.
+        :param int innodb_log_buffer_size: (optional) InnoDB log buffer size in
+               bytes.
+        :param int innodb_log_file_size: (optional) InnoDB log file size in bytes.
+        :param int innodb_lru_scan_depth: (optional) An InnoDB MySQL option that
+               may affect performance. Check official MySQL documentation for a detailed
+               description of this option's use cases.
+        :param int innodb_read_io_threads: (optional) The number of I/O Threads for
+               read operations in InnoDB.
+        :param int innodb_write_io_threads: (optional) The number of I/O Threads
+               for write operations in InnoDB.
+        :param int max_allowed_packet: (optional) The maximum size of a packet
+               message buffer in bytes.
+        :param int max_connections: (optional) Maximum number of allowed MySQL
+               connections.
+        :param int mysql_max_binlog_age_sec: (optional) Maximum age for a binlog in
+               seconds. If a binlog is older, it's archived.
+        :param int net_read_timeout: (optional) The number of seconds to wait for
+               more data from a connection before aborting the read.
+        :param int net_write_timeout: (optional) The number of seconds to wait for
+               a block to be written to a connection before aborting the write.
+        :param str sql_mode: (optional) The comma-separated list of SQL modes
+               applied on this server globally.
+        :param int wait_timeout: (optional) The number of seconds the server waits
+               for activity on a noninteractive connection before closing it.
+        :param int max_prepared_stmt_count: (optional) This variable limits the
+               total number of prepared statements in the server.
         """
         # pylint: disable=super-init-not-called
-        self.https = https
-        self.cli = cli
+        self.default_authentication_plugin = default_authentication_plugin
+        self.innodb_buffer_pool_size_percentage = innodb_buffer_pool_size_percentage
+        self.innodb_flush_log_at_trx_commit = innodb_flush_log_at_trx_commit
+        self.innodb_log_buffer_size = innodb_log_buffer_size
+        self.innodb_log_file_size = innodb_log_file_size
+        self.innodb_lru_scan_depth = innodb_lru_scan_depth
+        self.innodb_read_io_threads = innodb_read_io_threads
+        self.innodb_write_io_threads = innodb_write_io_threads
+        self.max_allowed_packet = max_allowed_packet
+        self.max_connections = max_connections
+        self.mysql_max_binlog_age_sec = mysql_max_binlog_age_sec
+        self.net_read_timeout = net_read_timeout
+        self.net_write_timeout = net_write_timeout
+        self.sql_mode = sql_mode
+        self.wait_timeout = wait_timeout
+        self.max_prepared_stmt_count = max_prepared_stmt_count
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionElasticsearchConnection':
-        """Initialize a ConnectionConnectionElasticsearchConnection object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConfigurationMySQLConfiguration':
+        """Initialize a ConfigurationMySQLConfiguration object from a json dictionary."""
         args = {}
-        if 'https' in _dict:
-            args['https'] = ElasticsearchConnectionHTTPS.from_dict(_dict.get('https'))
-        else:
-            raise ValueError('Required property \'https\' not present in ConnectionConnectionElasticsearchConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionElasticsearchConnection JSON')
+        if 'default_authentication_plugin' in _dict:
+            args['default_authentication_plugin'] = _dict.get('default_authentication_plugin')
+        if 'innodb_buffer_pool_size_percentage' in _dict:
+            args['innodb_buffer_pool_size_percentage'] = _dict.get('innodb_buffer_pool_size_percentage')
+        if 'innodb_flush_log_at_trx_commit' in _dict:
+            args['innodb_flush_log_at_trx_commit'] = _dict.get('innodb_flush_log_at_trx_commit')
+        if 'innodb_log_buffer_size' in _dict:
+            args['innodb_log_buffer_size'] = _dict.get('innodb_log_buffer_size')
+        if 'innodb_log_file_size' in _dict:
+            args['innodb_log_file_size'] = _dict.get('innodb_log_file_size')
+        if 'innodb_lru_scan_depth' in _dict:
+            args['innodb_lru_scan_depth'] = _dict.get('innodb_lru_scan_depth')
+        if 'innodb_read_io_threads' in _dict:
+            args['innodb_read_io_threads'] = _dict.get('innodb_read_io_threads')
+        if 'innodb_write_io_threads' in _dict:
+            args['innodb_write_io_threads'] = _dict.get('innodb_write_io_threads')
+        if 'max_allowed_packet' in _dict:
+            args['max_allowed_packet'] = _dict.get('max_allowed_packet')
+        if 'max_connections' in _dict:
+            args['max_connections'] = _dict.get('max_connections')
+        if 'mysql_max_binlog_age_sec' in _dict:
+            args['mysql_max_binlog_age_sec'] = _dict.get('mysql_max_binlog_age_sec')
+        if 'net_read_timeout' in _dict:
+            args['net_read_timeout'] = _dict.get('net_read_timeout')
+        if 'net_write_timeout' in _dict:
+            args['net_write_timeout'] = _dict.get('net_write_timeout')
+        if 'sql_mode' in _dict:
+            args['sql_mode'] = _dict.get('sql_mode')
+        if 'wait_timeout' in _dict:
+            args['wait_timeout'] = _dict.get('wait_timeout')
+        if 'max_prepared_stmt_count' in _dict:
+            args['max_prepared_stmt_count'] = _dict.get('max_prepared_stmt_count')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionElasticsearchConnection object from a json dictionary."""
+        """Initialize a ConfigurationMySQLConfiguration object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'https') and self.https is not None:
-            _dict['https'] = self.https.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
+        if hasattr(self, 'default_authentication_plugin') and self.default_authentication_plugin is not None:
+            _dict['default_authentication_plugin'] = self.default_authentication_plugin
+        if hasattr(self, 'innodb_buffer_pool_size_percentage') and self.innodb_buffer_pool_size_percentage is not None:
+            _dict['innodb_buffer_pool_size_percentage'] = self.innodb_buffer_pool_size_percentage
+        if hasattr(self, 'innodb_flush_log_at_trx_commit') and self.innodb_flush_log_at_trx_commit is not None:
+            _dict['innodb_flush_log_at_trx_commit'] = self.innodb_flush_log_at_trx_commit
+        if hasattr(self, 'innodb_log_buffer_size') and self.innodb_log_buffer_size is not None:
+            _dict['innodb_log_buffer_size'] = self.innodb_log_buffer_size
+        if hasattr(self, 'innodb_log_file_size') and self.innodb_log_file_size is not None:
+            _dict['innodb_log_file_size'] = self.innodb_log_file_size
+        if hasattr(self, 'innodb_lru_scan_depth') and self.innodb_lru_scan_depth is not None:
+            _dict['innodb_lru_scan_depth'] = self.innodb_lru_scan_depth
+        if hasattr(self, 'innodb_read_io_threads') and self.innodb_read_io_threads is not None:
+            _dict['innodb_read_io_threads'] = self.innodb_read_io_threads
+        if hasattr(self, 'innodb_write_io_threads') and self.innodb_write_io_threads is not None:
+            _dict['innodb_write_io_threads'] = self.innodb_write_io_threads
+        if hasattr(self, 'max_allowed_packet') and self.max_allowed_packet is not None:
+            _dict['max_allowed_packet'] = self.max_allowed_packet
+        if hasattr(self, 'max_connections') and self.max_connections is not None:
+            _dict['max_connections'] = self.max_connections
+        if hasattr(self, 'mysql_max_binlog_age_sec') and self.mysql_max_binlog_age_sec is not None:
+            _dict['mysql_max_binlog_age_sec'] = self.mysql_max_binlog_age_sec
+        if hasattr(self, 'net_read_timeout') and self.net_read_timeout is not None:
+            _dict['net_read_timeout'] = self.net_read_timeout
+        if hasattr(self, 'net_write_timeout') and self.net_write_timeout is not None:
+            _dict['net_write_timeout'] = self.net_write_timeout
+        if hasattr(self, 'sql_mode') and self.sql_mode is not None:
+            _dict['sql_mode'] = self.sql_mode
+        if hasattr(self, 'wait_timeout') and self.wait_timeout is not None:
+            _dict['wait_timeout'] = self.wait_timeout
+        if hasattr(self, 'max_prepared_stmt_count') and self.max_prepared_stmt_count is not None:
+            _dict['max_prepared_stmt_count'] = self.max_prepared_stmt_count
         return _dict
 
     def _to_dict(self):
@@ -8665,411 +7862,51 @@ class ConnectionConnectionElasticsearchConnection(ConnectionConnection):
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionElasticsearchConnection object."""
+        """Return a `str` version of this ConfigurationMySQLConfiguration object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'ConnectionConnectionElasticsearchConnection') -> bool:
+    def __eq__(self, other: 'ConfigurationMySQLConfiguration') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'ConnectionConnectionElasticsearchConnection') -> bool:
+    def __ne__(self, other: 'ConfigurationMySQLConfiguration') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class ConnectionConnectionEtcdConnection(ConnectionConnection):
-    """
-    etcd3 Connection Strings.
-
-    :attr GRPCConnectionURI grpc: GRPC(etcd3) Connection information for drivers and
-          libraries.
-    :attr ConnectionCLI cli: Connection information for etcdctl.
-    """
-
-    def __init__(self,
-                 grpc: 'GRPCConnectionURI',
-                 cli: 'ConnectionCLI') -> None:
+    class DefaultAuthenticationPluginEnum(str, Enum):
         """
-        Initialize a ConnectionConnectionEtcdConnection object.
-
-        :param GRPCConnectionURI grpc: GRPC(etcd3) Connection information for
-               drivers and libraries.
-        :param ConnectionCLI cli: Connection information for etcdctl.
+        Determines which authentication plugin the server assigns to new accounts created
+        by CREATE USER and GRANT statements that do not explicitly specify an
+        authentication plugin.
         """
-        # pylint: disable=super-init-not-called
-        self.grpc = grpc
-        self.cli = cli
+        SHA256_PASSWORD = 'sha256_password'
+        CACHING_SHA2_PASSWORD = 'caching_sha2_password'
+        MYSQL_NATIVE_PASSWORD = 'mysql_native_password'
 
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionEtcdConnection':
-        """Initialize a ConnectionConnectionEtcdConnection object from a json dictionary."""
-        args = {}
-        if 'grpc' in _dict:
-            args['grpc'] = GRPCConnectionURI.from_dict(_dict.get('grpc'))
-        else:
-            raise ValueError('Required property \'grpc\' not present in ConnectionConnectionEtcdConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionEtcdConnection JSON')
-        return cls(**args)
 
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionEtcdConnection object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'grpc') and self.grpc is not None:
-            _dict['grpc'] = self.grpc.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionEtcdConnection object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionConnectionEtcdConnection') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionConnectionEtcdConnection') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConnectionConnectionMongoDBConnection(ConnectionConnection):
-    """
-    MongoDB Connection Strings.
-
-    :attr MongoDBConnectionURI mongodb: MongoDB Connection information for drivers
-          and libraries.
-    :attr ConnectionCLI cli: Connection information for mongo shell.
-    """
-
-    def __init__(self,
-                 mongodb: 'MongoDBConnectionURI',
-                 cli: 'ConnectionCLI') -> None:
-        """
-        Initialize a ConnectionConnectionMongoDBConnection object.
-
-        :param MongoDBConnectionURI mongodb: MongoDB Connection information for
-               drivers and libraries.
-        :param ConnectionCLI cli: Connection information for mongo shell.
-        """
-        # pylint: disable=super-init-not-called
-        self.mongodb = mongodb
-        self.cli = cli
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionMongoDBConnection':
-        """Initialize a ConnectionConnectionMongoDBConnection object from a json dictionary."""
-        args = {}
-        if 'mongodb' in _dict:
-            args['mongodb'] = MongoDBConnectionURI.from_dict(_dict.get('mongodb'))
-        else:
-            raise ValueError('Required property \'mongodb\' not present in ConnectionConnectionMongoDBConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionMongoDBConnection JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionMongoDBConnection object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'mongodb') and self.mongodb is not None:
-            _dict['mongodb'] = self.mongodb.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionMongoDBConnection object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionConnectionMongoDBConnection') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionConnectionMongoDBConnection') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConnectionConnectionPostgreSQLConnection(ConnectionConnection):
-    """
-    PostgreSQL and EnterpriseDB Connection Strings.
-
-    :attr PostgreSQLConnectionURI postgres: Connection information for drivers and
-          libraries.
-    :attr ConnectionCLI cli: Connection information for psql.
-    """
-
-    def __init__(self,
-                 postgres: 'PostgreSQLConnectionURI',
-                 cli: 'ConnectionCLI') -> None:
-        """
-        Initialize a ConnectionConnectionPostgreSQLConnection object.
-
-        :param PostgreSQLConnectionURI postgres: Connection information for drivers
-               and libraries.
-        :param ConnectionCLI cli: Connection information for psql.
-        """
-        # pylint: disable=super-init-not-called
-        self.postgres = postgres
-        self.cli = cli
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionPostgreSQLConnection':
-        """Initialize a ConnectionConnectionPostgreSQLConnection object from a json dictionary."""
-        args = {}
-        if 'postgres' in _dict:
-            args['postgres'] = PostgreSQLConnectionURI.from_dict(_dict.get('postgres'))
-        else:
-            raise ValueError('Required property \'postgres\' not present in ConnectionConnectionPostgreSQLConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionPostgreSQLConnection JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionPostgreSQLConnection object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'postgres') and self.postgres is not None:
-            _dict['postgres'] = self.postgres.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionPostgreSQLConnection object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionConnectionPostgreSQLConnection') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionConnectionPostgreSQLConnection') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConnectionConnectionRabbitMQConnection(ConnectionConnection):
-    """
-    RabbitMQ Connection Strings.
-
-    :attr RabbitMQConnectionAMQPS amqps: RabbitMQ Connection information for AMQPS
-          drivers and libraries.
-    :attr RabbitMQConnectionMQTTS mqtts: RabbitMQ Connection information for MQTTS
-          drivers and libraries.
-    :attr RabbitMQConnectionStompSSL stomp_ssl: RabbitMQ Connection information for
-          STOMP drivers and libraries.
-    :attr RabbitMQConnectionHTTPS https: RabbitMQ Connection information for HTTPS.
-    :attr ConnectionCLI cli: Connection information for rabbitmqadmin.
-    """
-
-    def __init__(self,
-                 amqps: 'RabbitMQConnectionAMQPS',
-                 mqtts: 'RabbitMQConnectionMQTTS',
-                 stomp_ssl: 'RabbitMQConnectionStompSSL',
-                 https: 'RabbitMQConnectionHTTPS',
-                 cli: 'ConnectionCLI') -> None:
-        """
-        Initialize a ConnectionConnectionRabbitMQConnection object.
-
-        :param RabbitMQConnectionAMQPS amqps: RabbitMQ Connection information for
-               AMQPS drivers and libraries.
-        :param RabbitMQConnectionMQTTS mqtts: RabbitMQ Connection information for
-               MQTTS drivers and libraries.
-        :param RabbitMQConnectionStompSSL stomp_ssl: RabbitMQ Connection
-               information for STOMP drivers and libraries.
-        :param RabbitMQConnectionHTTPS https: RabbitMQ Connection information for
-               HTTPS.
-        :param ConnectionCLI cli: Connection information for rabbitmqadmin.
-        """
-        # pylint: disable=super-init-not-called
-        self.amqps = amqps
-        self.mqtts = mqtts
-        self.stomp_ssl = stomp_ssl
-        self.https = https
-        self.cli = cli
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionRabbitMQConnection':
-        """Initialize a ConnectionConnectionRabbitMQConnection object from a json dictionary."""
-        args = {}
-        if 'amqps' in _dict:
-            args['amqps'] = RabbitMQConnectionAMQPS.from_dict(_dict.get('amqps'))
-        else:
-            raise ValueError('Required property \'amqps\' not present in ConnectionConnectionRabbitMQConnection JSON')
-        if 'mqtts' in _dict:
-            args['mqtts'] = RabbitMQConnectionMQTTS.from_dict(_dict.get('mqtts'))
-        else:
-            raise ValueError('Required property \'mqtts\' not present in ConnectionConnectionRabbitMQConnection JSON')
-        if 'stomp_ssl' in _dict:
-            args['stomp_ssl'] = RabbitMQConnectionStompSSL.from_dict(_dict.get('stomp_ssl'))
-        else:
-            raise ValueError('Required property \'stomp_ssl\' not present in ConnectionConnectionRabbitMQConnection JSON')
-        if 'https' in _dict:
-            args['https'] = RabbitMQConnectionHTTPS.from_dict(_dict.get('https'))
-        else:
-            raise ValueError('Required property \'https\' not present in ConnectionConnectionRabbitMQConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionRabbitMQConnection JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionRabbitMQConnection object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'amqps') and self.amqps is not None:
-            _dict['amqps'] = self.amqps.to_dict()
-        if hasattr(self, 'mqtts') and self.mqtts is not None:
-            _dict['mqtts'] = self.mqtts.to_dict()
-        if hasattr(self, 'stomp_ssl') and self.stomp_ssl is not None:
-            _dict['stomp_ssl'] = self.stomp_ssl.to_dict()
-        if hasattr(self, 'https') and self.https is not None:
-            _dict['https'] = self.https.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionRabbitMQConnection object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionConnectionRabbitMQConnection') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionConnectionRabbitMQConnection') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class ConnectionConnectionRedisConnection(ConnectionConnection):
-    """
-    Redis Connection Strings.
-
-    :attr RedisConnectionURI rediss: Connection information for drivers and
-          libraries.
-    :attr ConnectionCLI cli: Connection information for a Redis CLI client.
-    """
-
-    def __init__(self,
-                 rediss: 'RedisConnectionURI',
-                 cli: 'ConnectionCLI') -> None:
-        """
-        Initialize a ConnectionConnectionRedisConnection object.
-
-        :param RedisConnectionURI rediss: Connection information for drivers and
-               libraries.
-        :param ConnectionCLI cli: Connection information for a Redis CLI client.
-        """
-        # pylint: disable=super-init-not-called
-        self.rediss = rediss
-        self.cli = cli
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionConnectionRedisConnection':
-        """Initialize a ConnectionConnectionRedisConnection object from a json dictionary."""
-        args = {}
-        if 'rediss' in _dict:
-            args['rediss'] = RedisConnectionURI.from_dict(_dict.get('rediss'))
-        else:
-            raise ValueError('Required property \'rediss\' not present in ConnectionConnectionRedisConnection JSON')
-        if 'cli' in _dict:
-            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
-        else:
-            raise ValueError('Required property \'cli\' not present in ConnectionConnectionRedisConnection JSON')
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionConnectionRedisConnection object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'rediss') and self.rediss is not None:
-            _dict['rediss'] = self.rediss.to_dict()
-        if hasattr(self, 'cli') and self.cli is not None:
-            _dict['cli'] = self.cli.to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionConnectionRedisConnection object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionConnectionRedisConnection') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionConnectionRedisConnection') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration):
+class ConfigurationPGConfiguration(Configuration):
     """
     PostgreSQL and EnterpriseDB Configuration.
 
-    :attr int max_connections: (optional) Maximum connections allowed.
-    :attr int max_prepared_transactions: (optional) Max number of transactions that
-          can be in the "prepared" state simultaneously.
+    :attr int archive_timeout: (optional) The number of seconds to wait before
+          forces a switch to the next WAL file if a new file has not been started.
     :attr int deadlock_timeout: (optional) Deadlock timeout in ms. The time to wait
           on a lock before checking for deadlock.  Also the duration where lock waits will
           be logged.
     :attr int effective_io_concurrency: (optional) Number of simultaneous requests
           that can be handled efficiently by the disk subsystem.
+    :attr str log_connections: (optional) Causes each attempted connection to the
+          server to be logged, as well as successful completion of client authentication.
+    :attr str log_disconnections: (optional) Causes session terminations to be
+          logged. The log output provides information similar to log_connections, plus the
+          duration of the session.
+    :attr int log_min_duration_statement: (optional) The minimum number of
+          milliseconds for execution time above which statements will be logged.
+    :attr int max_connections: (optional) Maximum connections allowed.
+    :attr int max_prepared_transactions: (optional) Max number of transactions that
+          can be in the "prepared" state simultaneously.
     :attr int max_replication_slots: (optional) Maximum number of simultaneously
           defined replication slots.
     :attr int max_wal_senders: (optional) Maximum number of simultaneously running
@@ -9080,38 +7917,56 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
     :attr str synchronous_commit: (optional) Sets the current transaction's
           synchronization level.  Off can result in data loss.  remote_write with enable
           synchronous replication which will impact performance and availabilty.
+    :attr int tcp_keepalives_count: (optional) The number of TCP keepalives that can
+          be lost before the server's connection to the client is considered dead.
+    :attr int tcp_keepalives_idle: (optional) The number of seconds of inactivity
+          after which TCP should send a keepalive message to the client.
+    :attr int tcp_keepalives_interval: (optional) The number of seconds after which
+          a TCP keepalive message that is not acknowledged by the client should be
+          retransmitted.
     :attr str wal_level: (optional) WAL level.  Set to logical to use logical
           decoding or logical replication.
-    :attr int archive_timeout: (optional) The number of seconds to wait before
-          forces a switch to the next WAL file if a new file has not been started.
-    :attr int log_min_duration_statement: (optional) The minimum number of
-          milliseconds for execution time above which statements will be logged.
     """
 
     def __init__(self,
                  *,
-                 max_connections: int = None,
-                 max_prepared_transactions: int = None,
+                 archive_timeout: int = None,
                  deadlock_timeout: int = None,
                  effective_io_concurrency: int = None,
+                 log_connections: str = None,
+                 log_disconnections: str = None,
+                 log_min_duration_statement: int = None,
+                 max_connections: int = None,
+                 max_prepared_transactions: int = None,
                  max_replication_slots: int = None,
                  max_wal_senders: int = None,
                  shared_buffers: int = None,
                  synchronous_commit: str = None,
-                 wal_level: str = None,
-                 archive_timeout: int = None,
-                 log_min_duration_statement: int = None) -> None:
+                 tcp_keepalives_count: int = None,
+                 tcp_keepalives_idle: int = None,
+                 tcp_keepalives_interval: int = None,
+                 wal_level: str = None) -> None:
         """
-        Initialize a SetConfigurationConfigurationPGConfiguration object.
+        Initialize a ConfigurationPGConfiguration object.
 
-        :param int max_connections: (optional) Maximum connections allowed.
-        :param int max_prepared_transactions: (optional) Max number of transactions
-               that can be in the "prepared" state simultaneously.
+        :param int archive_timeout: (optional) The number of seconds to wait before
+               forces a switch to the next WAL file if a new file has not been started.
         :param int deadlock_timeout: (optional) Deadlock timeout in ms. The time to
                wait on a lock before checking for deadlock.  Also the duration where lock
                waits will be logged.
         :param int effective_io_concurrency: (optional) Number of simultaneous
                requests that can be handled efficiently by the disk subsystem.
+        :param str log_connections: (optional) Causes each attempted connection to
+               the server to be logged, as well as successful completion of client
+               authentication.
+        :param str log_disconnections: (optional) Causes session terminations to be
+               logged. The log output provides information similar to log_connections,
+               plus the duration of the session.
+        :param int log_min_duration_statement: (optional) The minimum number of
+               milliseconds for execution time above which statements will be logged.
+        :param int max_connections: (optional) Maximum connections allowed.
+        :param int max_prepared_transactions: (optional) Max number of transactions
+               that can be in the "prepared" state simultaneously.
         :param int max_replication_slots: (optional) Maximum number of
                simultaneously defined replication slots.
         :param int max_wal_senders: (optional) Maximum number of simultaneously
@@ -9123,38 +7978,55 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
                synchronization level.  Off can result in data loss.  remote_write with
                enable synchronous replication which will impact performance and
                availabilty.
+        :param int tcp_keepalives_count: (optional) The number of TCP keepalives
+               that can be lost before the server's connection to the client is considered
+               dead.
+        :param int tcp_keepalives_idle: (optional) The number of seconds of
+               inactivity after which TCP should send a keepalive message to the client.
+        :param int tcp_keepalives_interval: (optional) The number of seconds after
+               which a TCP keepalive message that is not acknowledged by the client should
+               be retransmitted.
         :param str wal_level: (optional) WAL level.  Set to logical to use logical
                decoding or logical replication.
-        :param int archive_timeout: (optional) The number of seconds to wait before
-               forces a switch to the next WAL file if a new file has not been started.
-        :param int log_min_duration_statement: (optional) The minimum number of
-               milliseconds for execution time above which statements will be logged.
         """
         # pylint: disable=super-init-not-called
-        self.max_connections = max_connections
-        self.max_prepared_transactions = max_prepared_transactions
+        self.archive_timeout = archive_timeout
         self.deadlock_timeout = deadlock_timeout
         self.effective_io_concurrency = effective_io_concurrency
+        self.log_connections = log_connections
+        self.log_disconnections = log_disconnections
+        self.log_min_duration_statement = log_min_duration_statement
+        self.max_connections = max_connections
+        self.max_prepared_transactions = max_prepared_transactions
         self.max_replication_slots = max_replication_slots
         self.max_wal_senders = max_wal_senders
         self.shared_buffers = shared_buffers
         self.synchronous_commit = synchronous_commit
+        self.tcp_keepalives_count = tcp_keepalives_count
+        self.tcp_keepalives_idle = tcp_keepalives_idle
+        self.tcp_keepalives_interval = tcp_keepalives_interval
         self.wal_level = wal_level
-        self.archive_timeout = archive_timeout
-        self.log_min_duration_statement = log_min_duration_statement
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetConfigurationConfigurationPGConfiguration':
-        """Initialize a SetConfigurationConfigurationPGConfiguration object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConfigurationPGConfiguration':
+        """Initialize a ConfigurationPGConfiguration object from a json dictionary."""
         args = {}
-        if 'max_connections' in _dict:
-            args['max_connections'] = _dict.get('max_connections')
-        if 'max_prepared_transactions' in _dict:
-            args['max_prepared_transactions'] = _dict.get('max_prepared_transactions')
+        if 'archive_timeout' in _dict:
+            args['archive_timeout'] = _dict.get('archive_timeout')
         if 'deadlock_timeout' in _dict:
             args['deadlock_timeout'] = _dict.get('deadlock_timeout')
         if 'effective_io_concurrency' in _dict:
             args['effective_io_concurrency'] = _dict.get('effective_io_concurrency')
+        if 'log_connections' in _dict:
+            args['log_connections'] = _dict.get('log_connections')
+        if 'log_disconnections' in _dict:
+            args['log_disconnections'] = _dict.get('log_disconnections')
+        if 'log_min_duration_statement' in _dict:
+            args['log_min_duration_statement'] = _dict.get('log_min_duration_statement')
+        if 'max_connections' in _dict:
+            args['max_connections'] = _dict.get('max_connections')
+        if 'max_prepared_transactions' in _dict:
+            args['max_prepared_transactions'] = _dict.get('max_prepared_transactions')
         if 'max_replication_slots' in _dict:
             args['max_replication_slots'] = _dict.get('max_replication_slots')
         if 'max_wal_senders' in _dict:
@@ -9163,30 +8035,40 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
             args['shared_buffers'] = _dict.get('shared_buffers')
         if 'synchronous_commit' in _dict:
             args['synchronous_commit'] = _dict.get('synchronous_commit')
+        if 'tcp_keepalives_count' in _dict:
+            args['tcp_keepalives_count'] = _dict.get('tcp_keepalives_count')
+        if 'tcp_keepalives_idle' in _dict:
+            args['tcp_keepalives_idle'] = _dict.get('tcp_keepalives_idle')
+        if 'tcp_keepalives_interval' in _dict:
+            args['tcp_keepalives_interval'] = _dict.get('tcp_keepalives_interval')
         if 'wal_level' in _dict:
             args['wal_level'] = _dict.get('wal_level')
-        if 'archive_timeout' in _dict:
-            args['archive_timeout'] = _dict.get('archive_timeout')
-        if 'log_min_duration_statement' in _dict:
-            args['log_min_duration_statement'] = _dict.get('log_min_duration_statement')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetConfigurationConfigurationPGConfiguration object from a json dictionary."""
+        """Initialize a ConfigurationPGConfiguration object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'max_connections') and self.max_connections is not None:
-            _dict['max_connections'] = self.max_connections
-        if hasattr(self, 'max_prepared_transactions') and self.max_prepared_transactions is not None:
-            _dict['max_prepared_transactions'] = self.max_prepared_transactions
+        if hasattr(self, 'archive_timeout') and self.archive_timeout is not None:
+            _dict['archive_timeout'] = self.archive_timeout
         if hasattr(self, 'deadlock_timeout') and self.deadlock_timeout is not None:
             _dict['deadlock_timeout'] = self.deadlock_timeout
         if hasattr(self, 'effective_io_concurrency') and self.effective_io_concurrency is not None:
             _dict['effective_io_concurrency'] = self.effective_io_concurrency
+        if hasattr(self, 'log_connections') and self.log_connections is not None:
+            _dict['log_connections'] = self.log_connections
+        if hasattr(self, 'log_disconnections') and self.log_disconnections is not None:
+            _dict['log_disconnections'] = self.log_disconnections
+        if hasattr(self, 'log_min_duration_statement') and self.log_min_duration_statement is not None:
+            _dict['log_min_duration_statement'] = self.log_min_duration_statement
+        if hasattr(self, 'max_connections') and self.max_connections is not None:
+            _dict['max_connections'] = self.max_connections
+        if hasattr(self, 'max_prepared_transactions') and self.max_prepared_transactions is not None:
+            _dict['max_prepared_transactions'] = self.max_prepared_transactions
         if hasattr(self, 'max_replication_slots') and self.max_replication_slots is not None:
             _dict['max_replication_slots'] = self.max_replication_slots
         if hasattr(self, 'max_wal_senders') and self.max_wal_senders is not None:
@@ -9195,12 +8077,14 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
             _dict['shared_buffers'] = self.shared_buffers
         if hasattr(self, 'synchronous_commit') and self.synchronous_commit is not None:
             _dict['synchronous_commit'] = self.synchronous_commit
+        if hasattr(self, 'tcp_keepalives_count') and self.tcp_keepalives_count is not None:
+            _dict['tcp_keepalives_count'] = self.tcp_keepalives_count
+        if hasattr(self, 'tcp_keepalives_idle') and self.tcp_keepalives_idle is not None:
+            _dict['tcp_keepalives_idle'] = self.tcp_keepalives_idle
+        if hasattr(self, 'tcp_keepalives_interval') and self.tcp_keepalives_interval is not None:
+            _dict['tcp_keepalives_interval'] = self.tcp_keepalives_interval
         if hasattr(self, 'wal_level') and self.wal_level is not None:
             _dict['wal_level'] = self.wal_level
-        if hasattr(self, 'archive_timeout') and self.archive_timeout is not None:
-            _dict['archive_timeout'] = self.archive_timeout
-        if hasattr(self, 'log_min_duration_statement') and self.log_min_duration_statement is not None:
-            _dict['log_min_duration_statement'] = self.log_min_duration_statement
         return _dict
 
     def _to_dict(self):
@@ -9208,18 +8092,36 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetConfigurationConfigurationPGConfiguration object."""
+        """Return a `str` version of this ConfigurationPGConfiguration object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetConfigurationConfigurationPGConfiguration') -> bool:
+    def __eq__(self, other: 'ConfigurationPGConfiguration') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetConfigurationConfigurationPGConfiguration') -> bool:
+    def __ne__(self, other: 'ConfigurationPGConfiguration') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
+
+    class LogConnectionsEnum(str, Enum):
+        """
+        Causes each attempted connection to the server to be logged, as well as successful
+        completion of client authentication.
+        """
+        OFF = 'off'
+        ON = 'on'
+
+
+    class LogDisconnectionsEnum(str, Enum):
+        """
+        Causes session terminations to be logged. The log output provides information
+        similar to log_connections, plus the duration of the session.
+        """
+        OFF = 'off'
+        ON = 'on'
+
 
     class SynchronousCommitEnum(str, Enum):
         """
@@ -9239,12 +8141,69 @@ class SetConfigurationConfigurationPGConfiguration(SetConfigurationConfiguration
         LOGICAL = 'logical'
 
 
-class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfiguration):
+class ConfigurationRabbitMQConfiguration(Configuration):
+    """
+    MySQL Configuration.
+
+    :attr bool delete_undefined_queues: (optional) Automatically delete undefined
+          queues.
+    """
+
+    def __init__(self,
+                 *,
+                 delete_undefined_queues: bool = None) -> None:
+        """
+        Initialize a ConfigurationRabbitMQConfiguration object.
+
+        :param bool delete_undefined_queues: (optional) Automatically delete
+               undefined queues.
+        """
+        # pylint: disable=super-init-not-called
+        self.delete_undefined_queues = delete_undefined_queues
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConfigurationRabbitMQConfiguration':
+        """Initialize a ConfigurationRabbitMQConfiguration object from a json dictionary."""
+        args = {}
+        if 'delete_undefined_queues' in _dict:
+            args['delete_undefined_queues'] = _dict.get('delete_undefined_queues')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConfigurationRabbitMQConfiguration object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'delete_undefined_queues') and self.delete_undefined_queues is not None:
+            _dict['delete_undefined_queues'] = self.delete_undefined_queues
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConfigurationRabbitMQConfiguration object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConfigurationRabbitMQConfiguration') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConfigurationRabbitMQConfiguration') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConfigurationRedisConfiguration(Configuration):
     """
     Redis Configuration.
 
-    :attr int maxmemory_redis: (optional) The maximum memory Redis should use, as
-          bytes.
+    :attr int maxmemory: (optional) The maximum memory Redis should use, as bytes.
     :attr str maxmemory_policy: (optional) The policy with which Redis evicts keys
           when maximum memory is reached.
     :attr str appendonly: (optional) If set to yes this will enable AOF persistence.
@@ -9256,16 +8215,16 @@ class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfigurat
 
     def __init__(self,
                  *,
-                 maxmemory_redis: int = None,
+                 maxmemory: int = None,
                  maxmemory_policy: str = None,
                  appendonly: str = None,
                  maxmemory_samples: int = None,
                  stop_writes_on_bgsave_error: str = None) -> None:
         """
-        Initialize a SetConfigurationConfigurationRedisConfiguration object.
+        Initialize a ConfigurationRedisConfiguration object.
 
-        :param int maxmemory_redis: (optional) The maximum memory Redis should use,
-               as bytes.
+        :param int maxmemory: (optional) The maximum memory Redis should use, as
+               bytes.
         :param str maxmemory_policy: (optional) The policy with which Redis evicts
                keys when maximum memory is reached.
         :param str appendonly: (optional) If set to yes this will enable AOF
@@ -9276,18 +8235,18 @@ class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfigurat
                accepting writes when background persistence actions fail.
         """
         # pylint: disable=super-init-not-called
-        self.maxmemory_redis = maxmemory_redis
+        self.maxmemory = maxmemory
         self.maxmemory_policy = maxmemory_policy
         self.appendonly = appendonly
         self.maxmemory_samples = maxmemory_samples
         self.stop_writes_on_bgsave_error = stop_writes_on_bgsave_error
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetConfigurationConfigurationRedisConfiguration':
-        """Initialize a SetConfigurationConfigurationRedisConfiguration object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConfigurationRedisConfiguration':
+        """Initialize a ConfigurationRedisConfiguration object from a json dictionary."""
         args = {}
-        if 'maxmemory-redis' in _dict:
-            args['maxmemory_redis'] = _dict.get('maxmemory-redis')
+        if 'maxmemory' in _dict:
+            args['maxmemory'] = _dict.get('maxmemory')
         if 'maxmemory-policy' in _dict:
             args['maxmemory_policy'] = _dict.get('maxmemory-policy')
         if 'appendonly' in _dict:
@@ -9300,14 +8259,14 @@ class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfigurat
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetConfigurationConfigurationRedisConfiguration object from a json dictionary."""
+        """Initialize a ConfigurationRedisConfiguration object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'maxmemory_redis') and self.maxmemory_redis is not None:
-            _dict['maxmemory-redis'] = self.maxmemory_redis
+        if hasattr(self, 'maxmemory') and self.maxmemory is not None:
+            _dict['maxmemory'] = self.maxmemory
         if hasattr(self, 'maxmemory_policy') and self.maxmemory_policy is not None:
             _dict['maxmemory-policy'] = self.maxmemory_policy
         if hasattr(self, 'appendonly') and self.appendonly is not None:
@@ -9323,16 +8282,16 @@ class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfigurat
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetConfigurationConfigurationRedisConfiguration object."""
+        """Return a `str` version of this ConfigurationRedisConfiguration object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetConfigurationConfigurationRedisConfiguration') -> bool:
+    def __eq__(self, other: 'ConfigurationRedisConfiguration') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetConfigurationConfigurationRedisConfiguration') -> bool:
+    def __ne__(self, other: 'ConfigurationRedisConfiguration') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -9364,42 +8323,46 @@ class SetConfigurationConfigurationRedisConfiguration(SetConfigurationConfigurat
         NO = 'no'
 
 
-class SetDeploymentScalingGroupRequestSetCPUGroup(SetDeploymentScalingGroupRequest):
+class ConnectionDataStaxConnection(Connection):
     """
-    SetDeploymentScalingGroupRequestSetCPUGroup.
+    DataStax Connection Strings.
 
-    :attr SetCPUGroupCPU cpu: (optional)
+    :attr DataStaxConnectionURI secure:
     """
 
     def __init__(self,
-                 *,
-                 cpu: 'SetCPUGroupCPU' = None) -> None:
+                 secure: 'DataStaxConnectionURI') -> None:
         """
-        Initialize a SetDeploymentScalingGroupRequestSetCPUGroup object.
+        Initialize a ConnectionDataStaxConnection object.
 
-        :param SetCPUGroupCPU cpu: (optional)
+        :param DataStaxConnectionURI secure:
         """
         # pylint: disable=super-init-not-called
-        self.cpu = cpu
+        self.secure = secure
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDeploymentScalingGroupRequestSetCPUGroup':
-        """Initialize a SetDeploymentScalingGroupRequestSetCPUGroup object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionDataStaxConnection':
+        """Initialize a ConnectionDataStaxConnection object from a json dictionary."""
         args = {}
-        if 'cpu' in _dict:
-            args['cpu'] = SetCPUGroupCPU.from_dict(_dict.get('cpu'))
+        if 'secure' in _dict:
+            args['secure'] = DataStaxConnectionURI.from_dict(_dict.get('secure'))
+        else:
+            raise ValueError('Required property \'secure\' not present in ConnectionDataStaxConnection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetDeploymentScalingGroupRequestSetCPUGroup object from a json dictionary."""
+        """Initialize a ConnectionDataStaxConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'cpu') and self.cpu is not None:
-            _dict['cpu'] = self.cpu.to_dict()
+        if hasattr(self, 'secure') and self.secure is not None:
+            if isinstance(self.secure, dict):
+                _dict['secure'] = self.secure
+            else:
+                _dict['secure'] = self.secure.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9407,55 +8370,72 @@ class SetDeploymentScalingGroupRequestSetCPUGroup(SetDeploymentScalingGroupReque
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetDeploymentScalingGroupRequestSetCPUGroup object."""
+        """Return a `str` version of this ConnectionDataStaxConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetDeploymentScalingGroupRequestSetCPUGroup') -> bool:
+    def __eq__(self, other: 'ConnectionDataStaxConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetDeploymentScalingGroupRequestSetCPUGroup') -> bool:
+    def __ne__(self, other: 'ConnectionDataStaxConnection') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class SetDeploymentScalingGroupRequestSetDiskGroup(SetDeploymentScalingGroupRequest):
+class ConnectionElasticsearchConnection(Connection):
     """
-    SetDeploymentScalingGroupRequestSetDiskGroup.
+    Elasticsearch Connection Strings.
 
-    :attr SetDiskGroupDisk disk: (optional)
+    :attr ConnectionURI https:
+    :attr ConnectionCLI cli: CLI Connection.
     """
 
     def __init__(self,
-                 *,
-                 disk: 'SetDiskGroupDisk' = None) -> None:
+                 https: 'ConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
         """
-        Initialize a SetDeploymentScalingGroupRequestSetDiskGroup object.
+        Initialize a ConnectionElasticsearchConnection object.
 
-        :param SetDiskGroupDisk disk: (optional)
+        :param ConnectionURI https:
+        :param ConnectionCLI cli: CLI Connection.
         """
         # pylint: disable=super-init-not-called
-        self.disk = disk
+        self.https = https
+        self.cli = cli
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDeploymentScalingGroupRequestSetDiskGroup':
-        """Initialize a SetDeploymentScalingGroupRequestSetDiskGroup object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionElasticsearchConnection':
+        """Initialize a ConnectionElasticsearchConnection object from a json dictionary."""
         args = {}
-        if 'disk' in _dict:
-            args['disk'] = SetDiskGroupDisk.from_dict(_dict.get('disk'))
+        if 'https' in _dict:
+            args['https'] = ConnectionURI.from_dict(_dict.get('https'))
+        else:
+            raise ValueError('Required property \'https\' not present in ConnectionElasticsearchConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionElasticsearchConnection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetDeploymentScalingGroupRequestSetDiskGroup object from a json dictionary."""
+        """Initialize a ConnectionElasticsearchConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'disk') and self.disk is not None:
-            _dict['disk'] = self.disk.to_dict()
+        if hasattr(self, 'https') and self.https is not None:
+            if isinstance(self.https, dict):
+                _dict['https'] = self.https
+            else:
+                _dict['https'] = self.https.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9463,55 +8443,85 @@ class SetDeploymentScalingGroupRequestSetDiskGroup(SetDeploymentScalingGroupRequ
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetDeploymentScalingGroupRequestSetDiskGroup object."""
+        """Return a `str` version of this ConnectionElasticsearchConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetDeploymentScalingGroupRequestSetDiskGroup') -> bool:
+    def __eq__(self, other: 'ConnectionElasticsearchConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetDeploymentScalingGroupRequestSetDiskGroup') -> bool:
+    def __ne__(self, other: 'ConnectionElasticsearchConnection') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class SetDeploymentScalingGroupRequestSetMembersGroup(SetDeploymentScalingGroupRequest):
+class ConnectionEnterpriseDBConnection(Connection):
     """
-    SetDeploymentScalingGroupRequestSetMembersGroup.
+    PostgreSQL and EnterpriseDB Connection Strings.
 
-    :attr SetMembersGroupMembers members: (optional)
+    :attr PostgreSQLConnectionURI postgres:
+    :attr ConnectionURI emp:
+    :attr ConnectionCLI cli: CLI Connection.
     """
 
     def __init__(self,
-                 *,
-                 members: 'SetMembersGroupMembers' = None) -> None:
+                 postgres: 'PostgreSQLConnectionURI',
+                 emp: 'ConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
         """
-        Initialize a SetDeploymentScalingGroupRequestSetMembersGroup object.
+        Initialize a ConnectionEnterpriseDBConnection object.
 
-        :param SetMembersGroupMembers members: (optional)
+        :param PostgreSQLConnectionURI postgres:
+        :param ConnectionURI emp:
+        :param ConnectionCLI cli: CLI Connection.
         """
         # pylint: disable=super-init-not-called
-        self.members = members
+        self.postgres = postgres
+        self.emp = emp
+        self.cli = cli
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDeploymentScalingGroupRequestSetMembersGroup':
-        """Initialize a SetDeploymentScalingGroupRequestSetMembersGroup object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionEnterpriseDBConnection':
+        """Initialize a ConnectionEnterpriseDBConnection object from a json dictionary."""
         args = {}
-        if 'members' in _dict:
-            args['members'] = SetMembersGroupMembers.from_dict(_dict.get('members'))
+        if 'postgres' in _dict:
+            args['postgres'] = PostgreSQLConnectionURI.from_dict(_dict.get('postgres'))
+        else:
+            raise ValueError('Required property \'postgres\' not present in ConnectionEnterpriseDBConnection JSON')
+        if 'emp' in _dict:
+            args['emp'] = ConnectionURI.from_dict(_dict.get('emp'))
+        else:
+            raise ValueError('Required property \'emp\' not present in ConnectionEnterpriseDBConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionEnterpriseDBConnection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetDeploymentScalingGroupRequestSetMembersGroup object from a json dictionary."""
+        """Initialize a ConnectionEnterpriseDBConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'members') and self.members is not None:
-            _dict['members'] = self.members.to_dict()
+        if hasattr(self, 'postgres') and self.postgres is not None:
+            if isinstance(self.postgres, dict):
+                _dict['postgres'] = self.postgres
+            else:
+                _dict['postgres'] = self.postgres.to_dict()
+        if hasattr(self, 'emp') and self.emp is not None:
+            if isinstance(self.emp, dict):
+                _dict['emp'] = self.emp
+            else:
+                _dict['emp'] = self.emp.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9519,55 +8529,72 @@ class SetDeploymentScalingGroupRequestSetMembersGroup(SetDeploymentScalingGroupR
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetDeploymentScalingGroupRequestSetMembersGroup object."""
+        """Return a `str` version of this ConnectionEnterpriseDBConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetDeploymentScalingGroupRequestSetMembersGroup') -> bool:
+    def __eq__(self, other: 'ConnectionEnterpriseDBConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetDeploymentScalingGroupRequestSetMembersGroup') -> bool:
+    def __ne__(self, other: 'ConnectionEnterpriseDBConnection') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class SetDeploymentScalingGroupRequestSetMemoryGroup(SetDeploymentScalingGroupRequest):
+class ConnectionEtcdConnection(Connection):
     """
-    SetDeploymentScalingGroupRequestSetMemoryGroup.
+    etcd3 Connection Strings.
 
-    :attr SetMemoryGroupMemory memory: (optional)
+    :attr ConnectionURI grpc:
+    :attr ConnectionCLI cli: CLI Connection.
     """
 
     def __init__(self,
-                 *,
-                 memory: 'SetMemoryGroupMemory' = None) -> None:
+                 grpc: 'ConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
         """
-        Initialize a SetDeploymentScalingGroupRequestSetMemoryGroup object.
+        Initialize a ConnectionEtcdConnection object.
 
-        :param SetMemoryGroupMemory memory: (optional)
+        :param ConnectionURI grpc:
+        :param ConnectionCLI cli: CLI Connection.
         """
         # pylint: disable=super-init-not-called
-        self.memory = memory
+        self.grpc = grpc
+        self.cli = cli
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetDeploymentScalingGroupRequestSetMemoryGroup':
-        """Initialize a SetDeploymentScalingGroupRequestSetMemoryGroup object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionEtcdConnection':
+        """Initialize a ConnectionEtcdConnection object from a json dictionary."""
         args = {}
-        if 'memory' in _dict:
-            args['memory'] = SetMemoryGroupMemory.from_dict(_dict.get('memory'))
+        if 'grpc' in _dict:
+            args['grpc'] = ConnectionURI.from_dict(_dict.get('grpc'))
+        else:
+            raise ValueError('Required property \'grpc\' not present in ConnectionEtcdConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionEtcdConnection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetDeploymentScalingGroupRequestSetMemoryGroup object from a json dictionary."""
+        """Initialize a ConnectionEtcdConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'memory') and self.memory is not None:
-            _dict['memory'] = self.memory.to_dict()
+        if hasattr(self, 'grpc') and self.grpc is not None:
+            if isinstance(self.grpc, dict):
+                _dict['grpc'] = self.grpc
+            else:
+                _dict['grpc'] = self.grpc.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9575,55 +8602,72 @@ class SetDeploymentScalingGroupRequestSetMemoryGroup(SetDeploymentScalingGroupRe
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetDeploymentScalingGroupRequestSetMemoryGroup object."""
+        """Return a `str` version of this ConnectionEtcdConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetDeploymentScalingGroupRequestSetMemoryGroup') -> bool:
+    def __eq__(self, other: 'ConnectionEtcdConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetDeploymentScalingGroupRequestSetMemoryGroup') -> bool:
+    def __ne__(self, other: 'ConnectionEtcdConnection') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class SetPromotionPromotionPromote(SetPromotionPromotion):
+class ConnectionMongoDBConnection(Connection):
     """
-    Promotes a read-only replica to a full deployment.
+    MongoDB Connection Strings.
 
-    :attr dict promotion: (optional) Promotion options.
+    :attr MongoDBConnectionURI mongodb:
+    :attr ConnectionCLI cli: CLI Connection.
     """
 
     def __init__(self,
-                 *,
-                 promotion: dict = None) -> None:
+                 mongodb: 'MongoDBConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
         """
-        Initialize a SetPromotionPromotionPromote object.
+        Initialize a ConnectionMongoDBConnection object.
 
-        :param dict promotion: (optional) Promotion options.
+        :param MongoDBConnectionURI mongodb:
+        :param ConnectionCLI cli: CLI Connection.
         """
         # pylint: disable=super-init-not-called
-        self.promotion = promotion
+        self.mongodb = mongodb
+        self.cli = cli
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetPromotionPromotionPromote':
-        """Initialize a SetPromotionPromotionPromote object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionMongoDBConnection':
+        """Initialize a ConnectionMongoDBConnection object from a json dictionary."""
         args = {}
-        if 'promotion' in _dict:
-            args['promotion'] = _dict.get('promotion')
+        if 'mongodb' in _dict:
+            args['mongodb'] = MongoDBConnectionURI.from_dict(_dict.get('mongodb'))
+        else:
+            raise ValueError('Required property \'mongodb\' not present in ConnectionMongoDBConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionMongoDBConnection JSON')
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetPromotionPromotionPromote object from a json dictionary."""
+        """Initialize a ConnectionMongoDBConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'promotion') and self.promotion is not None:
-            _dict['promotion'] = self.promotion
+        if hasattr(self, 'mongodb') and self.mongodb is not None:
+            if isinstance(self.mongodb, dict):
+                _dict['mongodb'] = self.mongodb
+            else:
+                _dict['mongodb'] = self.mongodb.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9631,55 +8675,95 @@ class SetPromotionPromotionPromote(SetPromotionPromotion):
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetPromotionPromotionPromote object."""
+        """Return a `str` version of this ConnectionMongoDBConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetPromotionPromotionPromote') -> bool:
+    def __eq__(self, other: 'ConnectionMongoDBConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetPromotionPromotionPromote') -> bool:
+    def __ne__(self, other: 'ConnectionMongoDBConnection') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
-class SetPromotionPromotionUpgradePromote(SetPromotionPromotion):
+class ConnectionMongoDBEEConnection(Connection):
     """
-    Promotes a read-only replica to a full deployment running a new database version.
+    MongoDB Connection Strings.
 
-    :attr dict promotion: (optional) Promotion and Upgrade options.
+    :attr MongoDBConnectionURI mongodb:
+    :attr ConnectionCLI cli: CLI Connection.
+    :attr ConnectionURI bi_connector: (optional)
+    :attr ConnectionURI analytics: (optional)
     """
 
     def __init__(self,
+                 mongodb: 'MongoDBConnectionURI',
+                 cli: 'ConnectionCLI',
                  *,
-                 promotion: dict = None) -> None:
+                 bi_connector: 'ConnectionURI' = None,
+                 analytics: 'ConnectionURI' = None) -> None:
         """
-        Initialize a SetPromotionPromotionUpgradePromote object.
+        Initialize a ConnectionMongoDBEEConnection object.
 
-        :param dict promotion: (optional) Promotion and Upgrade options.
+        :param MongoDBConnectionURI mongodb:
+        :param ConnectionCLI cli: CLI Connection.
+        :param ConnectionURI bi_connector: (optional)
+        :param ConnectionURI analytics: (optional)
         """
         # pylint: disable=super-init-not-called
-        self.promotion = promotion
+        self.mongodb = mongodb
+        self.cli = cli
+        self.bi_connector = bi_connector
+        self.analytics = analytics
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SetPromotionPromotionUpgradePromote':
-        """Initialize a SetPromotionPromotionUpgradePromote object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'ConnectionMongoDBEEConnection':
+        """Initialize a ConnectionMongoDBEEConnection object from a json dictionary."""
         args = {}
-        if 'promotion' in _dict:
-            args['promotion'] = _dict.get('promotion')
+        if 'mongodb' in _dict:
+            args['mongodb'] = MongoDBConnectionURI.from_dict(_dict.get('mongodb'))
+        else:
+            raise ValueError('Required property \'mongodb\' not present in ConnectionMongoDBEEConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionMongoDBEEConnection JSON')
+        if 'bi_connector' in _dict:
+            args['bi_connector'] = ConnectionURI.from_dict(_dict.get('bi_connector'))
+        if 'analytics' in _dict:
+            args['analytics'] = ConnectionURI.from_dict(_dict.get('analytics'))
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a SetPromotionPromotionUpgradePromote object from a json dictionary."""
+        """Initialize a ConnectionMongoDBEEConnection object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
         """Return a json dictionary representing this model."""
         _dict = {}
-        if hasattr(self, 'promotion') and self.promotion is not None:
-            _dict['promotion'] = self.promotion
+        if hasattr(self, 'mongodb') and self.mongodb is not None:
+            if isinstance(self.mongodb, dict):
+                _dict['mongodb'] = self.mongodb
+            else:
+                _dict['mongodb'] = self.mongodb.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
+        if hasattr(self, 'bi_connector') and self.bi_connector is not None:
+            if isinstance(self.bi_connector, dict):
+                _dict['bi_connector'] = self.bi_connector
+            else:
+                _dict['bi_connector'] = self.bi_connector.to_dict()
+        if hasattr(self, 'analytics') and self.analytics is not None:
+            if isinstance(self.analytics, dict):
+                _dict['analytics'] = self.analytics
+            else:
+                _dict['analytics'] = self.analytics.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -9687,15 +8771,766 @@ class SetPromotionPromotionUpgradePromote(SetPromotionPromotion):
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this SetPromotionPromotionUpgradePromote object."""
+        """Return a `str` version of this ConnectionMongoDBEEConnection object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'SetPromotionPromotionUpgradePromote') -> bool:
+    def __eq__(self, other: 'ConnectionMongoDBEEConnection') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'SetPromotionPromotionUpgradePromote') -> bool:
+    def __ne__(self, other: 'ConnectionMongoDBEEConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionMongoDBEEOpsManagerConnection(Connection):
+    """
+    MongoDB Connection Strings.
+
+    :attr ConnectionURI ops_manager: (optional)
+    """
+
+    def __init__(self,
+                 *,
+                 ops_manager: 'ConnectionURI' = None) -> None:
+        """
+        Initialize a ConnectionMongoDBEEOpsManagerConnection object.
+
+        :param ConnectionURI ops_manager: (optional)
+        """
+        # pylint: disable=super-init-not-called
+        self.ops_manager = ops_manager
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionMongoDBEEOpsManagerConnection':
+        """Initialize a ConnectionMongoDBEEOpsManagerConnection object from a json dictionary."""
+        args = {}
+        if 'ops_manager' in _dict:
+            args['ops_manager'] = ConnectionURI.from_dict(_dict.get('ops_manager'))
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionMongoDBEEOpsManagerConnection object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'ops_manager') and self.ops_manager is not None:
+            if isinstance(self.ops_manager, dict):
+                _dict['ops_manager'] = self.ops_manager
+            else:
+                _dict['ops_manager'] = self.ops_manager.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionMongoDBEEOpsManagerConnection object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionMongoDBEEOpsManagerConnection') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionMongoDBEEOpsManagerConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionMySQLConnection(Connection):
+    """
+    MySQL Connection Strings.
+
+    :attr MySQLConnectionURI mysql:
+    :attr ConnectionCLI cli: CLI Connection.
+    """
+
+    def __init__(self,
+                 mysql: 'MySQLConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
+        """
+        Initialize a ConnectionMySQLConnection object.
+
+        :param MySQLConnectionURI mysql:
+        :param ConnectionCLI cli: CLI Connection.
+        """
+        # pylint: disable=super-init-not-called
+        self.mysql = mysql
+        self.cli = cli
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionMySQLConnection':
+        """Initialize a ConnectionMySQLConnection object from a json dictionary."""
+        args = {}
+        if 'mysql' in _dict:
+            args['mysql'] = MySQLConnectionURI.from_dict(_dict.get('mysql'))
+        else:
+            raise ValueError('Required property \'mysql\' not present in ConnectionMySQLConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionMySQLConnection JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionMySQLConnection object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'mysql') and self.mysql is not None:
+            if isinstance(self.mysql, dict):
+                _dict['mysql'] = self.mysql
+            else:
+                _dict['mysql'] = self.mysql.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionMySQLConnection object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionMySQLConnection') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionMySQLConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionPostgreSQLConnection(Connection):
+    """
+    PostgreSQL and EnterpriseDB Connection Strings.
+
+    :attr PostgreSQLConnectionURI postgres:
+    :attr ConnectionCLI cli: CLI Connection.
+    """
+
+    def __init__(self,
+                 postgres: 'PostgreSQLConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
+        """
+        Initialize a ConnectionPostgreSQLConnection object.
+
+        :param PostgreSQLConnectionURI postgres:
+        :param ConnectionCLI cli: CLI Connection.
+        """
+        # pylint: disable=super-init-not-called
+        self.postgres = postgres
+        self.cli = cli
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionPostgreSQLConnection':
+        """Initialize a ConnectionPostgreSQLConnection object from a json dictionary."""
+        args = {}
+        if 'postgres' in _dict:
+            args['postgres'] = PostgreSQLConnectionURI.from_dict(_dict.get('postgres'))
+        else:
+            raise ValueError('Required property \'postgres\' not present in ConnectionPostgreSQLConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionPostgreSQLConnection JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionPostgreSQLConnection object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'postgres') and self.postgres is not None:
+            if isinstance(self.postgres, dict):
+                _dict['postgres'] = self.postgres
+            else:
+                _dict['postgres'] = self.postgres.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionPostgreSQLConnection object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionPostgreSQLConnection') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionPostgreSQLConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionRabbitMQConnection(Connection):
+    """
+    RabbitMQ Connection Strings.
+
+    :attr ConnectionURI amqps:
+    :attr ConnectionURI mqtts:
+    :attr ConnectionURI stomp_ssl:
+    :attr ConnectionURI https:
+    :attr ConnectionCLI cli: CLI Connection.
+    """
+
+    def __init__(self,
+                 amqps: 'ConnectionURI',
+                 mqtts: 'ConnectionURI',
+                 stomp_ssl: 'ConnectionURI',
+                 https: 'ConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
+        """
+        Initialize a ConnectionRabbitMQConnection object.
+
+        :param ConnectionURI amqps:
+        :param ConnectionURI mqtts:
+        :param ConnectionURI stomp_ssl:
+        :param ConnectionURI https:
+        :param ConnectionCLI cli: CLI Connection.
+        """
+        # pylint: disable=super-init-not-called
+        self.amqps = amqps
+        self.mqtts = mqtts
+        self.stomp_ssl = stomp_ssl
+        self.https = https
+        self.cli = cli
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionRabbitMQConnection':
+        """Initialize a ConnectionRabbitMQConnection object from a json dictionary."""
+        args = {}
+        if 'amqps' in _dict:
+            args['amqps'] = ConnectionURI.from_dict(_dict.get('amqps'))
+        else:
+            raise ValueError('Required property \'amqps\' not present in ConnectionRabbitMQConnection JSON')
+        if 'mqtts' in _dict:
+            args['mqtts'] = ConnectionURI.from_dict(_dict.get('mqtts'))
+        else:
+            raise ValueError('Required property \'mqtts\' not present in ConnectionRabbitMQConnection JSON')
+        if 'stomp_ssl' in _dict:
+            args['stomp_ssl'] = ConnectionURI.from_dict(_dict.get('stomp_ssl'))
+        else:
+            raise ValueError('Required property \'stomp_ssl\' not present in ConnectionRabbitMQConnection JSON')
+        if 'https' in _dict:
+            args['https'] = ConnectionURI.from_dict(_dict.get('https'))
+        else:
+            raise ValueError('Required property \'https\' not present in ConnectionRabbitMQConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionRabbitMQConnection JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionRabbitMQConnection object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'amqps') and self.amqps is not None:
+            if isinstance(self.amqps, dict):
+                _dict['amqps'] = self.amqps
+            else:
+                _dict['amqps'] = self.amqps.to_dict()
+        if hasattr(self, 'mqtts') and self.mqtts is not None:
+            if isinstance(self.mqtts, dict):
+                _dict['mqtts'] = self.mqtts
+            else:
+                _dict['mqtts'] = self.mqtts.to_dict()
+        if hasattr(self, 'stomp_ssl') and self.stomp_ssl is not None:
+            if isinstance(self.stomp_ssl, dict):
+                _dict['stomp_ssl'] = self.stomp_ssl
+            else:
+                _dict['stomp_ssl'] = self.stomp_ssl.to_dict()
+        if hasattr(self, 'https') and self.https is not None:
+            if isinstance(self.https, dict):
+                _dict['https'] = self.https
+            else:
+                _dict['https'] = self.https.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionRabbitMQConnection object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionRabbitMQConnection') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionRabbitMQConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class ConnectionRedisConnection(Connection):
+    """
+    Redis Connection Strings.
+
+    :attr RedisConnectionURI rediss:
+    :attr ConnectionCLI cli: CLI Connection.
+    """
+
+    def __init__(self,
+                 rediss: 'RedisConnectionURI',
+                 cli: 'ConnectionCLI') -> None:
+        """
+        Initialize a ConnectionRedisConnection object.
+
+        :param RedisConnectionURI rediss:
+        :param ConnectionCLI cli: CLI Connection.
+        """
+        # pylint: disable=super-init-not-called
+        self.rediss = rediss
+        self.cli = cli
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'ConnectionRedisConnection':
+        """Initialize a ConnectionRedisConnection object from a json dictionary."""
+        args = {}
+        if 'rediss' in _dict:
+            args['rediss'] = RedisConnectionURI.from_dict(_dict.get('rediss'))
+        else:
+            raise ValueError('Required property \'rediss\' not present in ConnectionRedisConnection JSON')
+        if 'cli' in _dict:
+            args['cli'] = ConnectionCLI.from_dict(_dict.get('cli'))
+        else:
+            raise ValueError('Required property \'cli\' not present in ConnectionRedisConnection JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a ConnectionRedisConnection object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'rediss') and self.rediss is not None:
+            if isinstance(self.rediss, dict):
+                _dict['rediss'] = self.rediss
+            else:
+                _dict['rediss'] = self.rediss.to_dict()
+        if hasattr(self, 'cli') and self.cli is not None:
+            if isinstance(self.cli, dict):
+                _dict['cli'] = self.cli
+            else:
+                _dict['cli'] = self.cli.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this ConnectionRedisConnection object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'ConnectionRedisConnection') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'ConnectionRedisConnection') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class UserUpdatePasswordSetting(UserUpdate):
+    """
+    UserUpdatePasswordSetting.
+
+    :attr str password: Password for user. Password must be at least 15 characters
+          in length and contain a letter and number.
+    """
+
+    def __init__(self,
+                 password: str) -> None:
+        """
+        Initialize a UserUpdatePasswordSetting object.
+
+        :param str password: Password for user. Password must be at least 15
+               characters in length and contain a letter and number.
+        """
+        # pylint: disable=super-init-not-called
+        self.password = password
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UserUpdatePasswordSetting':
+        """Initialize a UserUpdatePasswordSetting object from a json dictionary."""
+        args = {}
+        if 'password' in _dict:
+            args['password'] = _dict.get('password')
+        else:
+            raise ValueError('Required property \'password\' not present in UserUpdatePasswordSetting JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UserUpdatePasswordSetting object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'password') and self.password is not None:
+            _dict['password'] = self.password
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UserUpdatePasswordSetting object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UserUpdatePasswordSetting') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UserUpdatePasswordSetting') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class UserUpdateRedisRoleSetting(UserUpdate):
+    """
+    UserUpdateRedisRoleSetting.
+
+    :attr str role: RBAC role for redis database user types. Available for Redis 6.0
+          and above. Must use Redis ACL syntax to add or remove command categories.
+          Allowed categories are `read`, `write`, `admin` and `all`.
+    """
+
+    def __init__(self,
+                 role: str) -> None:
+        """
+        Initialize a UserUpdateRedisRoleSetting object.
+
+        :param str role: RBAC role for redis database user types. Available for
+               Redis 6.0 and above. Must use Redis ACL syntax to add or remove command
+               categories. Allowed categories are `read`, `write`, `admin` and `all`.
+        """
+        # pylint: disable=super-init-not-called
+        self.role = role
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UserUpdateRedisRoleSetting':
+        """Initialize a UserUpdateRedisRoleSetting object from a json dictionary."""
+        args = {}
+        if 'role' in _dict:
+            args['role'] = _dict.get('role')
+        else:
+            raise ValueError('Required property \'role\' not present in UserUpdateRedisRoleSetting JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UserUpdateRedisRoleSetting object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'role') and self.role is not None:
+            _dict['role'] = self.role
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UserUpdateRedisRoleSetting object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UserUpdateRedisRoleSetting') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UserUpdateRedisRoleSetting') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class UserDatabaseUser(User):
+    """
+    UserDatabaseUser.
+
+    :attr str username: Username for new user.
+    :attr str password: Password for new user. Password must be at least 15
+          characters in length and contain a letter and number.
+    """
+
+    def __init__(self,
+                 username: str,
+                 password: str) -> None:
+        """
+        Initialize a UserDatabaseUser object.
+
+        :param str username: Username for new user.
+        :param str password: Password for new user. Password must be at least 15
+               characters in length and contain a letter and number.
+        """
+        # pylint: disable=super-init-not-called
+        self.username = username
+        self.password = password
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UserDatabaseUser':
+        """Initialize a UserDatabaseUser object from a json dictionary."""
+        args = {}
+        if 'username' in _dict:
+            args['username'] = _dict.get('username')
+        else:
+            raise ValueError('Required property \'username\' not present in UserDatabaseUser JSON')
+        if 'password' in _dict:
+            args['password'] = _dict.get('password')
+        else:
+            raise ValueError('Required property \'password\' not present in UserDatabaseUser JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UserDatabaseUser object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'username') and self.username is not None:
+            _dict['username'] = self.username
+        if hasattr(self, 'password') and self.password is not None:
+            _dict['password'] = self.password
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UserDatabaseUser object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UserDatabaseUser') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UserDatabaseUser') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+class UserOpsManagerUser(User):
+    """
+    UserOpsManagerUser.
+
+    :attr str username: Username for new user.
+    :attr str password: Password for new Ops Manager user. Password must be at least
+          15 characters in length and contain a letter, number and a special character.
+    :attr str role: (optional) Role for new user. Available for MongoDB Enterprise
+          Ops Manager users.
+    """
+
+    def __init__(self,
+                 username: str,
+                 password: str,
+                 *,
+                 role: str = None) -> None:
+        """
+        Initialize a UserOpsManagerUser object.
+
+        :param str username: Username for new user.
+        :param str password: Password for new Ops Manager user. Password must be at
+               least 15 characters in length and contain a letter, number and a special
+               character.
+        :param str role: (optional) Role for new user. Available for MongoDB
+               Enterprise Ops Manager users.
+        """
+        # pylint: disable=super-init-not-called
+        self.username = username
+        self.password = password
+        self.role = role
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UserOpsManagerUser':
+        """Initialize a UserOpsManagerUser object from a json dictionary."""
+        args = {}
+        if 'username' in _dict:
+            args['username'] = _dict.get('username')
+        else:
+            raise ValueError('Required property \'username\' not present in UserOpsManagerUser JSON')
+        if 'password' in _dict:
+            args['password'] = _dict.get('password')
+        else:
+            raise ValueError('Required property \'password\' not present in UserOpsManagerUser JSON')
+        if 'role' in _dict:
+            args['role'] = _dict.get('role')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UserOpsManagerUser object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'username') and self.username is not None:
+            _dict['username'] = self.username
+        if hasattr(self, 'password') and self.password is not None:
+            _dict['password'] = self.password
+        if hasattr(self, 'role') and self.role is not None:
+            _dict['role'] = self.role
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UserOpsManagerUser object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UserOpsManagerUser') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UserOpsManagerUser') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+    class RoleEnum(str, Enum):
+        """
+        Role for new user. Available for MongoDB Enterprise Ops Manager users.
+        """
+        GROUP_READ_ONLY = 'group_read_only'
+        GROUP_DATA_ACCESS_ADMIN = 'group_data_access_admin'
+
+
+class UserRedisDatabaseUser(User):
+    """
+    UserRedisDatabaseUser.
+
+    :attr str username: Username for new user.
+    :attr str password: Password for new user. Password must be at least 15
+          characters in length and contain a letter and number.
+    :attr str role: (optional) RBAC role for Redis database user types. Available
+          for Redis 6.0 and newer. Must use Redis ACL syntax to add or remove command
+          categories. Allowed categories are `read`, `write`, `admin` and `all`.
+    """
+
+    def __init__(self,
+                 username: str,
+                 password: str,
+                 *,
+                 role: str = None) -> None:
+        """
+        Initialize a UserRedisDatabaseUser object.
+
+        :param str username: Username for new user.
+        :param str password: Password for new user. Password must be at least 15
+               characters in length and contain a letter and number.
+        :param str role: (optional) RBAC role for Redis database user types.
+               Available for Redis 6.0 and newer. Must use Redis ACL syntax to add or
+               remove command categories. Allowed categories are `read`, `write`, `admin`
+               and `all`.
+        """
+        # pylint: disable=super-init-not-called
+        self.username = username
+        self.password = password
+        self.role = role
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'UserRedisDatabaseUser':
+        """Initialize a UserRedisDatabaseUser object from a json dictionary."""
+        args = {}
+        if 'username' in _dict:
+            args['username'] = _dict.get('username')
+        else:
+            raise ValueError('Required property \'username\' not present in UserRedisDatabaseUser JSON')
+        if 'password' in _dict:
+            args['password'] = _dict.get('password')
+        else:
+            raise ValueError('Required property \'password\' not present in UserRedisDatabaseUser JSON')
+        if 'role' in _dict:
+            args['role'] = _dict.get('role')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a UserRedisDatabaseUser object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'username') and self.username is not None:
+            _dict['username'] = self.username
+        if hasattr(self, 'password') and self.password is not None:
+            _dict['password'] = self.password
+        if hasattr(self, 'role') and self.role is not None:
+            _dict['role'] = self.role
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this UserRedisDatabaseUser object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'UserRedisDatabaseUser') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'UserRedisDatabaseUser') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
